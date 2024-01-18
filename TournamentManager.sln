@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Api", "TournamentManager.Api\TournamentManager.Api.csproj", "{068D3355-70F7-4710-90E8-E75E5F74BCBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Application", "TournamentManager.Application\TournamentManager.Application.csproj", "{DC1093C0-C471-4952-A333-8F82FFE9AAD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Domain", "TournamentManager.Domain\TournamentManager.Domain.csproj", "{9980A864-FCCF-4F7C-8342-83BA3AC56A70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Infrastructure", "TournamentManager.Infrastructure\TournamentManager.Infrastructure.csproj", "{12C87F47-BB59-4EA2-9FAB-61F2DDBF101D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{068D3355-70F7-4710-90E8-E75E5F74BCBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{068D3355-70F7-4710-90E8-E75E5F74BCBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{068D3355-70F7-4710-90E8-E75E5F74BCBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{068D3355-70F7-4710-90E8-E75E5F74BCBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC1093C0-C471-4952-A333-8F82FFE9AAD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC1093C0-C471-4952-A333-8F82FFE9AAD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC1093C0-C471-4952-A333-8F82FFE9AAD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC1093C0-C471-4952-A333-8F82FFE9AAD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9980A864-FCCF-4F7C-8342-83BA3AC56A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9980A864-FCCF-4F7C-8342-83BA3AC56A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9980A864-FCCF-4F7C-8342-83BA3AC56A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9980A864-FCCF-4F7C-8342-83BA3AC56A70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12C87F47-BB59-4EA2-9FAB-61F2DDBF101D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12C87F47-BB59-4EA2-9FAB-61F2DDBF101D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12C87F47-BB59-4EA2-9FAB-61F2DDBF101D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12C87F47-BB59-4EA2-9FAB-61F2DDBF101D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
