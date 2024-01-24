@@ -8,13 +8,13 @@ public class BaseEntity
     /// <summary>
     /// Unique identifier
     /// </summary>
-    public int Id { get; set; }
+    public int? Id { get; set; }
     /// <summary>
     /// Date of creation
     /// </summary>
-    public DateTime CreatedDate { get; set; }
+    public DateTime? CreatedDate { get; set; }
     /// <summary>
     /// Date of last modification
     /// </summary>
-    public DateTime ModifiedDate { get; set; }
+    public DateTime? ModifiedDate { get; set; }
 }

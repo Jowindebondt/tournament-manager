@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TournamentManager.Application;
 using TournamentManager.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 #region DI
-//builder.Services.AddScoped<interface, implementation>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<ITournamentService, TournamentService>();
 #endregion
 
 var app = builder.Build();
