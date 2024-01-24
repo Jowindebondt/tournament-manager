@@ -482,5 +482,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-# .vscode/settings.json 
+.vscode/settings.json 
 TournamentManager.Infrastructure/ApplicationDbContextFactory.cs
