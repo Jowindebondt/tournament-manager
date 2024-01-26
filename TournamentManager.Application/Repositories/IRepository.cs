@@ -1,6 +1,6 @@
 ﻿using TournamentManager.Domain;
 
-namespace TournamentManager.Infrastructure;
+namespace TournamentManager.Application.Repositories;
 
 public interface IRepository<T> where T : BaseEntity
 {

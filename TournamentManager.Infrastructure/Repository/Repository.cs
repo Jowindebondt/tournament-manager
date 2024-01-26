@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TournamentManager.Application.Repositories;
 using TournamentManager.Domain;
 
 namespace TournamentManager.Infrastructure;

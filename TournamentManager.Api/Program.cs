@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using TournamentManager.Application;
+using TournamentManager.Application.Repositories;
 using TournamentManager.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("SQLAZURECONNSTR_DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddControllers();
 // Add services to the container.

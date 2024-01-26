@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\TournamentManager.Infrastructure\TournamentManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\TournamentManager.Domain\TournamentManager.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

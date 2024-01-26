@@ -1,5 +1,5 @@
-﻿using TournamentManager.Domain;
-using TournamentManager.Infrastructure;
+﻿using TournamentManager.Application.Repositories;
+using TournamentManager.Domain;
 
 namespace TournamentManager.Application;
 
