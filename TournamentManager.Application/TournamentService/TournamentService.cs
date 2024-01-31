@@ -11,6 +11,12 @@ public class TournamentService : ITournamentService
         _tournamentRepository = tournamentRepository;
     }
 
+    public void Delete(int id)
+    {
+        var origin = Get(id) ?? throw new NullReferenceException("Tournament not found");
+        _tournamentRepository.Delete(origin);
+    }
+
     public Tournament Get(int id)
     {
         return _tournamentRepository.Get(id);
@@ -19,7 +25,8 @@ public class TournamentService : ITournamentService
     public IEnumerable<Tournament> GetAll()
     {
         var list = _tournamentRepository.GetAll();
-        if (list == null || !list.Any()){
+        if (list == null || !list.Any())
+        {
             return null;
         }
         return list;
@@ -29,7 +36,8 @@ public class TournamentService : ITournamentService
     {
         ArgumentNullException.ThrowIfNull(tournament);
 
-        if (tournament.Id != null) {
+        if (tournament.Id != null) 
+        {
             throw new ArgumentException("Id field has a value which is not allowed when adding a new instance");
         }
 
@@ -37,5 +45,18 @@ public class TournamentService : ITournamentService
         tournament.ModifiedDate = DateTime.UtcNow;
 
         _tournamentRepository.Insert(tournament);
+    }
+
+    public Tournament Update(int id, Tournament tournament)
+    {
+        ArgumentNullException.ThrowIfNull(tournament);
+        var origin = Get(id) ?? throw new NullReferenceException("Tournament not found");
+
+        origin.Name = tournament.Name;
+        origin.ModifiedDate = DateTime.UtcNow;
+
+        _tournamentRepository.Update(origin);
+
+        return origin;
     }
 }
