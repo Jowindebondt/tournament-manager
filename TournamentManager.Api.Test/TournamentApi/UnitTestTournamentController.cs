@@ -3,6 +3,7 @@ using Moq;
 using TournamentManager.Application;
 using TournamentManager.Domain;
 using TournamentManager.Domain.Test;
+using TournamentManager.TestHelper;
 using Xunit;
 
 namespace TournamentManager.Api.Test.TournamentApi;
@@ -17,6 +18,7 @@ public class UnitTestTournamentController
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetList_ReturnsOkWithFilledList_ServiceGetAllCalledOnce()
     {
         // arrange
@@ -39,6 +41,7 @@ public class UnitTestTournamentController
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetList_ReturnsNotFound_ServiceGetAllCalledOnce()
     {
         // arrange
@@ -56,6 +59,7 @@ public class UnitTestTournamentController
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetById_ReturnsOkWithEntity_ServiceGetCalledOnce()
     {
         // arrange
@@ -76,6 +80,7 @@ public class UnitTestTournamentController
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetById_ReturnsNotFound_ServiceGetCalledOnce()
     {
         // arrange
@@ -93,6 +98,7 @@ public class UnitTestTournamentController
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void CreateValidInstance_ReturnsOkWithEntity_ServiceInsertCalledOnce()
     {
         // arrange
@@ -115,6 +121,7 @@ public class UnitTestTournamentController
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void CreateNoInstance_ReturnsBadRequest_ServiceInsertCalledNever()
     {
         // arrange
@@ -136,6 +143,7 @@ public class UnitTestTournamentController
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void UpdateValidInstance_ReturnsOkWithEntity_ServiceUpdateCalledOnce()
     {
         // arrange
@@ -156,6 +164,7 @@ public class UnitTestTournamentController
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void UpdateNoInstance_ReturnsBadRequest_ServiceUpdateCalledNever()
     {
         // arrange
@@ -177,6 +186,7 @@ public class UnitTestTournamentController
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void Delete_ReturnsOk_ServiceDeleteCalledOnce()
     {
         // arrange

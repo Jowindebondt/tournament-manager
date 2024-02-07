@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using TournamentManager.Domain;
 using TournamentManager.Domain.Test;
+using TournamentManager.TestHelper;
 using Xunit;
 
 namespace TournamentManager.Infrastructure.Test;
@@ -22,6 +23,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetValidInstance_DbSetFindCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
@@ -39,6 +41,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetNoInstance_DbSetFindCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
@@ -56,6 +59,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetFilledList_DbSetAsQueryableCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
@@ -73,6 +77,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetEmptyList_DbSetAsQueryableCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
@@ -90,6 +95,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetNoList_DbSetAsQueryableCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
@@ -107,6 +113,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void InsertWithValidInstance_DbSetAddCalledOnce_DbContextSaveChangesCalledOnce() 
     {
         // arrange
@@ -123,6 +130,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void InsertWithNull_DbSetAddCalledNever_DbContextSaveChangesCalledNever_ThrowsArgumentNullException() 
     {
         // arrange
@@ -139,6 +147,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void UpdateWithValidInstance_DbSetAddCalledOnce_DbContextSaveChangesCalledOnce() 
     {
         // arrange
@@ -155,6 +164,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void UpdateWithNull_DbSetAddCalledNever_DbContextSaveChangesCalledNever_ThrowsArgumentNullException() 
     {
         // arrange
@@ -171,6 +181,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void DeleteWithValidInstance_DbSetAddCalledOnce_DbContextSaveChangesCalledOnce() 
     {
         // arrange
@@ -187,6 +198,7 @@ public class TestRepository
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void DeleteWithNull_DbSetAddCalledNever_DbContextSaveChangesCalledNever_ThrowsArgumentNullException() 
     {
         // arrange

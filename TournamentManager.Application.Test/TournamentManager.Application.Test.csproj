@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TournamentManager.Application\TournamentManager.Application.csproj" />
     <ProjectReference Include="..\TournamentManager.Domain.Test\TournamentManager.Domain.Test.csproj" />
+    <ProjectReference Include="..\TournamentManager.TestHelper\TournamentManager.TestHelper.csproj" />
   </ItemGroup>
 
 </Project>

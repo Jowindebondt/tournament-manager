@@ -2,6 +2,7 @@ using Moq;
 using TournamentManager.Application.Repositories;
 using TournamentManager.Domain;
 using TournamentManager.Domain.Test;
+using TournamentManager.TestHelper;
 using Xunit;
 
 namespace TournamentManager.Application.Test;
@@ -16,6 +17,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void Get_ReturnsInstance_RepoGetCalledOnce()
     {
         // arrange
@@ -30,6 +32,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void Get_ReturnsNull_RepoGetCalledOnce()
     {
         // arrange
@@ -44,6 +47,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetAll_ReturnsFilledList_RepoGetAllCalledOnce()
     {
         // arrange
@@ -62,6 +66,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetAll_ReturnsNullOnEmptyList_RepoGetAllCalledOnce()
     {
         // arrange
@@ -79,6 +84,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void GetAll_ReturnsNull_RepoGetAllCalledOnce()
     {
         // arrange
@@ -98,6 +104,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void InsertValidInstance_ReturnsUpdatedInstance_RepoInsertCalledOnce()
     {
         // arrange
@@ -124,6 +131,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void InsertValidInstanceWithId_ThrowsArgumentException_RepoInsertCalledNever()
     {
         // arrange
@@ -145,6 +153,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void InsertNoInstance_ThrowsArgumentNullException_RepoInsertCalledNever()
     {
         // arrange
@@ -160,6 +169,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void UpdateValidInstance_ReturnsUpdatedInstance_RepoGetCalledOnce_RepoUpdateCalledOnce()
     {
         // arrange
@@ -189,6 +199,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void UpdateNoInstance_ThrowsArgumentNullException_RepoGetCalledNever_RepoUpdateCalledNever()
     {
         // arrange
@@ -208,6 +219,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void UpdateValidInstanceWithWrongId_ThrowsNullReferenceException_RepoGetCalledOnce_RepoUpdateCalledNever()
     {
         // arrange
@@ -233,6 +245,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void DeleteInstanceWithValidId_ThrowsNoException_RepoGetCalledOnce_RepoDeleteCalledOnce()
     {
         // arrange
@@ -252,6 +265,7 @@ public class TournamentTestService
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void DeleteInstanceWithInvalidId_ThrowsNoException_RepoGetCalledOnce_RepoDeleteCalledNever()
     {
         // arrange

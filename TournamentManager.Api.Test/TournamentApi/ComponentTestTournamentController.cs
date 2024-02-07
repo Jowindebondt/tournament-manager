@@ -6,6 +6,7 @@ using TournamentManager.Application;
 using TournamentManager.Domain;
 using TournamentManager.Domain.Test;
 using TournamentManager.Infrastructure;
+using TournamentManager.TestHelper;
 using Xunit;
 
 namespace TournamentManager.Api.Test.TournamentApi;
@@ -25,6 +26,7 @@ public class ComponentTestTournamentController : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
     public void GetList_ReturnsOkWithFilledList()
     {
         // arrange
@@ -44,6 +46,7 @@ public class ComponentTestTournamentController : IClassFixture<DatabaseFixture>
     }
 
     [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
     public void GetById_ReturnsNotFound()
     {
         // arrange
@@ -58,6 +61,7 @@ public class ComponentTestTournamentController : IClassFixture<DatabaseFixture>
     }
 
     [Theory]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
     [InlineData(-1)]
     [InlineData(-5)]
     public void GetById_ReturnsOkWithEntity_DBSetFindCalledOnce(int id)
@@ -79,6 +83,7 @@ public class ComponentTestTournamentController : IClassFixture<DatabaseFixture>
     }
 
     [Theory]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
     [InlineData("Test_Tournament_New_1")]
     [InlineData("Test_Tournament_New_2")]
     public void CreateValidInstance_ReturnsOkWithEntity(string name)
@@ -106,6 +111,7 @@ public class ComponentTestTournamentController : IClassFixture<DatabaseFixture>
     }
 
     [Theory]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
     [InlineData(-1, "Updating_Test_Tournament_1")]
     [InlineData(-2, "Updating_Test_Tournament_2")]
     public void UpdateValidInstance_ReturnsOkWithEntity(int id, string newName)
@@ -133,6 +139,7 @@ public class ComponentTestTournamentController : IClassFixture<DatabaseFixture>
     }
 
     [Theory]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
     [InlineData(-3)]
     [InlineData(-4)]
     public void Delete(int id)
