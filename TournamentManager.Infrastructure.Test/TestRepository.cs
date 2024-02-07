@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using TournamentManager.Domain;
+using TournamentManager.Domain.Test;
 using Xunit;
 
 namespace TournamentManager.Infrastructure.Test;
@@ -24,7 +25,7 @@ public class TestRepository
     public void GetValidInstance_DbSetFindCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
-        _dbSet.Setup(set => set.Find(It.IsAny<int>())).Returns(GetSingleTournament(1));
+        _dbSet.Setup(set => set.Find(It.IsAny<int>())).Returns(TournamentBuilder.GetSingleTournament());
         var repo = new Repository<Tournament>(_dbContextMock.Object);
 
         // act
@@ -58,7 +59,7 @@ public class TestRepository
     public void GetFilledList_DbSetAsEnumerableCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
-        _dbSet.Setup(set => set.AsQueryable()).Returns(GetListTournament(5));
+        _dbSet.Setup(set => set.AsQueryable()).Returns(TournamentBuilder.GetListTournamentAsQueryable(5));
         var repo = new Repository<Tournament>(_dbContextMock.Object);
 
         // act
@@ -75,7 +76,7 @@ public class TestRepository
     public void GetEmptyList_DbSetAsEnumerableCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
-        _dbSet.Setup(set => set.AsQueryable()).Returns(GetListTournament(0));
+        _dbSet.Setup(set => set.AsQueryable()).Returns(TournamentBuilder.GetListTournamentAsQueryable(0));
         var repo = new Repository<Tournament>(_dbContextMock.Object);
 
         // act
@@ -112,7 +113,7 @@ public class TestRepository
         var repo = new Repository<Tournament>(_dbContextMock.Object);
         
         // act
-        repo.Insert(GetSingleTournament(1));
+        repo.Insert(TournamentBuilder.GetSingleTournament());
 
         // assert
         Assert.Multiple(
@@ -144,7 +145,7 @@ public class TestRepository
         var repo = new Repository<Tournament>(_dbContextMock.Object);
         
         // act
-        repo.Update(GetSingleTournament(1));
+        repo.Update(TournamentBuilder.GetSingleTournament());
 
         // assert
         Assert.Multiple(
@@ -176,7 +177,7 @@ public class TestRepository
         var repo = new Repository<Tournament>(_dbContextMock.Object);
         
         // act
-        repo.Delete(GetSingleTournament(1));
+        repo.Delete(TournamentBuilder.GetSingleTournament());
 
         // assert
         Assert.Multiple(
@@ -199,27 +200,5 @@ public class TestRepository
             () => _dbSet.Verify(set => set.Remove(It.IsAny<Tournament>()), Times.Never()),
             () => _dbContextMock.Verify(context => context.SaveChanges(), Times.Never())
         );
-    }
-
-    private static Tournament GetSingleTournament(int id)
-    {
-        return new Tournament
-        {
-            Id = id * -1,
-            Name = $"Test_Tournament_{id}",
-            CreatedDate = new DateTime(2024, 1, 1),
-            ModifiedDate = new DateTime(2024, 1, 1),
-        };
-    }
-
-    private static IQueryable<Tournament> GetListTournament(int count)
-    {
-        var arr = new Tournament[count];
-        for (var i = 0; i < count; i++)
-        {
-            arr[i] = GetSingleTournament(i + 1);
-        }
-
-        return arr.AsQueryable();
     }
 }

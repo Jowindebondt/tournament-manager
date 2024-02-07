@@ -1,6 +1,7 @@
 using Moq;
 using TournamentManager.Application.Repositories;
 using TournamentManager.Domain;
+using TournamentManager.Domain.Test;
 using Xunit;
 
 namespace TournamentManager.Application.Test;
@@ -18,7 +19,7 @@ public class TournamentTestService
     public void Get_ReturnsInstance_RepoGetCalledOnce()
     {
         // arrange
-        _mockRepository.Setup(repo => repo.Get(It.IsAny<int>())).Returns(GetSingleTournament(1));
+        _mockRepository.Setup(repo => repo.Get(It.IsAny<int>())).Returns(TournamentBuilder.GetSingleTournament());
         var service = new TournamentService(_mockRepository.Object);
 
         // act
@@ -46,7 +47,7 @@ public class TournamentTestService
     public void GetAll_ReturnsFilledList_RepoGetAllCalledOnce()
     {
         // arrange
-        _mockRepository.Setup(repo => repo.GetAll()).Returns(GetListTournament(5));
+        _mockRepository.Setup(repo => repo.GetAll()).Returns(TournamentBuilder.GetListTournament(5));
         var service = new TournamentService(_mockRepository.Object);
 
         // act
@@ -64,7 +65,7 @@ public class TournamentTestService
     public void GetAll_ReturnsNullOnEmptyList_RepoGetAllCalledOnce()
     {
         // arrange
-        _mockRepository.Setup(repo => repo.GetAll()).Returns(GetListTournament(0));
+        _mockRepository.Setup(repo => repo.GetAll()).Returns(TournamentBuilder.GetListTournament(0));
         var service = new TournamentService(_mockRepository.Object);
 
         // act
@@ -162,8 +163,8 @@ public class TournamentTestService
     public void UpdateValidInstance_ReturnsUpdatedInstance_RepoGetCalledOnce_RepoUpdateCalledOnce()
     {
         // arrange
-        var existingInstance = GetSingleTournament(1);
-        var updatingInstance = GetSingleTournament(1);
+        var existingInstance = TournamentBuilder.GetSingleTournament();
+        var updatingInstance = TournamentBuilder.GetSingleTournament();
         updatingInstance.Name = "Test_Tournament_Update";
         var originalName = existingInstance.Name;
         var originalCreatedDate = existingInstance.CreatedDate;
@@ -192,7 +193,7 @@ public class TournamentTestService
     {
         // arrange
         var currentTimestamp = DateTime.UtcNow;
-        var existingInstance = GetSingleTournament(1);
+        var existingInstance = TournamentBuilder.GetSingleTournament();
 
         var service = new TournamentService(_mockRepository.Object);
 
@@ -210,8 +211,8 @@ public class TournamentTestService
     public void UpdateValidInstanceWithWrongId_ThrowsNullReferenceException_RepoGetCalledOnce_RepoUpdateCalledNever()
     {
         // arrange
-        var existingInstance = GetSingleTournament(1);
-        var updatingInstance = GetSingleTournament(1);
+        var existingInstance = TournamentBuilder.GetSingleTournament();
+        var updatingInstance = TournamentBuilder.GetSingleTournament();
         updatingInstance.Name = "Test_Tournament_Update";
         var originalCreatedDate = existingInstance.CreatedDate;
         var originalModifiedDate = existingInstance.ModifiedDate;
@@ -235,7 +236,7 @@ public class TournamentTestService
     public void DeleteInstanceWithValidId_ThrowsNoException_RepoGetCalledOnce_RepoDeleteCalledOnce()
     {
         // arrange
-        var existingInstance = GetSingleTournament(1);
+        var existingInstance = TournamentBuilder.GetSingleTournament();
 
         _mockRepository.Setup(repo => repo.Get(It.IsAny<int>())).Returns(existingInstance);
         var service = new TournamentService(_mockRepository.Object);
@@ -266,27 +267,5 @@ public class TournamentTestService
             () => _mockRepository.Verify(repo => repo.Get(It.IsAny<int>()), Times.Once),
             () => _mockRepository.Verify(repo => repo.Delete(It.IsAny<Tournament>()), Times.Never)
         );
-    }
-
-    private static Tournament GetSingleTournament(int id)
-    {
-        return new Tournament
-        {
-            Id = id * -1,
-            Name = $"Test_Tournament_{id}",
-            CreatedDate = new DateTime(2024, 1, 1),
-            ModifiedDate = new DateTime(2024, 1, 1),
-        };
-    }
-
-    private static IEnumerable<Tournament> GetListTournament(int count)
-    {
-        var arr = new Tournament[count];
-        for (var i = 0; i < count; i++)
-        {
-            arr[i] = GetSingleTournament(i + 1);
-        }
-
-        return arr;
     }
 }

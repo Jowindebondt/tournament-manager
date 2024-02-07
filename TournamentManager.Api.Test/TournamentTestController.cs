@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TournamentManager.Application;
 using TournamentManager.Domain;
+using TournamentManager.Domain.Test;
 using Xunit;
 
 namespace TournamentManager.Api.Test;
@@ -19,7 +20,7 @@ public class TournamentTestController
     public void GetList_ReturnsOkWithFilledList_ServiceGetAllCalledOnce()
     {
         // arrange
-        _mockService.Setup(service => service.GetAll()).Returns(GetListTournament(5));
+        _mockService.Setup(service => service.GetAll()).Returns(TournamentBuilder.GetListTournament(5));
         var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
         IEnumerable<Tournament> content = null;
@@ -58,7 +59,7 @@ public class TournamentTestController
     public void GetById_ReturnsOkWithEntity_ServiceGetCalledOnce()
     {
         // arrange
-        _mockService.Setup(service => service.Get(It.IsAny<int>())).Returns(GetSingleTournament(1));
+        _mockService.Setup(service => service.Get(It.IsAny<int>())).Returns(TournamentBuilder.GetSingleTournament());
         var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
 
@@ -95,7 +96,7 @@ public class TournamentTestController
     public void CreateValidInstance_ReturnsOkWithEntity_ServiceInsertCalledOnce()
     {
         // arrange
-        var newInstance = GetSingleTournament(1);
+        var newInstance = TournamentBuilder.GetSingleTournament();
 
         _mockService.Setup(service => service.Insert(It.IsAny<Tournament>())).Callback(() => {});
         var controller = new TournamentController(_mockService.Object);
@@ -138,12 +139,12 @@ public class TournamentTestController
     public void UpdateValidInstance_ReturnsOkWithEntity_ServiceUpdateCalledOnce()
     {
         // arrange
-        _mockService.Setup(service => service.Update(It.IsAny<int>(), It.IsAny<Tournament>())).Returns(GetSingleTournament(1));
+        _mockService.Setup(service => service.Update(It.IsAny<int>(), It.IsAny<Tournament>())).Returns(TournamentBuilder.GetSingleTournament());
         var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
 
         // act
-        var result = controller.Update(-1, GetSingleTournament(1));
+        var result = controller.Update(-1, TournamentBuilder.GetSingleTournament());
 
         // assert
         Assert.Multiple(
@@ -190,27 +191,5 @@ public class TournamentTestController
             () => _mockService.Verify(service => service.Delete(It.IsAny<int>()), Times.Once),
             () => Assert.IsType<OkResult>(result)
         );
-    }
-
-    private static Tournament GetSingleTournament(int id)
-    {
-        return new Tournament
-        {
-            Id = id * -1,
-            Name = $"Test_Tournament_{id}",
-            CreatedDate = new DateTime(2024, 1, 1),
-            ModifiedDate = new DateTime(2024, 1, 1),
-        };
-    }
-
-    private static IEnumerable<Tournament> GetListTournament(int count)
-    {
-        var arr = new Tournament[count];
-        for (var i = 0; i < count; i++)
-        {
-            arr[i] = GetSingleTournament(i + 1);
-        }
-
-        return arr;
     }
 }
