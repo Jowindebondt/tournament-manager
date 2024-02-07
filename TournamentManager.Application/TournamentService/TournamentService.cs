@@ -52,8 +52,7 @@ public class TournamentService : ITournamentService
             throw new ArgumentException("Id field has a value which is not allowed when adding a new instance");
         }
 
-        tournament.CreatedDate = DateTime.UtcNow;
-        tournament.ModifiedDate = DateTime.UtcNow;
+        tournament.CreatedDate = tournament.ModifiedDate = DateTime.UtcNow;
 
         _tournamentRepository.Insert(tournament);
     }

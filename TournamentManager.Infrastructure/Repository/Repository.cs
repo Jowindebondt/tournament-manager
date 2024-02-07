@@ -23,22 +23,24 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     }
 
     /// <inheritdoc/>
-    public void Delete(T origin)
+    public void Delete(T entity)
     {
-        _entities.Remove(origin);
+        ArgumentNullException.ThrowIfNull(entity);
+
+        _entities.Remove(entity);
         _applicationDbContext.SaveChanges();
     }
 
     /// <inheritdoc/>
     public T Get(int id)
     {
-        return _entities.SingleOrDefault(u => u.Id == id);
+        return _entities.Find(id);
     }
 
     /// <inheritdoc/>
     public IEnumerable<T> GetAll()
     {
-        return _entities.AsEnumerable();
+        return _entities.AsQueryable();
     }
 
     /// <inheritdoc/>

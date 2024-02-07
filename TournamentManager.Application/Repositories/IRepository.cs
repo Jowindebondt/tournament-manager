@@ -11,8 +11,8 @@ public interface IRepository<T> where T : BaseEntity
     /// <summary>
     /// Deletes an instance from the datasource.
     /// </summary>
-    /// <param name="origin">The original instance of <see cref="T"/></param>
-    void Delete(T origin);
+    /// <param name="entity">The original instance of <see cref="T"/></param>
+    void Delete(T entity);
     /// <summary>
     /// Gets a single instance from the datasource.
     /// </summary>

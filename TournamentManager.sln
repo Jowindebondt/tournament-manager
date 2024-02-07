@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Domain", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Infrastructure", "TournamentManager.Infrastructure\TournamentManager.Infrastructure.csproj", "{12C87F47-BB59-4EA2-9FAB-61F2DDBF101D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Api.Test", "TournamentManager.Api.Test\TournamentManager.Api.Test.csproj", "{5C539AC1-19D5-43CF-A5D0-440EFDACB30A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Application.Test", "TournamentManager.Application.Test\TournamentManager.Application.Test.csproj", "{D57745CD-2B93-437C-8868-94034FC9D558}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Infrastructure.Test", "TournamentManager.Infrastructure.Test\TournamentManager.Infrastructure.Test.csproj", "{3E799EE3-4183-4447-B6DC-079B962A1312}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +42,17 @@ Global
 		{12C87F47-BB59-4EA2-9FAB-61F2DDBF101D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12C87F47-BB59-4EA2-9FAB-61F2DDBF101D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12C87F47-BB59-4EA2-9FAB-61F2DDBF101D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C539AC1-19D5-43CF-A5D0-440EFDACB30A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C539AC1-19D5-43CF-A5D0-440EFDACB30A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C539AC1-19D5-43CF-A5D0-440EFDACB30A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C539AC1-19D5-43CF-A5D0-440EFDACB30A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D57745CD-2B93-437C-8868-94034FC9D558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D57745CD-2B93-437C-8868-94034FC9D558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D57745CD-2B93-437C-8868-94034FC9D558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D57745CD-2B93-437C-8868-94034FC9D558}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E799EE3-4183-4447-B6DC-079B962A1312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E799EE3-4183-4447-B6DC-079B962A1312}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E799EE3-4183-4447-B6DC-079B962A1312}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E799EE3-4183-4447-B6DC-079B962A1312}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
