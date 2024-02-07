@@ -5,13 +5,13 @@ using TournamentManager.Domain;
 using TournamentManager.Domain.Test;
 using Xunit;
 
-namespace TournamentManager.Api.Test;
+namespace TournamentManager.Api.Test.TournamentApi;
 
-public class TournamentTestController
+public class UnitTestTournamentController
 {
     private readonly Mock<ITournamentService> _mockService;
 
-    public TournamentTestController()
+    public UnitTestTournamentController()
     {
         _mockService = new Mock<ITournamentService>();
     }
@@ -98,7 +98,7 @@ public class TournamentTestController
         // arrange
         var newInstance = TournamentBuilder.GetSingleTournament();
 
-        _mockService.Setup(service => service.Insert(It.IsAny<Tournament>())).Callback(() => {});
+        _mockService.Setup(service => service.Insert(It.IsAny<Tournament>())).Callback(() => { });
         var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
 
@@ -162,7 +162,7 @@ public class TournamentTestController
         var controller = new TournamentController(_mockService.Object);
         BadRequestObjectResult badRequestResult = null;
         string content = null;
-        
+
         // act
         var result = controller.Update(-1, null);
 
@@ -180,7 +180,7 @@ public class TournamentTestController
     public void Delete_ReturnsOk_ServiceDeleteCalledOnce()
     {
         // arrange
-        _mockService.Setup(service => service.Delete(It.IsAny<int>())).Callback(() => {});
+        _mockService.Setup(service => service.Delete(It.IsAny<int>())).Callback(() => { });
         var controller = new TournamentController(_mockService.Object);
 
         // act

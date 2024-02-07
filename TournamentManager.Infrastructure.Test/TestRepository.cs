@@ -56,7 +56,7 @@ public class TestRepository
     }
 
     [Fact]
-    public void GetFilledList_DbSetAsEnumerableCalledOnce_DbContextSaveChangesCalledNever()
+    public void GetFilledList_DbSetAsQueryableCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
         _dbSet.Setup(set => set.AsQueryable()).Returns(TournamentBuilder.GetListTournamentAsQueryable(5));
@@ -73,7 +73,7 @@ public class TestRepository
     }
 
     [Fact]
-    public void GetEmptyList_DbSetAsEnumerableCalledOnce_DbContextSaveChangesCalledNever()
+    public void GetEmptyList_DbSetAsQueryableCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
         _dbSet.Setup(set => set.AsQueryable()).Returns(TournamentBuilder.GetListTournamentAsQueryable(0));
@@ -90,7 +90,7 @@ public class TestRepository
     }
 
     [Fact]
-    public void GetNoList_DbSetAsEnumerableCalledOnce_DbContextSaveChangesCalledNever()
+    public void GetNoList_DbSetAsQueryableCalledOnce_DbContextSaveChangesCalledNever()
     {
         // arrange
         _dbSet.Setup(set => set.AsQueryable()).Returns((IQueryable<Tournament>)null);
