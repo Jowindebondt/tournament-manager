@@ -1,30 +1,30 @@
-﻿using Microsoft.AspNetCore.Http.Timeouts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Moq;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using TournamentManager.Application;
 using TournamentManager.Domain;
-using TournamentManager.Domain.Test;
 using TournamentManager.Infrastructure;
 using TournamentManager.TestHelper;
 using Xunit;
 
-namespace TournamentManager.Api.Test.TournamentApi;
+namespace TournamentManager.Api.Test.RoundApi;
 
-public class ComponentTestTournamentController : IClassFixture<SimpleTournamentDatabaseFixture>
+public class ComponentTestRoundController : IClassFixture<SimpleRoundDatabaseFixture>
 {
-    private readonly SimpleTournamentDatabaseFixture _fixture;
+    private readonly SimpleRoundDatabaseFixture _fixture;
 
-    public ComponentTestTournamentController(SimpleTournamentDatabaseFixture fixture)
+    public ComponentTestRoundController(SimpleRoundDatabaseFixture fixture)
     {
         _fixture = fixture;
     }
 
-    private TournamentController CreateController()
+    private RoundController CreateController()
     {
-        return new TournamentController(
-            new TournamentService(
-                new Repository<Tournament>(_fixture.DbContext)
+        return new RoundController(
+            new RoundService(
+                new TournamentService(
+                    new Repository<Tournament>(_fixture.DbContext)
+                ),
+                new Repository<Round>(_fixture.DbContext)
             )
         );
     }
@@ -35,17 +35,17 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
     {
         // arrange
         OkObjectResult okResult = null;
-        IEnumerable<Tournament> tournaments = null;
+        IEnumerable<Round> rounds = null;
 
         // act
-        var result = CreateController().GetList();
+        var result = CreateController().GetList(-1);
 
         // assert
         Assert.Multiple(
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
-            () => tournaments = Assert.IsAssignableFrom<IEnumerable<Tournament>>(okResult.Value),
-            () => Assert.Equal(_fixture.DbContext.Tournaments.Count(), tournaments.Count())
+            () => rounds = Assert.IsAssignableFrom<IEnumerable<Round>>(okResult.Value),
+            () => Assert.Equal(_fixture.DbContext.Rounds.Count(), rounds.Count())
         );
     }
 
@@ -72,7 +72,7 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
     {
         // arrange
         OkObjectResult okResult = null;
-        Tournament tournament = null;
+        Round round = null;
 
         // act
         var result = CreateController().GetById(id);
@@ -81,34 +81,35 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
         Assert.Multiple(
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
-            () => tournament = Assert.IsType<Tournament>(okResult.Value),
-            () => Assert.Equal(id, tournament.Id)
+            () => round = Assert.IsType<Round>(okResult.Value),
+            () => Assert.Equal(id, round.Id)
         );
     }
 
     [Theory]
     [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
-    [InlineData("Test_Tournament_New_1")]
-    [InlineData("Test_Tournament_New_2")]
+    [InlineData("Test_Round_New_1")]
+    [InlineData("Test_Round_New_2")]
     public void CreateValidInstance_ReturnsOkWithEntity(string name)
     {
         // arrange
-        var newInstance = new Tournament()
+        var newInstance = new Round()
         {
             Name = name,
         };
         OkObjectResult okResult = null;
-        Tournament addedInstance = null;
+        Round addedInstance = null;
 
         // act
-        var result = CreateController().Create(newInstance);
+        var result = CreateController().Create(-1, newInstance);
 
         // assert
         Assert.Multiple(
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
-            () => addedInstance = Assert.IsType<Tournament>(okResult.Value),
+            () => addedInstance = Assert.IsType<Round>(okResult.Value),
             () => Assert.NotNull(addedInstance.Id),
+            () => Assert.NotNull(addedInstance.Tournament),
             () => Assert.NotNull(addedInstance.CreatedDate),
             () => Assert.NotNull(addedInstance.ModifiedDate)
         );
@@ -116,17 +117,17 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
 
     [Theory]
     [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
-    [InlineData(-1, "Updating_Test_Tournament_1")]
-    [InlineData(-2, "Updating_Test_Tournament_2")]
+    [InlineData(-1, "Updating_Test_Round_1")]
+    [InlineData(-2, "Updating_Test_Round_2")]
     public void UpdateValidInstance_ReturnsOkWithEntity(int id, string newName)
     {
         // arrange
-        var updatingInstance = new Tournament() 
+        var updatingInstance = new Round()
         {
             Name = newName
         };
         OkObjectResult okResult = null;
-        Tournament updatedInstance = null;
+        Round updatedInstance = null;
 
         // act
         var result = CreateController().Update(id, updatingInstance);
@@ -135,7 +136,7 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
         Assert.Multiple(
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
-            () => updatedInstance = Assert.IsType<Tournament>(okResult.Value),
+            () => updatedInstance = Assert.IsType<Round>(okResult.Value),
             () => Assert.Equal(id, updatedInstance.Id),
             () => Assert.Equal(updatingInstance.Name, updatedInstance.Name),
             () => Assert.NotEqual(updatedInstance.CreatedDate, updatedInstance.ModifiedDate)

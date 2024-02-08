@@ -8,7 +8,7 @@ public class Round : BaseEntity
     /// <summary>
     /// Reference to the related <see cref="Tournament"/>
     /// </summary>
-    public required Tournament Tournament { get; set; }
+    public Tournament Tournament { get; set; }
     /// <summary>
     /// Name of the round
     /// </summary>

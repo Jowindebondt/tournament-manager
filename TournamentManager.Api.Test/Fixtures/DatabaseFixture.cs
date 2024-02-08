@@ -7,7 +7,7 @@ namespace TournamentManager.Api.Test;
 /// <summary>
 /// Class defining the <see cref="DatabaseFixture"/> containing an in memory database for test purposes.
 /// </summary>
-public class DatabaseFixture : IDisposable
+public abstract class DatabaseFixture : IDisposable
 {
     /// <summary>
     /// Reference to the <see cref="ApplicationDbContext"/> which contains an in memory database.
@@ -18,25 +18,25 @@ public class DatabaseFixture : IDisposable
     /// Initializing a new instance of <see cref="DatabaseFixture"/>.
     /// Creates the base setup of the in memory database.
     /// </summary>
-    public DatabaseFixture()
+    protected DatabaseFixture(string databaseName)
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: "TournamentManagerDB")
+            .UseInMemoryDatabase(databaseName: databaseName)
             .Options;
 
         DbContext = new ApplicationDbContext(options);
 
-        for (var i = 0; i < 10; i++)
-        {
-            DbContext.Tournaments.Add(TournamentBuilder.GetSingleTournament(i + 1));
-        }
+        FillContext();
         DbContext.SaveChanges();
     }
 
     /// <inheritdoc/>
     public void Dispose()
     {
-        DbContext.Tournaments.RemoveRange(DbContext.Tournaments);
+        CleanContext();
         DbContext.SaveChanges();
     }
+
+    protected abstract void CleanContext();
+    protected abstract void FillContext();
 }
