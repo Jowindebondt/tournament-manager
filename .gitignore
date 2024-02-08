@@ -486,3 +486,4 @@ $RECYCLE.BIN/
 # Custom files and folders
 .vscode/settings.json 
 TournamentManager.Infrastructure/ApplicationDbContextFactory.cs
+TournamentManager.Api/appsettings.local.json
