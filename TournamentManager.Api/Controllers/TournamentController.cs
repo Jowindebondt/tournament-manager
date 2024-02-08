@@ -41,8 +41,8 @@ public class TournamentController : ControllerBase
     /// </summary>
     /// <param name="id">The identifier of an existing <see cref="Tournament"/></param>
     /// <returns>The requested <see cref="Tournament"/> if found</returns>
-    [HttpGet(nameof(GetById))]
-    public IActionResult GetById(int id) 
+    [HttpGet($"{nameof(GetById)}/{{id}}")]
+    public IActionResult GetById([FromRoute]int id) 
     {
         var entity = _tournamentService.Get(id);
         if (entity == null) {
@@ -57,7 +57,7 @@ public class TournamentController : ControllerBase
     /// <param name="tournament">The new <see cref="Tournament"/></param>
     /// <returns>The created <see cref="Tournament"/></returns>
     [HttpPost(nameof(Create))]
-    public IActionResult Create(Tournament tournament) 
+    public IActionResult Create([FromBody]Tournament tournament) 
     {
         if (tournament == null) {
             return BadRequest("Something went wrong");
@@ -73,8 +73,8 @@ public class TournamentController : ControllerBase
     /// <param name="id">Id of the existing <see cref="Tournament"/></param>
     /// <param name="tournament">The <see cref="Tournament"/> object with the desired changes</param>
     /// <returns>The updated <see cref="Tournament"/></returns>
-    [HttpPut(nameof(Update))]
-    public IActionResult Update(int id, Tournament tournament) 
+    [HttpPut($"{nameof(Update)}/{{id}}")]
+    public IActionResult Update([FromRoute]int id, [FromBody]Tournament tournament) 
     {
         if (tournament == null){
             return BadRequest("Something went wrong");
@@ -89,7 +89,7 @@ public class TournamentController : ControllerBase
     /// </summary>
     /// <param name="id">The identifier of an existing <see cref="Tournament"/></param>
     /// <returns>Status code 200 if deletion is successful</returns>
-    [HttpDelete(nameof(Delete))]
+    [HttpDelete($"{nameof(Delete)}/{{id}}")]
     public IActionResult Delete(int id)
     {
         _tournamentService.Delete(id);
