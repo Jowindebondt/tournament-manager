@@ -15,8 +15,10 @@ builder.Services.AddSwaggerGen();
 
 #region DI
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(ICrudService<>), typeof(CrudService<>));
 builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<IRoundService, RoundService>();
+builder.Services.AddScoped<IPouleService, PouleService>();
 #endregion
 
 var app = builder.Build();
