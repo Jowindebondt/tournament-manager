@@ -16,25 +16,25 @@ public interface IRoundService
     /// Gets a single <see cref="Round"/> based on its identifier.
     /// </summary>
     /// <param name="id">The identifier of a <see cref="Round"/></param>
-    /// <returns>The requested <see cref="Tournament"/></returns>
+    /// <returns>The requested <see cref="Round"/></returns>
     Round Get(int id);
     /// <summary>
     /// Gets a list of available <see cref="Round"/>s for the specified <see cref="Tournament"/>.
     /// </summary>
-    /// <param name="tournamentId">Identifier of the <see cref="Tournament"/></param>
+    /// <param name="parentId">Id of the <see cref="Tournament"/></param>
     /// <returns>List of <see cref="Round"/>s for the specified <see cref="Tournament"/></returns>
-    IEnumerable<Round> GetAll(int tournamentId);
+    IEnumerable<Round> GetAll(int parentId);
     /// <summary>
-    /// Creates a new instance of the <see cref="Round"/> model as part of the specified <see cref="Tournament"/>.
+    /// Create a new instance of <see cref="Round"/>
     /// </summary>
-    /// <param name="tournamentId">Identifier of the <see cref="Tournament"/></param>
-    /// <param name="round">The <see cref="Round"/> to create.</param>
-    void Insert(int tournamentId, Round round);
+    /// <param name="parentId">Id of the <see cref="Tournament"/></param>
+    /// <param name="entity">The new values for <see cref="Round"/></param>
+    void Insert(int parentId, Round entity);
     /// <summary>
     /// Updates an existing <see cref="Round"/> instance.
     /// </summary>
     /// <param name="id">The identifier of the <see cref="Round"/></param>
-    /// <param name="round">The <see cref="Round"/> changes.</param>
-    /// <returns></returns>
-    Round Update(int id, Round round);
+    /// <param name="entity">The <see cref="Round"/> changes.</param>
+    /// <returns>The updated <see cref="Round"/></returns>
+    Round Update(int id, Round entity);
 }

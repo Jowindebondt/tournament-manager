@@ -24,7 +24,9 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
     {
         return new TournamentController(
             new TournamentService(
-                new Repository<Tournament>(_fixture.DbContext)
+                new CrudService<Tournament>(
+                    new Repository<Tournament>(_fixture.DbContext)
+                )
             )
         );
     }

@@ -8,10 +8,10 @@ namespace TournamentManager.Application;
 public interface ITournamentService
 {
     /// <summary>
-    /// Gets a list of available <see cref="Tournament"/>s.
+    /// Deletes an existing <see cref="Tournament"/> instance.
     /// </summary>
-    /// <returns>List of <see cref="Tournament"/></returns>
-    IEnumerable<Tournament> GetAll();
+    /// <param name="id">The identifier of the <see cref="Tournament"/></param>
+    void Delete(int id);
     /// <summary>
     /// Gets a single <see cref="Tournament"/> based on its identifier.
     /// </summary>
@@ -19,21 +19,21 @@ public interface ITournamentService
     /// <returns>The requested <see cref="Tournament"/></returns>
     Tournament Get(int id);
     /// <summary>
-    /// Creates a new instance of the <see cref="Tournament"/> model.
+    /// Gets a list of available <see cref="Tournament"/>s=.
     /// </summary>
-    /// <param name="tournament">The <see cref="Tournament"/> to create.</param>
-    void Insert(Tournament tournament);
+    /// <returns>List of <see cref="Tournament"/>s</returns>
+    IEnumerable<Tournament> GetAll();
+    /// <summary>
+    /// Create a new instance of <see cref="Tournament"/>
+    /// </summary>
+    /// <param name="entity">The new values for <see cref="Tournament"/></param>
+    void Insert(Tournament entity);
     /// <summary>
     /// Updates an existing <see cref="Tournament"/> instance.
     /// </summary>
     /// <param name="id">The identifier of the <see cref="Tournament"/></param>
-    /// <param name="tournament">The <see cref="Tournament"/> changes.</param>
+    /// <param name="entity">The <see cref="Tournament"/> changes.</param>
     /// <returns>The updated <see cref="Tournament"/></returns>
-    Tournament Update(int id, Tournament tournament);
-    /// <summary>
-    /// Deletes an existing <see cref="Tournament"/> instance.
-    /// </summary>
-    /// <param name="id">The identifier of the <see cref="Tournament"/></param>
-    void Delete(int id);
+    Tournament Update(int id, Tournament entity);
 }
     

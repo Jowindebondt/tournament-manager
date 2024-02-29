@@ -22,9 +22,13 @@ public class ComponentTestRoundController : IClassFixture<SimpleRoundDatabaseFix
         return new RoundController(
             new RoundService(
                 new TournamentService(
-                    new Repository<Tournament>(_fixture.DbContext)
+                    new CrudService<Tournament>(
+                        new Repository<Tournament>(_fixture.DbContext)
+                    )
                 ),
-                new Repository<Round>(_fixture.DbContext)
+                new CrudService<Round>(
+                    new Repository<Round>(_fixture.DbContext)
+                )
             )
         );
     }

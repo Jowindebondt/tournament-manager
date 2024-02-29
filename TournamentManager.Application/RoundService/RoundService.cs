@@ -8,71 +8,52 @@ namespace TournamentManager.Application;
 /// </summary>
 public class RoundService : IRoundService
 {
-    private readonly IRepository<Round> _roundRepository;
     private readonly ITournamentService _tournamentService;
+    private readonly ICrudService<Round> _crudService;
 
     /// <summary>
     /// Initializes a new instance of <see cref="RoundService"/>
     /// </summary>
     /// <param name="tournamentService">Service handling all <see cref="Tournament"/> actions.</param>
-    /// <param name="roundRepository">Repository handling all <see cref="Round"/> actions for the datasource.</param>
-    public RoundService(ITournamentService tournamentService, IRepository<Round> roundRepository)
+    /// <param name="crudService">Service for handling CRUD actions for the <see cref="Round"/> model.</param>
+    public RoundService(ITournamentService tournamentService, ICrudService<Round> crudService)
     {
         _tournamentService = tournamentService;
-        _roundRepository = roundRepository;
+        _crudService = crudService;
     }
 
     /// <inheritdoc/>
     public void Delete(int id)
     {
-        var origin = Get(id) ?? throw new NullReferenceException("Round not found");
-        _roundRepository.Delete(origin);
+        _crudService.Delete(id);
     }
 
     /// <inheritdoc/>
     public Round Get(int id)
     {
-        return _roundRepository.Get(id);
+        return _crudService.Get(id);
     }
 
     /// <inheritdoc/>
-    public IEnumerable<Round> GetAll(int tournamentId)
+    public IEnumerable<Round> GetAll(int parentId)
     {
-        var list = _roundRepository.GetAll()?.Where(u => u.Tournament.Id == tournamentId);
-        if (list == null || !list.Any())
-        {
-            return null;
-        }
-        return list;
+        return _crudService.GetAll(u => u.Tournament.Id == parentId);
     }
 
     /// <inheritdoc/>
-    public void Insert(int tournamentId, Round round)
+    public void Insert(int parentId, Round entity)
     {
-        ArgumentNullException.ThrowIfNull(round);
-
-        if (round.Id != null) 
-        {
-            throw new ArgumentException("Id field has a value which is not allowed when adding a new instance");
-        }
-
-        round.Tournament = _tournamentService.Get(tournamentId) ?? throw new NullReferenceException("Tournament not found");
-        round.CreatedDate = round.ModifiedDate = DateTime.UtcNow;
-
-        _roundRepository.Insert(round);
+        _crudService.Insert(entity, () => {
+            var tournament = _tournamentService.Get(parentId) ?? throw new NullReferenceException($"{nameof(Tournament)} not found"); 
+            entity.Tournament = tournament;
+        });
     }
 
     /// <inheritdoc/>
-    public Round Update(int id, Round round)
+    public Round Update(int id, Round entity)
     {
-        ArgumentNullException.ThrowIfNull(round);
-        var origin = Get(id) ?? throw new NullReferenceException("Round not found");
-
-        origin.Name = round.Name;
-        origin.ModifiedDate = DateTime.UtcNow;
-
-        _roundRepository.Update(origin);
-
-        return origin;
+        return _crudService.Update(id, entity, (origin) => {
+            origin.Name = entity.Name;
+        });
     }
 }
