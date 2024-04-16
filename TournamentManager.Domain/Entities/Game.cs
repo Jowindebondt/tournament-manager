@@ -1,9 +1,9 @@
 ﻿namespace TournamentManager.Domain;
 
 /// <summary>
-/// Class defining the <see cref="Set"/> model
+/// Class defining the <see cref="Game"/> model
 /// </summary>
-public class Set : BaseEntity
+public class Game : BaseEntity
 {   
     /// <summary>
     /// Reference to the related <see cref="Match"/>

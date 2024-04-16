@@ -16,5 +16,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<Match> Matches { get; set; }
     public DbSet<Member> Members { get; set; }
     public DbSet<PouleMember> PouleMembers { get; set; }
-    public DbSet<Set> Sets { get; set; }
+    public DbSet<Game> Games { get; set; }
 }
