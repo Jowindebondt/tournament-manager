@@ -8,7 +8,7 @@ public class Game : BaseEntity
     /// <summary>
     /// Reference to the related <see cref="Match"/>
     /// </summary>
-    public required Match Match { get; set; }
+    public Match Match { get; set; }
     /// <summary>
     /// Score of <see cref="Match.Player_1"/>
     /// </summary>
