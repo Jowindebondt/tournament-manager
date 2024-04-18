@@ -8,7 +8,7 @@ public class Match : BaseEntity
     /// <summary>
     /// Reference to the related <see cref="Poule"/>
     /// </summary>
-    public required Poule Poule { get; set; }
+    public Poule Poule { get; set; }
     /// <summary>
     /// Player 1 reference to <see cref="Member"/>
     /// </summary>

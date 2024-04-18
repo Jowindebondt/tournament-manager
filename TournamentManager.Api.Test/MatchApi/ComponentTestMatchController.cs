@@ -7,31 +7,36 @@ using Xunit;
 
 namespace TournamentManager.Api.Test;
 
-public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFixture>
+public class ComponentTestMatchController : IClassFixture<SimpleMatchDatabaseFixture>
 {
-    private readonly SimplePouleDatabaseFixture _fixture;
+    private readonly SimpleMatchDatabaseFixture _fixture;
 
-    public ComponentTestPouleController(SimplePouleDatabaseFixture fixture)
+    public ComponentTestMatchController(SimpleMatchDatabaseFixture fixture)
     {
         _fixture = fixture;
     }
 
-    private PouleController CreateController()
+    private MatchController CreateController()
     {
-        return new PouleController(
-            new PouleService(
-                new RoundService(
-                    new TournamentService(
-                        new CrudService<Tournament>(
-                            new Repository<Tournament>(_fixture.DbContext)
+        return new MatchController(
+            new MatchService(
+                new PouleService(
+                    new RoundService(
+                        new TournamentService(
+                            new CrudService<Tournament>(
+                                new Repository<Tournament>(_fixture.DbContext)
+                            )
+                        ),
+                        new CrudService<Round>(
+                            new Repository<Round>(_fixture.DbContext)
                         )
                     ),
-                    new CrudService<Round>(
-                        new Repository<Round>(_fixture.DbContext)
+                    new CrudService<Poule>(
+                        new Repository<Poule>(_fixture.DbContext)
                     )
                 ),
-                new CrudService<Poule>(
-                    new Repository<Poule>(_fixture.DbContext)
+                new CrudService<Match>(
+                    new Repository<Match>(_fixture.DbContext)
                 )
             )
         );
@@ -43,7 +48,7 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
     {
         // arrange
         OkObjectResult okResult = null;
-        IEnumerable<Poule> poules = null;
+        IEnumerable<Match> matches = null;
 
         // act
         var result = CreateController().GetList(-1);
@@ -52,8 +57,8 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
         Assert.Multiple(
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
-            () => poules = Assert.IsAssignableFrom<IEnumerable<Poule>>(okResult.Value),
-            () => Assert.Equal(_fixture.DbContext.Poules.Count(), poules.Count())
+            () => matches = Assert.IsAssignableFrom<IEnumerable<Match>>(okResult.Value),
+            () => Assert.Equal(_fixture.DbContext.Matches.Count(), matches.Count())
         );
     }
 
@@ -80,7 +85,7 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
     {
         // arrange
         OkObjectResult okResult = null;
-        Poule poule = null;
+        Match match = null;
 
         // act
         var result = CreateController().GetById(id);
@@ -89,24 +94,23 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
         Assert.Multiple(
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
-            () => poule = Assert.IsType<Poule>(okResult.Value),
-            () => Assert.Equal(id, poule.Id)
+            () => match = Assert.IsType<Match>(okResult.Value),
+            () => Assert.Equal(id, match.Id)
         );
     }
 
-    [Theory]
+    [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
-    [InlineData("Test_Poule_New_1")]
-    [InlineData("Test_Poule_New_2")]
-    public void CreateValidInstance_ReturnsOkWithEntity(string name)
+    public void CreateValidInstance_ReturnsOkWithEntity()
     {
         // arrange
-        var newInstance = new Poule()
+        var newInstance = new Match()
         {
-            Name = name,
+            Player_1 = _fixture.DbContext.Members.Find(-1),
+            Player_2 = _fixture.DbContext.Members.Find(-2),
         };
         OkObjectResult okResult = null;
-        Poule addedInstance = null;
+        Match addedInstance = null;
 
         // act
         var result = CreateController().Create(-1, newInstance);
@@ -115,39 +119,13 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
         Assert.Multiple(
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
-            () => addedInstance = Assert.IsType<Poule>(okResult.Value),
+            () => addedInstance = Assert.IsType<Match>(okResult.Value),
             () => Assert.NotNull(addedInstance.Id),
-            () => Assert.NotNull(addedInstance.Round),
+            () => Assert.NotNull(addedInstance.Poule),
+            () => Assert.NotNull(addedInstance.Player_1),
+            () => Assert.NotNull(addedInstance.Player_2),
             () => Assert.NotNull(addedInstance.CreatedDate),
             () => Assert.NotNull(addedInstance.ModifiedDate)
-        );
-    }
-
-    [Theory]
-    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
-    [InlineData(-1, "Updating_Test_Poule_1")]
-    [InlineData(-2, "Updating_Test_Poule_2")]
-    public void UpdateValidInstance_ReturnsOkWithEntity(int id, string newName)
-    {
-        // arrange
-        var updatingInstance = new Poule()
-        {
-            Name = newName
-        };
-        OkObjectResult okResult = null;
-        Poule updatedInstance = null;
-
-        // act
-        var result = CreateController().Update(id, updatingInstance);
-
-        // assert
-        Assert.Multiple(
-            () => okResult = Assert.IsType<OkObjectResult>(result),
-            () => Assert.NotNull(okResult.Value),
-            () => updatedInstance = Assert.IsType<Poule>(okResult.Value),
-            () => Assert.Equal(id, updatedInstance.Id),
-            () => Assert.Equal(updatingInstance.Name, updatedInstance.Name),
-            () => Assert.NotEqual(updatedInstance.CreatedDate, updatedInstance.ModifiedDate)
         );
     }
 
