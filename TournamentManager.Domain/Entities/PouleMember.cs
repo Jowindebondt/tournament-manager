@@ -1,13 +1,13 @@
 ﻿namespace TournamentManager.Domain;
 
-public class PouleMember : BaseEntity
+public class PoulePlayer : BaseEntity
 {
     /// <summary>
     /// Reference to the related <see cref="Poule"/>
     /// </summary>
     public Poule Poule { get; set; }
     /// <summary>
-    /// Reference to the related <see cref="Member"/>
+    /// Reference to the related <see cref="Player"/>
     /// </summary>
-    public Member Member { get; set; }
+    public Player Player { get; set; }
 }

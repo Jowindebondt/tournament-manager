@@ -106,8 +106,8 @@ public class ComponentTestMatchController : IClassFixture<SimpleMatchDatabaseFix
         // arrange
         var newInstance = new Match()
         {
-            Player_1 = _fixture.DbContext.Members.Find(-1),
-            Player_2 = _fixture.DbContext.Members.Find(-2),
+            Player_1 = _fixture.DbContext.Players.Find(-1),
+            Player_2 = _fixture.DbContext.Players.Find(-2),
         };
         OkObjectResult okResult = null;
         Match addedInstance = null;

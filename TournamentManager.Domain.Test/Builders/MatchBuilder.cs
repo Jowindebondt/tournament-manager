@@ -12,8 +12,8 @@ public class MatchBuilder
         return new Match
         {
             Id = id * -1,
-            Player_1 = MemberBuilder.GetSingleMember(),
-            Player_2 = MemberBuilder.GetSingleMember(),
+            Player_1 = PlayerBuilder.GetSinglePlayer(),
+            Player_2 = PlayerBuilder.GetSinglePlayer(),
             Poule = PouleBuilder.GetSinglePoule(id),
             CreatedDate = new DateTime(2024, 1, 1),
             ModifiedDate = new DateTime(2024, 1, 1),
@@ -25,8 +25,8 @@ public class MatchBuilder
         return new Match
         {
             Id = id * -1,
-            Player_1 = MemberBuilder.GetSingleMember(),
-            Player_2 = MemberBuilder.GetSingleMember(),
+            Player_1 = PlayerBuilder.GetSinglePlayer(),
+            Player_2 = PlayerBuilder.GetSinglePlayer(),
             Poule = PouleBuilder.GetSinglePoule(pouleId),
             CreatedDate = new DateTime(2024, 1, 1),
             ModifiedDate = new DateTime(2024, 1, 1),

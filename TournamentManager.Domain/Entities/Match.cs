@@ -10,11 +10,11 @@ public class Match : BaseEntity
     /// </summary>
     public Poule Poule { get; set; }
     /// <summary>
-    /// Player 1 reference to <see cref="Member"/>
+    /// Player 1 reference to <see cref="Player"/>
     /// </summary>
-    public required Member Player_1 { get; set; }
+    public required Player Player_1 { get; set; }
     /// <summary>
-    /// Player 2 reference to <see cref="Member"/>
+    /// Player 2 reference to <see cref="Player"/>
     /// </summary>
-    public required Member Player_2 { get; set; }
+    public required Player Player_2 { get; set; }
 }

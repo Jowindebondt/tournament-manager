@@ -5,19 +5,19 @@ using TournamentManager.Domain;
 namespace TournamentManager.Api;
 
 /// <summary>
-/// This controller is responsible for handling all actions related to the <see cref="PouleMember"/> model.
+/// This controller is responsible for handling all actions related to the <see cref="PoulePlayer"/> model.
 /// </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class PouleMemberController : ControllerBase
 {
-    private readonly IPouleMemberService _pouleMemberService;
+    private readonly IPoulePlayerService _pouleMemberService;
 
     /// <summary>
     /// Initializes a new instance of <see cref="PouleMemberController"/>
     /// </summary>
-    /// <param name="pouleMemberService">Service handling all <see cref="PouleMember"/> actions.</param>
-    public PouleMemberController(IPouleMemberService pouleMemberService)
+    /// <param name="pouleMemberService">Service handling all <see cref="PoulePlayer"/> actions.</param>
+    public PouleMemberController(IPoulePlayerService pouleMemberService)
     {
         _pouleMemberService = pouleMemberService;
     }
@@ -26,7 +26,7 @@ public class PouleMemberController : ControllerBase
     /// Gets all available members for a <see cref="Poule"/>
     /// </summary>
     /// <param name="pouleId">The identifier of the existing <see cref="Poule"/></param>
-    /// <returns>List of <see cref="PouleMember"/> of the specified <see cref="Poule"/></returns>
+    /// <returns>List of <see cref="PoulePlayer"/> of the specified <see cref="Poule"/></returns>
     [HttpGet($"{nameof(GetList)}/{{pouleId}}")]
     public IActionResult GetList([FromRoute]int pouleId) 
     {
@@ -38,11 +38,11 @@ public class PouleMemberController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new <see cref="PouleMember"/> object.
+    /// Creates a new <see cref="PoulePlayer"/> object.
     /// </summary>
     /// <param name="pouleId">The identifier of an existing <see cref="Poule"/></param>
     /// <param name="memberId">The identifier of an existing <see cref="Member"/></param>
-    /// <returns>The created <see cref="PouleMember"/></returns>
+    /// <returns>The created <see cref="PoulePlayer"/></returns>
     [HttpPost($"{nameof(Create)}/{{pouleId}}/{{memberId}}")]
     public IActionResult Create([FromRoute]int pouleId, [FromRoute]int memberId) 
     {
@@ -51,9 +51,9 @@ public class PouleMemberController : ControllerBase
     }
 
     /// <summary>
-    /// Deletes a <see cref="PouleMember"/> based on its identifier
+    /// Deletes a <see cref="PoulePlayer"/> based on its identifier
     /// </summary>
-    /// <param name="id">The identifier of an existing <see cref="PouleMember"/></param>
+    /// <param name="id">The identifier of an existing <see cref="PoulePlayer"/></param>
     /// <returns>Status code 200 if deletion is successful</returns>
     [HttpDelete($"{nameof(Delete)}/{{id}}")]
     public IActionResult Delete(int id)

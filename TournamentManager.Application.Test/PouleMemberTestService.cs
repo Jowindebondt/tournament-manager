@@ -9,16 +9,16 @@ namespace TournamentManager.Application.Test;
 public class PouleMemberTestService
 {
     private Mock<IPouleService> _mockPouleService;
-    private Mock<IMemberService> _mockMemberService;
-    private Mock<ICrudService<PouleMember>> _mockCrudService;
-    private PouleMemberService _service;
+    private Mock<IPlayerService> _mockPlayerService;
+    private Mock<ICrudService<PoulePlayer>> _mockCrudService;
+    private PoulePlayerService _service;
 
     public PouleMemberTestService()
     {
         _mockPouleService = new Mock<IPouleService>();
-        _mockMemberService = new Mock<IMemberService>();
-        _mockCrudService = new Mock<ICrudService<PouleMember>>();
-        _service = new PouleMemberService(_mockCrudService.Object, _mockPouleService.Object, _mockMemberService.Object);
+        _mockPlayerService = new Mock<IPlayerService>();
+        _mockCrudService = new Mock<ICrudService<PoulePlayer>>();
+        _service = new PoulePlayerService(_mockCrudService.Object, _mockPouleService.Object, _mockPlayerService.Object);
     }
 
     [Fact]
@@ -42,14 +42,14 @@ public class PouleMemberTestService
     public void GetAll_CrudGetAllWithFilterCalledOnce()
     {
         // Arrange
-        _mockCrudService.Setup(crud => crud.GetAll(It.IsAny<Func<PouleMember, bool>>())).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.GetAll(It.IsAny<Func<PoulePlayer, bool>>())).Callback(() => {});
 
         // Act
         _service.GetAll(-1);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.GetAll(It.IsAny<Func<PouleMember, bool>>()), Times.Once)
+            () => _mockCrudService.Verify(crud => crud.GetAll(It.IsAny<Func<PoulePlayer, bool>>()), Times.Once)
         );
     }
 
@@ -58,20 +58,20 @@ public class PouleMemberTestService
     public void CreateWithValidIds_CrudInsertCalledOnce_PouleServiceGetCalledOnce_MemberServiceGetCalledOnce()
     {
         // Arrange
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<PouleMember>(), null)).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<PoulePlayer>(), null)).Callback(() => {});
         _mockPouleService.Setup(parent => parent.Get(It.IsAny<int>())).Returns(PouleBuilder.GetSinglePoule(1));
-        _mockMemberService.Setup(parent => parent.Get(It.IsAny<int>())).Returns(MemberBuilder.GetSingleMember(1));
+        _mockPlayerService.Setup(parent => parent.Get(It.IsAny<int>())).Returns(PlayerBuilder.GetSinglePlayer(1));
         
         // Act
         var newInstance = _service.Create(-1, -1);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<PouleMember>(), It.IsAny<Action>()), Times.Once),
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<PoulePlayer>(), It.IsAny<Action>()), Times.Once),
             () => _mockPouleService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once),
-            () => _mockMemberService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once),
+            () => _mockPlayerService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once),
             () => Assert.NotNull(newInstance.Poule),
-            () => Assert.NotNull(newInstance.Member)
+            () => Assert.NotNull(newInstance.Player)
         );
     }
 
@@ -80,18 +80,18 @@ public class PouleMemberTestService
     public void CreateWithInValidPouleId_ThrowsNullReferenceException_CrudInsertCalledNever_PouleServiceGetCalledOnce_MemberServiceGetCalledNever()
     {
         // Arrange
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<PouleMember>(), null)).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<PoulePlayer>(), null)).Callback(() => {});
         _mockPouleService.Setup(parent => parent.Get(It.IsAny<int>())).Returns((Poule)null);
-        _mockMemberService.Setup(parent => parent.Get(It.IsAny<int>())).Returns(MemberBuilder.GetSingleMember());
+        _mockPlayerService.Setup(parent => parent.Get(It.IsAny<int>())).Returns(PlayerBuilder.GetSinglePlayer());
         
         Assert.Multiple(
             // Act
             () => Assert.Throws<NullReferenceException>(() => _service.Create(-1, -1)),
 
             // Assert
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<PouleMember>(), It.IsAny<Action>()), Times.Never),
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<PoulePlayer>(), It.IsAny<Action>()), Times.Never),
             () => _mockPouleService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once),
-            () => _mockMemberService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Never)
+            () => _mockPlayerService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Never)
         );
     }
 
@@ -100,18 +100,18 @@ public class PouleMemberTestService
     public void CreateWithInValidMemberId_ThrowsNullReferenceException_CrudInsertCalledNever_PouleServiceGetCalledOnce_MemberServiceGetCalledOnce()
     {
         // Arrange
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<PouleMember>(), null)).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<PoulePlayer>(), null)).Callback(() => {});
         _mockPouleService.Setup(parent => parent.Get(It.IsAny<int>())).Returns(PouleBuilder.GetSinglePoule());
-        _mockMemberService.Setup(parent => parent.Get(It.IsAny<int>())).Returns((Member)null);
+        _mockPlayerService.Setup(parent => parent.Get(It.IsAny<int>())).Returns((Player)null);
         
         Assert.Multiple(
             // Act
             () => Assert.Throws<NullReferenceException>(() => _service.Create(-1, -1)),
 
             // Assert
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<PouleMember>(), It.IsAny<Action>()), Times.Never),
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<PoulePlayer>(), It.IsAny<Action>()), Times.Never),
             () => _mockPouleService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once),
-            () => _mockMemberService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once)
+            () => _mockPlayerService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once)
         );
     }
 }

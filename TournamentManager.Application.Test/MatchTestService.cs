@@ -74,8 +74,8 @@ public class MatchTestService
         // Arrange
         var newInstance = new Domain.Match 
         {
-            Player_1 = MemberBuilder.GetSingleMember(),
-            Player_2 = MemberBuilder.GetSingleMember(),
+            Player_1 = PlayerBuilder.GetSinglePlayer(),
+            Player_2 = PlayerBuilder.GetSinglePlayer(),
         };
 
         _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Domain.Match>(), It.IsAny<Action>())).Callback((Domain.Match entity, Action action) => {action.Invoke();});
@@ -99,8 +99,8 @@ public class MatchTestService
         // Arrange
         var newInstance = new Domain.Match 
         {
-            Player_1 = MemberBuilder.GetSingleMember(),
-            Player_2 = MemberBuilder.GetSingleMember(),
+            Player_1 = PlayerBuilder.GetSinglePlayer(),
+            Player_2 = PlayerBuilder.GetSinglePlayer(),
         };
 
         _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Domain.Match>(), It.IsAny<Action>())).Callback((Domain.Match entity, Action action) => {action.Invoke();});
