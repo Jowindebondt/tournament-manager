@@ -9,4 +9,8 @@ public class Tournament : BaseEntity
     /// Name of the tournament
     /// </summary>
     public required string Name { get; set; }
+    /// <summary>
+    /// Type of sport
+    /// </summary>
+    public Sport Sport { get; set; }
 }

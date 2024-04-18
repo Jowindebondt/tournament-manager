@@ -7,7 +7,6 @@ public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
-
     }
 
     public DbSet<Tournament> Tournaments { get; set; }
@@ -18,4 +17,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<Member> Members { get; set; }
     public DbSet<PoulePlayer> PouleMembers { get; set; }
     public DbSet<Game> Games { get; set; }
+    public DbSet<TableTennisSettings> TableTennisSettings { get; set; }
+    public DbSet<TableTennisRoundSettings> TableTennisRoundSettings { get; set; }
 }
