@@ -18,4 +18,13 @@ public class ApplicationDbContext : DbContext
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Tournament>()
+            .HasOne(u => u.Settings)
+            .WithOne(u => u.Tournament)
+            .HasForeignKey<TournamentSettings>(u => u.TournamentId);
+    }
 }

@@ -13,4 +13,9 @@ public class Tournament : BaseEntity
     /// Type of sport
     /// </summary>
     public Sport Sport { get; set; }
+    
+    /// <summary>
+    /// Reference of the <see cref="TournamentSettings"/> that are applied to the tournament
+    /// </summary>
+    public virtual TournamentSettings Settings { get; set; } = null!;
 }

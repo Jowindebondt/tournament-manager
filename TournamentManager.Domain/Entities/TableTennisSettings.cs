@@ -1,8 +1,7 @@
 ﻿namespace TournamentManager.Domain;
 
-public class TableTennisSettings : BaseEntity
+public class TableTennisSettings : TournamentSettings
 {
-    public required Tournament Tournament { get; set; }
     public TableTennisHandicap Handicap { get; set; }
     public TableTennisTournamentType TournamentType { get; set; }
 }
