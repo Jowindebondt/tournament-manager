@@ -55,17 +55,16 @@ public class GameController : ControllerBase
     /// <summary>
     /// Creates a new <see cref="Game"/> object.
     /// </summary>
-    /// <param name="matchId">The identifier of an existing <see cref="Match"/></param>
     /// <param name="game">The new <see cref="Game"/></param>
     /// <returns>The created <see cref="Game"/></returns>
-    [HttpPost($"{nameof(Create)}/{{roundId}}")]
-    public IActionResult Create([FromRoute]int matchId, [FromBody]Game game) 
+    [HttpPost($"{nameof(Create)}")]
+    public IActionResult Create([FromBody]Game game) 
     {
         if (game == null) {
             return BadRequest("Something went wrong");
         }
 
-        _gameService.Insert(matchId, game);
+        _gameService.Insert(game);
         return Ok(game);
     }
 

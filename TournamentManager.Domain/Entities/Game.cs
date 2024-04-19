@@ -6,9 +6,9 @@
 public class Game : BaseEntity
 {   
     /// <summary>
-    /// Reference to the related <see cref="Match"/>
+    /// Identifier of the related <see cref="Match"/>
     /// </summary>
-    public Match Match { get; set; }
+    public int MatchId { get; set; }
     /// <summary>
     /// Score of <see cref="Match.Player_1"/>
     /// </summary>
@@ -17,4 +17,9 @@ public class Game : BaseEntity
     /// Score of <see cref="Match.Player_2"/>
     /// </summary>
     public int Score_2 { get; set; }
+
+    /// <summary>
+    /// Reference to the related <see cref="Match"/>
+    /// </summary>
+    public virtual Match Match { get; set; } = null!;
 }

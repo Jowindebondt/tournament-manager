@@ -9,14 +9,12 @@ namespace TournamentManager.Application.Test;
 public class GameTestService
 {
     private readonly Mock<ICrudService<Game>> _mockCrudService;
-    private readonly Mock<IMatchService> _mockParentService;
     private readonly GameService _service;
 
     public GameTestService()
     {
         _mockCrudService = new Mock<ICrudService<Game>>();
-        _mockParentService = new Mock<IMatchService>();
-        _service = new GameService(_mockParentService.Object, _mockCrudService.Object);
+        _service = new GameService(_mockCrudService.Object);
     }
 
     [Fact]
@@ -69,50 +67,25 @@ public class GameTestService
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void InsertWithValidParentId_CrudInsertWithSpecificsCalledOnce_ParentServiceGetCalledOnce()
+    public void Insert_CrudInsertWithSpecificsCalledOnce_ParentServiceGetCalledOnce()
     {
         // Arrange
         var newInstance = new Game 
         {
             Score_1 = 0,
             Score_2 = 0,
+            MatchId = -1,
         };
 
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Game>(), It.IsAny<Action>())).Callback((Game entity, Action action) => {action.Invoke();});
-        _mockParentService.Setup(parent => parent.Get(It.IsAny<int>())).Returns(MatchBuilder.GetSingleMatch());
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Game>(), null)).Callback(() => {});
         
         // Act
-        _service.Insert(-1, newInstance);
+        _service.Insert(newInstance);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Game>(), It.IsAny<Action>()), Times.Once),
-            () => _mockParentService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once),
-            () => Assert.NotNull(newInstance.Match)
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void InsertWithInValidParentId_ThrowsNullReferenceException_CrudInsertWithSpecificsCalledOnce_ParentServiceGetCalledOnce()
-    {
-        // Arrange
-        var newInstance = new Game 
-        {
-            Score_1 = 0,
-            Score_2 = 0,
-        };
-
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Game>(), It.IsAny<Action>())).Callback((Game entity, Action action) => {action.Invoke();});
-        _mockParentService.Setup(parent => parent.Get(It.IsAny<int>())).Returns((Domain.Match)null);
-
-        Assert.Multiple(
-            // Act
-            () => Assert.Throws<NullReferenceException>(() => _service.Insert(-1, newInstance)),
-
-            // Assert
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Game>(), It.IsAny<Action>()), Times.Once),
-            () => _mockParentService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once)
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Game>(), null), Times.Once),
+            () => Assert.NotNull(newInstance.MatchId)
         );
     }
 

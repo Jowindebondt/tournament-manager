@@ -27,9 +27,8 @@ public interface IGameService
     /// <summary>
     /// Create a new instance of <see cref="Game"/>
     /// </summary>
-    /// <param name="parentId">Id of the <see cref="Match"/></param>
     /// <param name="entity">The new values for <see cref="Game"/></param>
-    void Insert(int parentId, Game entity);
+    void Insert(Game entity);
     /// <summary>
     /// Updates an existing <see cref="Game"/> instance.
     /// </summary>

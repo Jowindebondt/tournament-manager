@@ -4,17 +4,14 @@ namespace TournamentManager.Application;
 
 public class GameService : IGameService
 {
-    private readonly IMatchService _matchService;
     private readonly ICrudService<Game> _crudService;
 
     /// <summary>
     /// Initializes a new instance of <see cref="GameService"/>
     /// </summary>
-    /// <param name="matchService">Service handling all <see cref="Match"/> actions.</param>
     /// <param name="crudService">Service for handling CRUD actions for the <see cref="Game"/> model.</param>
-    public GameService(IMatchService matchService, ICrudService<Game> crudService)
+    public GameService(ICrudService<Game> crudService)
     {
-        _matchService = matchService;
         _crudService = crudService;
     }
 
@@ -33,16 +30,13 @@ public class GameService : IGameService
     /// <inheritdoc/>
     public IEnumerable<Game> GetAll(int parentId)
     {
-        return _crudService.GetAll(u => u.Match.Id == parentId);
+        return _crudService.GetAll(u => u.MatchId == parentId);
     }
 
     /// <inheritdoc/>
-    public void Insert(int parentId, Game entity)
+    public void Insert(Game entity)
     {
-        _crudService.Insert(entity, () => {
-            var match = _matchService.Get(parentId) ?? throw new NullReferenceException($"{nameof(Match)} not found"); 
-            entity.Match = match;
-        });
+        _crudService.Insert(entity);
     }
 
     /// <inheritdoc/>

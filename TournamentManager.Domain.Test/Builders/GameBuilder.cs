@@ -9,15 +9,7 @@ public class GameBuilder
 
     public static Game GetSingleGame(int id)
     {
-        return new Game
-        {
-            Id = id * -1,
-            Score_1 = 0,
-            Score_2 = 0,
-            Match = MatchBuilder.GetSingleMatch(id),
-            CreatedDate = new DateTime(2024, 1, 1),
-            ModifiedDate = new DateTime(2024, 1, 1),
-        };
+        return GetSingleGame(id,id);
     }
 
     public static Game GetSingleGame(int id, int matchId)
@@ -27,7 +19,7 @@ public class GameBuilder
             Id = id * -1,
             Score_1 = 0,
             Score_2 = 0,
-            Match = MatchBuilder.GetSingleMatch(matchId),
+            MatchId = matchId * -1,
             CreatedDate = new DateTime(2024, 1, 1),
             ModifiedDate = new DateTime(2024, 1, 1),
         };

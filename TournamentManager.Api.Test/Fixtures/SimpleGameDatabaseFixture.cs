@@ -45,7 +45,7 @@ public class SimpleGameDatabaseFixture : DatabaseFixture
         for (var i = 0; i < 10; i++)
         {
             var game = GameBuilder.GetSingleGame(i + 1);
-            game.Match = match;
+            game.MatchId = match.Id.Value;
             DbContext.Games.Add(game);
         }
     }

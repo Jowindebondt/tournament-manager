@@ -17,4 +17,9 @@ public class Match : BaseEntity
     /// Player 2 reference to <see cref="Player"/>
     /// </summary>
     public required Player Player_2 { get; set; }
+
+    /// <summary>
+    /// Collection of games which makes the match
+    /// </summary>
+    public virtual ICollection<Game> Games { get; set; } = [];
 }
