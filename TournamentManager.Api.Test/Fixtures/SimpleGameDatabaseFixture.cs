@@ -37,9 +37,9 @@ public class SimpleGameDatabaseFixture : DatabaseFixture
         DbContext.Players.Add(player2);
 
         var match = MatchBuilder.GetSingleMatch(1);
-        match.Poule = poule;
-        match.Player_1 = player1;
-        match.Player_2 = player2;
+        match.PouleId = poule.Id.Value;
+        match.Player1Id = player1.Id.Value;
+        match.Player2Id = player2.Id.Value;
         DbContext.Matches.Add(match);
 
         for (var i = 0; i < 10; i++)

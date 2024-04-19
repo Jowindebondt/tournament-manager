@@ -9,15 +9,7 @@ public class MatchBuilder
 
     public static Match GetSingleMatch(int id)
     {
-        return new Match
-        {
-            Id = id * -1,
-            Player_1 = PlayerBuilder.GetSinglePlayer(),
-            Player_2 = PlayerBuilder.GetSinglePlayer(),
-            Poule = PouleBuilder.GetSinglePoule(id),
-            CreatedDate = new DateTime(2024, 1, 1),
-            ModifiedDate = new DateTime(2024, 1, 1),
-        };
+        return GetSingleMatch(id, id);
     }
 
     public static Match GetSingleMatch(int id, int pouleId)
@@ -25,9 +17,9 @@ public class MatchBuilder
         return new Match
         {
             Id = id * -1,
-            Player_1 = PlayerBuilder.GetSinglePlayer(),
-            Player_2 = PlayerBuilder.GetSinglePlayer(),
-            Poule = PouleBuilder.GetSinglePoule(pouleId),
+            Player1Id = -1,
+            Player2Id = -2,
+            PouleId = pouleId * -1,
             CreatedDate = new DateTime(2024, 1, 1),
             ModifiedDate = new DateTime(2024, 1, 1),
         };

@@ -55,17 +55,16 @@ public class MatchController : ControllerBase
     /// <summary>
     /// Creates a new <see cref="Match"/> object.
     /// </summary>
-    /// <param name="pouleId">The identifier of an existing <see cref="Poule"/></param>
     /// <param name="match">The new <see cref="Match"/></param>
     /// <returns>The created <see cref="Match"/></returns>
-    [HttpPost($"{nameof(Create)}/{{roundId}}")]
-    public IActionResult Create([FromRoute]int pouleId, [FromBody]Match match) 
+    [HttpPost($"{nameof(Create)}")]
+    public IActionResult Create([FromBody]Match match) 
     {
         if (match == null) {
             return BadRequest("Something went wrong");
         }
 
-        _matchService.Insert(pouleId, match);
+        _matchService.Insert(match);
         return Ok(match);
     }
 

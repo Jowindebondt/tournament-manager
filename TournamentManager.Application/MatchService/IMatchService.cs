@@ -27,7 +27,6 @@ public interface IMatchService
     /// <summary>
     /// Create a new instance of <see cref="Match"/>
     /// </summary>
-    /// <param name="parentId">Id of the <see cref="Poule"/></param>
     /// <param name="entity">The new values for <see cref="Match"/></param>
-    void Insert(int parentId, Match entity);
+    void Insert(Match entity);
 }

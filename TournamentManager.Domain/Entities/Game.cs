@@ -10,11 +10,11 @@ public class Game : BaseEntity
     /// </summary>
     public int MatchId { get; set; }
     /// <summary>
-    /// Score of <see cref="Match.Player_1"/>
+    /// Score of <see cref="Match.Player1"/>
     /// </summary>
     public int Score_1 { get; set; }
     /// <summary>
-    /// Score of <see cref="Match.Player_2"/>
+    /// Score of <see cref="Match.Player2"/>
     /// </summary>
     public int Score_2 { get; set; }
 

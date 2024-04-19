@@ -32,5 +32,15 @@ public class ApplicationDbContext : DbContext
             .HasOne(u => u.Settings)
             .WithOne(u => u.Round)
             .HasForeignKey<RoundSettings>(u => u.RoundId);
+
+        modelBuilder.Entity<Match>()
+            .HasOne(u => u.Player1)
+            .WithMany(u => u.MatchesAsPlayer1)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Match>()
+            .HasOne(u => u.Player2)
+            .WithMany(u => u.MatchesAsPlayer2)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

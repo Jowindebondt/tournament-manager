@@ -4,12 +4,10 @@ namespace TournamentManager.Application;
 
 public class MatchService : IMatchService
 {
-    private readonly IPouleService _pouleService;
     private readonly ICrudService<Match> _crudService;
 
-    public MatchService(IPouleService pouleService, ICrudService<Match> crudService)
+    public MatchService(ICrudService<Match> crudService)
     {
-        _pouleService = pouleService;
         _crudService = crudService;
     }
 
@@ -32,11 +30,8 @@ public class MatchService : IMatchService
     }
 
     /// <inheritdoc/>
-    public void Insert(int parentId, Match entity)
+    public void Insert(Match entity)
     {
-        _crudService.Insert(entity, () => {
-            var poule = _pouleService.Get(parentId) ?? throw new NullReferenceException($"{nameof(Round)} not found"); 
-            entity.Poule = poule;
-        });
+        _crudService.Insert(entity);
     }
 }

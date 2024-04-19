@@ -20,21 +20,6 @@ public class ComponentTestMatchController : IClassFixture<SimpleMatchDatabaseFix
     {
         return new MatchController(
             new MatchService(
-                new PouleService(
-                    new RoundService(
-                        new TournamentService(
-                            new CrudService<Tournament>(
-                                new Repository<Tournament>(_fixture.DbContext)
-                            )
-                        ),
-                        new CrudService<Round>(
-                            new Repository<Round>(_fixture.DbContext)
-                        )
-                    ),
-                    new CrudService<Poule>(
-                        new Repository<Poule>(_fixture.DbContext)
-                    )
-                ),
                 new CrudService<Match>(
                     new Repository<Match>(_fixture.DbContext)
                 )
@@ -106,14 +91,15 @@ public class ComponentTestMatchController : IClassFixture<SimpleMatchDatabaseFix
         // arrange
         var newInstance = new Match()
         {
-            Player_1 = _fixture.DbContext.Players.Find(-1),
-            Player_2 = _fixture.DbContext.Players.Find(-2),
+            Player1Id = -1,
+            Player2Id = -2,
+            PouleId = -1,
         };
         OkObjectResult okResult = null;
         Match addedInstance = null;
 
         // act
-        var result = CreateController().Create(-1, newInstance);
+        var result = CreateController().Create(newInstance);
 
         // assert
         Assert.Multiple(
@@ -121,9 +107,9 @@ public class ComponentTestMatchController : IClassFixture<SimpleMatchDatabaseFix
             () => Assert.NotNull(okResult.Value),
             () => addedInstance = Assert.IsType<Match>(okResult.Value),
             () => Assert.NotNull(addedInstance.Id),
-            () => Assert.NotNull(addedInstance.Poule),
-            () => Assert.NotNull(addedInstance.Player_1),
-            () => Assert.NotNull(addedInstance.Player_2),
+            () => Assert.NotNull(addedInstance.PouleId),
+            () => Assert.NotNull(addedInstance.Player1Id),
+            () => Assert.NotNull(addedInstance.Player2Id),
             () => Assert.NotNull(addedInstance.CreatedDate),
             () => Assert.NotNull(addedInstance.ModifiedDate)
         );
