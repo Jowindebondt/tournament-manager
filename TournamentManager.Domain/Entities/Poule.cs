@@ -13,4 +13,9 @@ public class Poule : BaseEntity
     /// Name of the poule
     /// </summary>
     public required string Name { get; set; }
+
+    /// <summary>
+    /// Collection of assigned <see cref="Player"/>s to this poule
+    /// </summary>
+    public List<Player> Players { get; set; } = [];
 }
