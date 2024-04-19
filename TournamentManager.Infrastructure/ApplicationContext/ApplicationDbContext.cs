@@ -22,9 +22,15 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Tournament>()
             .HasOne(u => u.Settings)
             .WithOne(u => u.Tournament)
             .HasForeignKey<TournamentSettings>(u => u.TournamentId);
+
+        modelBuilder.Entity<Round>()
+            .HasOne(u => u.Settings)
+            .WithOne(u => u.Round)
+            .HasForeignKey<RoundSettings>(u => u.RoundId);
     }
 }

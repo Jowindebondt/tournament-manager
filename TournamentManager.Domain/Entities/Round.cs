@@ -13,4 +13,9 @@ public class Round : BaseEntity
     /// Name of the round
     /// </summary>
     public required string Name { get; set; }
+
+    /// <summary>
+    /// Reference of the <see cref="RoundSettings"/> that are applied to the round
+    /// </summary>
+    public virtual RoundSettings Settings { get; set; } = null!;
 }
