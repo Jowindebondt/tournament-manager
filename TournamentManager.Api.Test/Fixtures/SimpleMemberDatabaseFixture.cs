@@ -1,4 +1,5 @@
-﻿using TournamentManager.Domain.Test;
+﻿using TournamentManager.Domain;
+using TournamentManager.Domain.Test;
 
 namespace TournamentManager.Api.Test;
 
@@ -18,11 +19,11 @@ public class SimpleMemberDatabaseFixture : DatabaseFixture
     {
         var tournament = TournamentBuilder.GetSingleTournament(1);
         DbContext.Tournaments.Add(tournament);
-
+        
         for (var i = 0; i < 10; i++)
         {
             var member = MemberBuilder.GetSingleMember(i + 1);
-            member.Tournament = tournament;
+            member.TournamentId = tournament.Id.Value;
             DbContext.Members.Add(member);
         }
     }

@@ -55,17 +55,16 @@ public class MemberController : ControllerBase
     /// <summary>
     /// Creates a new <see cref="Member"/> object.
     /// </summary>
-    /// <param name="tournamentId">The identifier of an existing <see cref="Tournament"/></param>
     /// <param name="member">The new <see cref="Member"/></param>
     /// <returns>The created <see cref="Member"/></returns>
-    [HttpPost($"{nameof(Create)}/{{tournamentId}}")]
-    public IActionResult Create([FromRoute]int tournamentId, [FromBody]Member member) 
+    [HttpPost($"{nameof(Create)}")]
+    public IActionResult Create([FromBody]Member member) 
     {
         if (member == null) {
             return BadRequest("Something went wrong");
         }
 
-        _memberService.Insert(tournamentId, member);
+        _memberService.Insert(member);
         return Ok(member);
     }
 

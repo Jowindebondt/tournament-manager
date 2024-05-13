@@ -104,11 +104,11 @@ public class UnitTestMemberController
         OkObjectResult okResult = null;
 
         // act
-        var result = _controller.Create(-1, newInstance);
+        var result = _controller.Create(newInstance);
 
         // assert
         Assert.Multiple(
-            () => _mockService.Verify(service => service.Insert(It.IsAny<int>(), It.IsAny<Member>()), Times.Once),
+            () => _mockService.Verify(service => service.Insert(It.IsAny<Member>()), Times.Once),
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
             () => Assert.IsType<Member>(okResult.Value)
@@ -124,11 +124,11 @@ public class UnitTestMemberController
         string content = null;
 
         // act
-        var result = _controller.Create(-1, null);
+        var result = _controller.Create(null);
 
         // assert
         Assert.Multiple(
-            () => _mockService.Verify(service => service.Insert(It.IsAny<int>(), It.IsAny<Member>()), Times.Never),
+            () => _mockService.Verify(service => service.Insert(It.IsAny<Member>()), Times.Never),
             () => badRequestResult = Assert.IsType<BadRequestObjectResult>(result),
             () => Assert.NotNull(badRequestResult.Value),
             () => content = Assert.IsType<string>(badRequestResult.Value),

@@ -9,14 +9,7 @@ public class MemberBuilder
 
     public static Member GetSingleMember(int id)
     {
-        return new Member
-        {
-            Id = id * -1,
-            Name = $"Test_Member_{id}",
-            Tournament = TournamentBuilder.GetSingleTournament(id),
-            CreatedDate = new DateTime(2024, 1, 1),
-            ModifiedDate = new DateTime(2024, 1, 1),
-        };
+        return GetSingleMember(id, id);
     }
 
     public static Member GetSingleMember(int id, int tournamentId)
@@ -24,8 +17,8 @@ public class MemberBuilder
         return new Member
         {
             Id = id * -1,
+            TournamentId = tournamentId * -1,
             Name = $"Test_Member_{id}",
-            Tournament = TournamentBuilder.GetSingleTournament(tournamentId),
             CreatedDate = new DateTime(2024, 1, 1),
             ModifiedDate = new DateTime(2024, 1, 1),
         };

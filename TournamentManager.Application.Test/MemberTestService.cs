@@ -10,14 +10,12 @@ namespace TournamentManager.Application.Test;
 public class MemberTestService
 {
     private readonly Mock<ICrudService<Member>> _mockCrudService;
-    private readonly Mock<ITournamentService> _mockParentService;
     private readonly MemberService _service;
 
     public MemberTestService()
     {
         _mockCrudService = new Mock<ICrudService<Member>>();
-        _mockParentService = new Mock<ITournamentService>();
-        _service = new MemberService(_mockParentService.Object, _mockCrudService.Object);
+        _service = new MemberService(_mockCrudService.Object);
     }
 
     [Fact]
@@ -78,40 +76,15 @@ public class MemberTestService
             Name = "Test_Member_Insert"
         };
 
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Member>(), It.IsAny<Action>())).Callback((Member entity, Action action) => {action.Invoke();});
-        _mockParentService.Setup(parent => parent.Get(It.IsAny<int>())).Returns(TournamentBuilder.GetSingleTournament());
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Member>(), null)).Callback(() => {});
         
         // Act
-        _service.Insert(-1, newInstance);
+        _service.Insert(newInstance);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Member>(), It.IsAny<Action>()), Times.Once),
-            () => _mockParentService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once),
-            () => Assert.NotNull(newInstance.Tournament)
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void InsertWithInValidParentId_ThrowsNullReferenceException_CrudInsertWithSpecificsCalledOnce_ParentServiceGetCalledOnce()
-    {
-        // Arrange
-        var newInstance = new Member 
-        {
-            Name = "Test_Member_Insert"
-        };
-
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Member>(), It.IsAny<Action>())).Callback((Member entity, Action action) => {action.Invoke();});
-        _mockParentService.Setup(parent => parent.Get(It.IsAny<int>())).Returns((Tournament)null);
-
-        Assert.Multiple(
-            // Act
-            () => Assert.Throws<NullReferenceException>(() => _service.Insert(-1, newInstance)),
-
-            // Assert
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Member>(), It.IsAny<Action>()), Times.Once),
-            () => _mockParentService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once)
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Member>(), null), Times.Once),
+            () => Assert.NotNull(newInstance.TournamentId)
         );
     }
 

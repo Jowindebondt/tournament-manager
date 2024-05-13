@@ -27,9 +27,8 @@ public interface IMemberService
     /// <summary>
     /// Create a new instance of <see cref="Member"/>
     /// </summary>
-    /// <param name="parentId">Id of the <see cref="Tournament"/></param>
     /// <param name="entity">The new values for <see cref="Member"/></param>
-    void Insert(int parentId, Member entity);
+    void Insert(Member entity);
     /// <summary>
     /// Updates an existing <see cref="Member"/> instance.
     /// </summary>

@@ -20,11 +20,6 @@ public class ComponentTestMemberController : IClassFixture<SimpleMemberDatabaseF
     {
         return new MemberController(
             new MemberService(
-                new TournamentService(
-                    new CrudService<Tournament>(
-                        new Repository<Tournament>(_fixture.DbContext)
-                    )
-                ),
                 new CrudService<Member>(
                     new Repository<Member>(_fixture.DbContext)
                 )
@@ -38,7 +33,7 @@ public class ComponentTestMemberController : IClassFixture<SimpleMemberDatabaseF
     {
         // arrange
         OkObjectResult okResult = null;
-        IEnumerable<Member> rounds = null;
+        IEnumerable<Member> members = null;
 
         // act
         var result = CreateController().GetList(-1);
@@ -47,8 +42,8 @@ public class ComponentTestMemberController : IClassFixture<SimpleMemberDatabaseF
         Assert.Multiple(
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
-            () => rounds = Assert.IsAssignableFrom<IEnumerable<Member>>(okResult.Value),
-            () => Assert.Equal(_fixture.DbContext.Members.Count(), rounds.Count())
+            () => members = Assert.IsAssignableFrom<IEnumerable<Member>>(okResult.Value),
+            () => Assert.Equal(_fixture.DbContext.Members.Count(), members.Count())
         );
     }
 
@@ -99,12 +94,13 @@ public class ComponentTestMemberController : IClassFixture<SimpleMemberDatabaseF
         var newInstance = new Member()
         {
             Name = name,
+            TournamentId = -1,
         };
         OkObjectResult okResult = null;
         Member addedInstance = null;
 
         // act
-        var result = CreateController().Create(-1, newInstance);
+        var result = CreateController().Create(newInstance);
 
         // assert
         Assert.Multiple(
@@ -112,7 +108,7 @@ public class ComponentTestMemberController : IClassFixture<SimpleMemberDatabaseF
             () => Assert.NotNull(okResult.Value),
             () => addedInstance = Assert.IsType<Member>(okResult.Value),
             () => Assert.NotNull(addedInstance.Id),
-            () => Assert.NotNull(addedInstance.Tournament),
+            () => Assert.NotNull(addedInstance.TournamentId),
             () => Assert.NotNull(addedInstance.CreatedDate),
             () => Assert.NotNull(addedInstance.ModifiedDate)
         );

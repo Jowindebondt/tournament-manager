@@ -18,4 +18,9 @@ public class Tournament : BaseEntity
     /// Reference of the <see cref="TournamentSettings"/> that are applied to the tournament
     /// </summary>
     public virtual TournamentSettings Settings { get; set; } = null!;
+
+    /// <summary>
+    /// Collection of all the members that are participating in this tournament
+    /// </summary>
+    public virtual ICollection<Member> Members { get; set; } = [];
 }

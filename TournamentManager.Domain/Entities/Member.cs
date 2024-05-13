@@ -6,13 +6,13 @@
 public class Member : BaseEntity
 {
     /// <summary>
-    /// Reference to the related <see cref="Tournament"/>
+    /// Identifier of the related <see cref="Tournament"/>
     /// </summary>
-    public Tournament Tournament { get; set; }
+    public int TournamentId { get; set; }
     /// <summary>
-    /// Reference to the <see cref="Player"/>
+    /// Identifier of the <see cref="Player"/>
     /// </summary>
-    public Player Player { get; set; }
+    public int PlayerId { get; set; }
     /// <summary>
     /// Name of the member
     /// </summary>
@@ -25,4 +25,13 @@ public class Member : BaseEntity
     /// The class level indicating the competition class this member is playing in
     /// </summary>
     public int Class { get; set; }
+
+    /// <summary>
+    /// Reference to the related <see cref="Tournament"/>
+    /// </summary>
+    public virtual Tournament Tournament { get; set; } = null!;
+    /// <summary>
+    /// Reference to the <see cref="Player"/>
+    /// </summary>
+    public virtual Player Player { get; set; } = null!; 
 }

@@ -15,4 +15,8 @@ public class Player : BaseEntity
     /// Collection of <see cref="Match"/>es that this player is assigned to as player 2
     /// </summary>
     public virtual ICollection<Match> MatchesAsPlayer2 { get; set; } = [];
+    /// <summary>
+    /// Collection of <see cref="Member"/>s that are part of this player
+    /// </summary>
+    public virtual ICollection<Member> Members { get; set; } = [];
 }
