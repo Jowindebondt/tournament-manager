@@ -30,8 +30,7 @@ public interface ICrudService<T>
     /// Create a new instance of <see cref="T"/>
     /// </summary>
     /// <param name="entity">The new values for <see cref="T"/></param>
-    /// <param name="setTypeSpecifics">Set type specific system values</param>
-    void Insert(T entity, Action setTypeSpecifics = null);
+    void Insert(T entity);
     /// <summary>
     /// Updates an existing <see cref="T"/> instance.
     /// </summary>

@@ -77,14 +77,14 @@ public class GameTestService
             MatchId = -1,
         };
 
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Game>(), null)).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Game>())).Callback(() => {});
         
         // Act
         _service.Insert(newInstance);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Game>(), null), Times.Once),
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Game>()), Times.Once),
             () => Assert.NotNull(newInstance.MatchId)
         );
     }

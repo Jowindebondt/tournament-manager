@@ -186,35 +186,6 @@ public class CrudTestService
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void InsertValidInstanceWithTypeSpecifics_ReturnsUpdatedInstance_RepoInsertCalledOnce_TypeSpecificActionCalledOnce()
-    {
-        // arrange
-        var newInstance = new Round 
-        {
-            Name = "Test_Round_Insert"
-        };
-        _mockRepository.Setup(repo => repo.Insert(It.IsAny<Round>())).Callback(() => newInstance.Id = 1);
-
-        var typeSpecificMock = new Mock<Action>();
-        typeSpecificMock.Setup(action => action.Invoke()).Callback(() => {});
-
-        // act
-        _service.Insert(newInstance, typeSpecificMock.Object);
-        
-        // assert
-        Assert.Multiple(
-            () => _mockRepository.Verify(repo => repo.Insert(It.IsAny<Round>()), Times.Once),
-            () => typeSpecificMock.Verify(action => action.Invoke(), Times.Once),
-            () => Assert.NotNull(newInstance),
-            () => Assert.NotNull(newInstance.Id),
-            () => Assert.NotNull(newInstance.CreatedDate),
-            () => Assert.NotNull(newInstance.ModifiedDate),
-            () => Assert.Equal(newInstance.CreatedDate, newInstance.ModifiedDate)
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void InsertValidInstanceWithId_ThrowsArgumentException_RepoInsertCalledNever()
     {
         // arrange

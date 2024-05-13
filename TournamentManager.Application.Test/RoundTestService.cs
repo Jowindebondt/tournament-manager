@@ -77,14 +77,14 @@ public class RoundTestService
             TournamentId = -1,
         };
 
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Round>(), null)).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Round>())).Callback(() => {});
         
         // Act
         _service.Insert(newInstance);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Round>(), null), Times.Once),
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Round>()), Times.Once),
             () => Assert.NotNull(newInstance.TournamentId)
         );
     }

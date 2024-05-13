@@ -76,14 +76,14 @@ public class PouleTestService
             RoundId = -1,
         };
 
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Poule>(), null)).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Poule>())).Callback(() => {});
         
         // Act
         _service.Insert(newInstance);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Poule>(), null), Times.Once),
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Poule>()), Times.Once),
             () => Assert.NotNull(newInstance.RoundId)
         );
     }

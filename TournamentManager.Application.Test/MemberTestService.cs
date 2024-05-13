@@ -76,14 +76,14 @@ public class MemberTestService
             Name = "Test_Member_Insert"
         };
 
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Member>(), null)).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Member>())).Callback(() => {});
         
         // Act
         _service.Insert(newInstance);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Member>(), null), Times.Once),
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Member>()), Times.Once),
             () => Assert.NotNull(newInstance.TournamentId)
         );
     }

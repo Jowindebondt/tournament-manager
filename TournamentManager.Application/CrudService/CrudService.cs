@@ -57,7 +57,7 @@ public class CrudService<T> : ICrudService<T>
     }
 
     /// <inheritdoc/>
-    public void Insert(T entity, Action setTypeSpecifics = null)
+    public void Insert(T entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
@@ -66,7 +66,6 @@ public class CrudService<T> : ICrudService<T>
             throw new ArgumentException("Id field has a value which is not allowed when adding a new instance");
         }
 
-        setTypeSpecifics?.Invoke();
         entity.CreatedDate = entity.ModifiedDate = DateTime.UtcNow;
 
         _repository.Insert(entity);

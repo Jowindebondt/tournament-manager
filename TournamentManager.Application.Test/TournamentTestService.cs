@@ -71,14 +71,14 @@ public class TournamentTestService
     public void Insert_CrudInsertCalledOnce()
     {
         // Arrange
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Tournament>(), null)).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Tournament>())).Callback(() => {});
 
         // Act
         _service.Insert(TournamentBuilder.GetSingleTournament());
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Tournament>(), null), Times.Once)
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Tournament>()), Times.Once)
         );
     }
 

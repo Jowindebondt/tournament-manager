@@ -77,14 +77,14 @@ public class MatchTestService
             PouleId = 1,
         };
 
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Domain.Match>(), null)).Callback(() => {});
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Domain.Match>())).Callback(() => {});
         
         // Act
         _service.Insert(newInstance);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Domain.Match>(), null), Times.Once),
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Domain.Match>()), Times.Once),
             () => Assert.NotNull(newInstance.PouleId)
         );
     }
