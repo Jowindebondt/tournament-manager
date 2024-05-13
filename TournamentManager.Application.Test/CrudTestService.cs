@@ -44,7 +44,7 @@ public class CrudTestService
         _mockRepository.Setup(repo => repo.GetAll()).Returns(RoundBuilder.GetListRound(5, 1).Concat(RoundBuilder.GetListRound(5, 2)));
 
         // act
-        var tournaments = _service.GetAll(u => u.Tournament.Id == -1);
+        var tournaments = _service.GetAll(u => u.TournamentId == -1);
 
         // assert
         Assert.Multiple(
@@ -81,7 +81,7 @@ public class CrudTestService
         _mockRepository.Setup(repo => repo.GetAll()).Returns(RoundBuilder.GetListRound(count, tournamentId).Concat(RoundBuilder.GetListRound(count, tournamentId + 1)));
 
         // act
-        var tournaments = _service.GetAll(u => u.Tournament.Id == tournamentId);
+        var tournaments = _service.GetAll(u => u.TournamentId == tournamentId);
 
         // assert
         Assert.Multiple(

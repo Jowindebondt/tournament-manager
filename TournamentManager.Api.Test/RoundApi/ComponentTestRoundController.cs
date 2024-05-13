@@ -21,11 +21,6 @@ public class ComponentTestRoundController : IClassFixture<SimpleRoundDatabaseFix
     {
         return new RoundController(
             new RoundService(
-                new TournamentService(
-                    new CrudService<Tournament>(
-                        new Repository<Tournament>(_fixture.DbContext)
-                    )
-                ),
                 new CrudService<Round>(
                     new Repository<Round>(_fixture.DbContext)
                 )
@@ -100,12 +95,13 @@ public class ComponentTestRoundController : IClassFixture<SimpleRoundDatabaseFix
         var newInstance = new Round()
         {
             Name = name,
+            TournamentId = -1
         };
         OkObjectResult okResult = null;
         Round addedInstance = null;
 
         // act
-        var result = CreateController().Create(-1, newInstance);
+        var result = CreateController().Create(newInstance);
 
         // assert
         Assert.Multiple(
@@ -113,7 +109,7 @@ public class ComponentTestRoundController : IClassFixture<SimpleRoundDatabaseFix
             () => Assert.NotNull(okResult.Value),
             () => addedInstance = Assert.IsType<Round>(okResult.Value),
             () => Assert.NotNull(addedInstance.Id),
-            () => Assert.NotNull(addedInstance.Tournament),
+            () => Assert.NotNull(addedInstance.TournamentId),
             () => Assert.NotNull(addedInstance.CreatedDate),
             () => Assert.NotNull(addedInstance.ModifiedDate)
         );

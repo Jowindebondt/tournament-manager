@@ -56,14 +56,14 @@ public class RoundController : ControllerBase
     /// </summary>
     /// <param name="round">The new <see cref="Round"/></param>
     /// <returns>The created <see cref="Round"/></returns>
-    [HttpPost($"{nameof(Create)}/{{tournamentId}}")]
-    public IActionResult Create([FromRoute]int tournamentId, [FromBody]Round round) 
+    [HttpPost($"{nameof(Create)}")]
+    public IActionResult Create([FromBody]Round round) 
     {
         if (round == null) {
             return BadRequest("Something went wrong");
         }
 
-        _roundService.Insert(tournamentId, round);
+        _roundService.Insert(round);
         return Ok(round);
     }
 

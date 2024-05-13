@@ -10,14 +10,12 @@ namespace TournamentManager.Application.Test;
 public class RoundTestService
 {
     private readonly Mock<ICrudService<Round>> _mockCrudService;
-    private readonly Mock<ITournamentService> _mockParentService;
     private readonly RoundService _service;
 
     public RoundTestService()
     {
         _mockCrudService = new Mock<ICrudService<Round>>();
-        _mockParentService = new Mock<ITournamentService>();
-        _service = new RoundService(_mockParentService.Object, _mockCrudService.Object);
+        _service = new RoundService(_mockCrudService.Object);
     }
 
     [Fact]
@@ -75,43 +73,19 @@ public class RoundTestService
         // Arrange
         var newInstance = new Round 
         {
-            Name = "Test_Round_Insert"
+            Name = "Test_Round_Insert",
+            TournamentId = -1,
         };
 
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Round>(), It.IsAny<Action>())).Callback((Round entity, Action action) => {action.Invoke();});
-        _mockParentService.Setup(parent => parent.Get(It.IsAny<int>())).Returns(TournamentBuilder.GetSingleTournament());
+        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Round>(), null)).Callback(() => {});
         
         // Act
-        _service.Insert(-1, newInstance);
+        _service.Insert(newInstance);
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Round>(), It.IsAny<Action>()), Times.Once),
-            () => _mockParentService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once),
-            () => Assert.NotNull(newInstance.Tournament)
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void InsertWithInValidParentId_ThrowsNullReferenceException_CrudInsertWithSpecificsCalledOnce_ParentServiceGetCalledOnce()
-    {
-        // Arrange
-        var newInstance = new Round 
-        {
-            Name = "Test_Round_Insert"
-        };
-
-        _mockCrudService.Setup(crud => crud.Insert(It.IsAny<Round>(), It.IsAny<Action>())).Callback((Round entity, Action action) => {action.Invoke();});
-        _mockParentService.Setup(parent => parent.Get(It.IsAny<int>())).Returns((Tournament)null);
-
-        Assert.Multiple(
-            // Act
-            () => Assert.Throws<NullReferenceException>(() => _service.Insert(-1, newInstance)),
-
-            // Assert
-            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Round>(), It.IsAny<Action>()), Times.Once),
-            () => _mockParentService.Verify(parent => parent.Get(It.IsAny<int>()), Times.Once)
+            () => _mockCrudService.Verify(crud => crud.Insert(It.IsAny<Round>(), null), Times.Once),
+            () => Assert.NotNull(newInstance.TournamentId)
         );
     }
 

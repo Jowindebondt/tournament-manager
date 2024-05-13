@@ -22,7 +22,7 @@ public class SimpleRoundDatabaseFixture : DatabaseFixture
         for (var i = 0; i < 10; i++)
         {
             var round = RoundBuilder.GetSingleRound(i + 1);
-            round.Tournament = tournament;
+            round.TournamentId = tournament.Id.Value;
             DbContext.Rounds.Add(round);
         }
     }

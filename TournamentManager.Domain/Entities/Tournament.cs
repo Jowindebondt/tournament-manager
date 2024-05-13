@@ -23,4 +23,8 @@ public class Tournament : BaseEntity
     /// Collection of all the members that are participating in this tournament
     /// </summary>
     public virtual ICollection<Member> Members { get; set; } = [];
+    /// <summary>
+    /// Collection of all the rounds that are set in this tournament
+    /// </summary>
+    public virtual ICollection<Round> Rounds { get; set; } = [];
 }

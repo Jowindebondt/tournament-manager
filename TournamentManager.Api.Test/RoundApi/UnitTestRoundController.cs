@@ -104,11 +104,11 @@ public class UnitTestRoundController
         OkObjectResult okResult = null;
 
         // act
-        var result = _controller.Create(-1, newInstance);
+        var result = _controller.Create(newInstance);
 
         // assert
         Assert.Multiple(
-            () => _mockService.Verify(service => service.Insert(It.IsAny<int>(), It.IsAny<Round>()), Times.Once),
+            () => _mockService.Verify(service => service.Insert(It.IsAny<Round>()), Times.Once),
             () => okResult = Assert.IsType<OkObjectResult>(result),
             () => Assert.NotNull(okResult.Value),
             () => Assert.IsType<Round>(okResult.Value)
@@ -124,11 +124,11 @@ public class UnitTestRoundController
         string content = null;
 
         // act
-        var result = _controller.Create(-1, null);
+        var result = _controller.Create(null);
 
         // assert
         Assert.Multiple(
-            () => _mockService.Verify(service => service.Insert(It.IsAny<int>(), It.IsAny<Round>()), Times.Never),
+            () => _mockService.Verify(service => service.Insert(It.IsAny<Round>()), Times.Never),
             () => badRequestResult = Assert.IsType<BadRequestObjectResult>(result),
             () => Assert.NotNull(badRequestResult.Value),
             () => content = Assert.IsType<string>(badRequestResult.Value),

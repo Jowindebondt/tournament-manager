@@ -9,14 +9,7 @@ public class RoundBuilder
 
     public static Round GetSingleRound(int id)
     {
-        return new Round
-        {
-            Id = id * -1,
-            Name = $"Test_Round_{id}",
-            Tournament = TournamentBuilder.GetSingleTournament(id),
-            CreatedDate = new DateTime(2024, 1, 1),
-            ModifiedDate = new DateTime(2024, 1, 1),
-        };
+        return GetSingleRound(id, id);
     }
 
     public static Round GetSingleRound(int id, int tournamentId)
@@ -25,7 +18,7 @@ public class RoundBuilder
         {
             Id = id * -1,
             Name = $"Test_Round_{id}",
-            Tournament = TournamentBuilder.GetSingleTournament(tournamentId),
+            TournamentId = tournamentId * -1,
             CreatedDate = new DateTime(2024, 1, 1),
             ModifiedDate = new DateTime(2024, 1, 1),
         };

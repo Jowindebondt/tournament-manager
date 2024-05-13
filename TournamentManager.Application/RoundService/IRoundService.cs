@@ -27,9 +27,8 @@ public interface IRoundService
     /// <summary>
     /// Create a new instance of <see cref="Round"/>
     /// </summary>
-    /// <param name="parentId">Id of the <see cref="Tournament"/></param>
     /// <param name="entity">The new values for <see cref="Round"/></param>
-    void Insert(int parentId, Round entity);
+    void Insert(Round entity);
     /// <summary>
     /// Updates an existing <see cref="Round"/> instance.
     /// </summary>

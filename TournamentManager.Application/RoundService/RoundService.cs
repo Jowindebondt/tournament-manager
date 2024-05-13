@@ -8,7 +8,6 @@ namespace TournamentManager.Application;
 /// </summary>
 public class RoundService : IRoundService
 {
-    private readonly ITournamentService _tournamentService;
     private readonly ICrudService<Round> _crudService;
 
     /// <summary>
@@ -16,9 +15,8 @@ public class RoundService : IRoundService
     /// </summary>
     /// <param name="tournamentService">Service handling all <see cref="Tournament"/> actions.</param>
     /// <param name="crudService">Service for handling CRUD actions for the <see cref="Round"/> model.</param>
-    public RoundService(ITournamentService tournamentService, ICrudService<Round> crudService)
+    public RoundService(ICrudService<Round> crudService)
     {
-        _tournamentService = tournamentService;
         _crudService = crudService;
     }
 
@@ -37,16 +35,13 @@ public class RoundService : IRoundService
     /// <inheritdoc/>
     public IEnumerable<Round> GetAll(int parentId)
     {
-        return _crudService.GetAll(u => u.Tournament.Id == parentId);
+        return _crudService.GetAll(u => u.TournamentId == parentId);
     }
 
     /// <inheritdoc/>
-    public void Insert(int parentId, Round entity)
+    public void Insert(Round entity)
     {
-        _crudService.Insert(entity, () => {
-            var tournament = _tournamentService.Get(parentId) ?? throw new NullReferenceException($"{nameof(Tournament)} not found"); 
-            entity.Tournament = tournament;
-        });
+        _crudService.Insert(entity);
     }
 
     /// <inheritdoc/>
