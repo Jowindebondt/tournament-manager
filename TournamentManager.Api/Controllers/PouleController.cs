@@ -58,14 +58,14 @@ public class PouleController : ControllerBase
     /// <param name="roundId">The identifier of an existing <see cref="Round"/></param>
     /// <param name="poule">The new <see cref="Poule"/></param>
     /// <returns>The created <see cref="Poule"/></returns>
-    [HttpPost($"{nameof(Create)}/{{roundId}}")]
-    public IActionResult Create([FromRoute]int roundId, [FromBody]Poule poule) 
+    [HttpPost($"{nameof(Create)}")]
+    public IActionResult Create([FromBody]Poule poule) 
     {
         if (poule == null) {
             return BadRequest("Something went wrong");
         }
 
-        _pouleService.Insert(roundId, poule);
+        _pouleService.Insert(poule);
         return Ok(poule);
     }
 

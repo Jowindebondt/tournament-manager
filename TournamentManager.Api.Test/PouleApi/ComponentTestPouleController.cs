@@ -20,16 +20,6 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
     {
         return new PouleController(
             new PouleService(
-                new RoundService(
-                    new TournamentService(
-                        new CrudService<Tournament>(
-                            new Repository<Tournament>(_fixture.DbContext)
-                        )
-                    ),
-                    new CrudService<Round>(
-                        new Repository<Round>(_fixture.DbContext)
-                    )
-                ),
                 new CrudService<Poule>(
                     new Repository<Poule>(_fixture.DbContext)
                 )
@@ -104,12 +94,13 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
         var newInstance = new Poule()
         {
             Name = name,
+            RoundId = -1,
         };
         OkObjectResult okResult = null;
         Poule addedInstance = null;
 
         // act
-        var result = CreateController().Create(-1, newInstance);
+        var result = CreateController().Create(newInstance);
 
         // assert
         Assert.Multiple(
@@ -117,7 +108,7 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
             () => Assert.NotNull(okResult.Value),
             () => addedInstance = Assert.IsType<Poule>(okResult.Value),
             () => Assert.NotNull(addedInstance.Id),
-            () => Assert.NotNull(addedInstance.Round),
+            () => Assert.NotNull(addedInstance.RoundId),
             () => Assert.NotNull(addedInstance.CreatedDate),
             () => Assert.NotNull(addedInstance.ModifiedDate)
         );

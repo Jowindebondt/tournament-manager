@@ -18,4 +18,9 @@ public class Round : BaseEntity
     /// Reference of the <see cref="RoundSettings"/> that are applied to the round
     /// </summary>
     public virtual RoundSettings Settings { get; set; } = null!;
+
+    /// <summary>
+    /// Collection of <see cref="Poule"/>s that are part of this round.
+    /// </summary>
+    public virtual ICollection<Poule> Poules { get; set; } = [];
 }

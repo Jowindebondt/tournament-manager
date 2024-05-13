@@ -27,9 +27,8 @@ public interface IPouleService
     /// <summary>
     /// Create a new instance of <see cref="Poule"/>
     /// </summary>
-    /// <param name="parentId">Id of the <see cref="Round"/></param>
     /// <param name="entity">The new values for <see cref="Poule"/></param>
-    void Insert(int parentId, Poule entity);
+    void Insert(Poule entity);
     /// <summary>
     /// Updates an existing <see cref="Poule"/> instance.
     /// </summary>

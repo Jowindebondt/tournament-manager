@@ -9,14 +9,7 @@ public class PouleBuilder
 
     public static Poule GetSinglePoule(int id)
     {
-        return new Poule
-        {
-            Id = id * -1,
-            Name = $"Test_Poule_{id}",
-            Round = RoundBuilder.GetSingleRound(id),
-            CreatedDate = new DateTime(2024, 1, 1),
-            ModifiedDate = new DateTime(2024, 1, 1),
-        };
+        return GetSinglePoule(id, id);
     }
 
     public static Poule GetSinglePoule(int id, int roundId)
@@ -25,7 +18,7 @@ public class PouleBuilder
         {
             Id = id * -1,
             Name = $"Test_Poule_{id}",
-            Round = RoundBuilder.GetSingleRound(roundId),
+            RoundId = roundId * -1,
             CreatedDate = new DateTime(2024, 1, 1),
             ModifiedDate = new DateTime(2024, 1, 1),
         };

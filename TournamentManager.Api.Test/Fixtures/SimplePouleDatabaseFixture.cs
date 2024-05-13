@@ -22,7 +22,7 @@ public class SimplePouleDatabaseFixture : DatabaseFixture
         for (var i = 0; i < 10; i++)
         {
             var poule = PouleBuilder.GetSinglePoule(i + 1);
-            poule.Round = round;
+            poule.RoundId = round.Id.Value;
             DbContext.Poules.Add(poule);
         }
     }
