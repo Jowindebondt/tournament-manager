@@ -79,7 +79,7 @@ namespace TournamentManager.Infrastructure.Migrations
                 column: "Player_1Id",
                 principalTable: "Players",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Matches_Players_Player_2Id",
@@ -87,7 +87,7 @@ namespace TournamentManager.Infrastructure.Migrations
                 column: "Player_2Id",
                 principalTable: "Players",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Members_Players_PlayerId",
@@ -95,7 +95,7 @@ namespace TournamentManager.Infrastructure.Migrations
                 column: "PlayerId",
                 principalTable: "Players",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_PouleMembers_Players_PlayerId",
@@ -103,7 +103,7 @@ namespace TournamentManager.Infrastructure.Migrations
                 column: "PlayerId",
                 principalTable: "Players",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
         }
 
         /// <inheritdoc />
