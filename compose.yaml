@@ -11,12 +11,18 @@ services:
   server:
     build:
       context: .
-      target: final
+      target: development
     ports:
       - 8080:8080
     depends_on:
       db:
         condition: service_healthy
+    develop:
+      watch:
+      - action: rebuild
+        path: .
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
   db:
     image: mcr.microsoft.com/mssql/server:2022-CU12-ubuntu-22.04
     restart: always
