@@ -24,6 +24,7 @@ ARG TARGETARCH
 #   work in .NET 6.0.
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
     dotnet publish -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app
+RUN dotnet test /source
 
 # Create a stage for running the application in development mode
 FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS development
