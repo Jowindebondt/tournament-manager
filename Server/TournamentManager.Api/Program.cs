@@ -2,12 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using TournamentManager.Application;
 using TournamentManager.Application.Repositories;
 using TournamentManager.Infrastructure;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("SQLAZURECONNSTR_DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
