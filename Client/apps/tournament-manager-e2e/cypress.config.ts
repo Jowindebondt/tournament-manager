@@ -14,4 +14,7 @@ export default defineConfig({
     }),
     baseUrl: 'http://localhost:4200',
   },
+  env: {
+    apiUrl: 'http://localhost:8080/api'
+  }
 });

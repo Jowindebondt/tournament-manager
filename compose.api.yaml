@@ -1,0 +1,35 @@
+services:
+  tournament-manager-database:
+    build: ./Database
+    container_name: tournament-manager-database-container
+    restart: always
+    ports:
+      - 1433:1433
+    volumes:
+      - db-data:/var/opt/mssql
+    environment:
+      - ACCEPT_EULA="Y"
+      - MSSQL_SA_PASSWORD=Welcome01!
+      - SA_PID=TournamentManager
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Welcome01! -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  tournament-manager-server:
+    build: ./Server
+    container_name: tournament-manager-server-container
+    ports:
+      - 8080:8080
+    depends_on:
+      tournament-manager-database:
+        condition: service_healthy
+  tournament-manager-api-test:
+    container_name: tournament-manager-api-test-container
+    build: 
+      context: ./Client
+      dockerfile: Dockerfile.api
+    depends_on:
+      - tournament-manager-server
+volumes:
+  db-data:

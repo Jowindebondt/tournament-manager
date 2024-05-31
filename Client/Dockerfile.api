@@ -1,0 +1,14 @@
+FROM cypress/included:12.3.0
+
+WORKDIR /api-test
+COPY ./.eslintrc.json .
+COPY ./nx.json .
+COPY ./package.json .
+COPY ./package-lock.json .
+COPY ./tsconfig.base.json .
+COPY ./apps/tournament-manager-api-test apps/tournament-manager-api-test
+
+RUN npm ci --include=optional
+
+WORKDIR /api-test/apps/tournament-manager-api-test
+ENTRYPOINT [ "npx", "cypress", "run" ]
