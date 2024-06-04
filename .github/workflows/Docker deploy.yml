@@ -23,14 +23,12 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./Database
-          target: build
           load: true
       - name: Build and push Database
         uses: docker/build-push-action@v5
         with:
           context: ./Database
           push: true
-          target: final
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
       # Server
       - name: Build and test Server
