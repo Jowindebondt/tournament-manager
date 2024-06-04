@@ -1,5 +1,5 @@
 services:
-  tournament-manager-database:
+  database:
     build: ./Database
     container_name: tournament-manager-database-container
     restart: always
@@ -16,20 +16,33 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  tournament-manager-server:
+  server:
     build: ./Server
     container_name: tournament-manager-server-container
     ports:
       - 8080:8080
+    environment:
+      - LOGGING__LOGLEVEL__DEFAULT=Warning
     depends_on:
-      tournament-manager-database:
+      database:
         condition: service_healthy
-  tournament-manager-api-test:
+    develop:
+      watch:
+      - action: rebuild
+        path: ./Server
+  api-test:
     container_name: tournament-manager-api-test-container
     build: 
       context: ./Client
       dockerfile: Dockerfile.api
+    environment:
+      - CYPRESS_APIURL=http://server:8080/api
     depends_on:
-      - tournament-manager-server
+      - server
+    develop:
+      watch:
+      - action: sync+restart
+        path: ./Client/apps/tournament-manager-api-test
+        target: /api-test/apps/tournament-manager-api-test
 volumes:
   db-data:
