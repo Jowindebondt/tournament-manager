@@ -19,7 +19,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       # Database
-      - name: Build and test Database
+      - name: Build Database
         uses: docker/build-push-action@v5
         with:
           context: ./Database
@@ -29,7 +29,7 @@ jobs:
         with:
           context: ./Database
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:Database
       # Server
       - name: Build and test Server
         uses: docker/build-push-action@v5
@@ -43,5 +43,5 @@ jobs:
           context: ./Server
           push: true
           target: final
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:Server
       
