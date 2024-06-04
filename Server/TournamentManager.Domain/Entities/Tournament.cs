@@ -17,7 +17,7 @@ public class Tournament : BaseEntity
     /// <summary>
     /// Reference of the <see cref="TournamentSettings"/> that are applied to the tournament
     /// </summary>
-    public virtual TournamentSettings Settings { get; set; } = null!;
+    public virtual TournamentSettings? Settings { get; set; } = null!;
 
     /// <summary>
     /// Collection of all the members that are participating in this tournament

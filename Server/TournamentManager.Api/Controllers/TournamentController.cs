@@ -30,9 +30,6 @@ public class TournamentController : ControllerBase
     public IActionResult GetList() 
     {
         var list = _tournamentService.GetAll();
-        if (list == null) {
-            return NotFound();
-        }
         return Ok(list); 
     }
 

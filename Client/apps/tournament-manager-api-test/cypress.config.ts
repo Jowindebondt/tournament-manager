@@ -15,6 +15,6 @@ export default defineConfig({
     // baseUrl: 'http://localhost:8080',
   },
   env: {
-    apiUrl: 'http://tournament-manager-server:8080/api'
+    APIURL: 'http://localhost:8080/api'
   }
 });

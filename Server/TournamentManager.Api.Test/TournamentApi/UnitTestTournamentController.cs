@@ -42,11 +42,13 @@ public class UnitTestTournamentController
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void GetList_ReturnsNotFound_ServiceGetAllCalledOnce()
+    public void GetList_ReturnsOkWithEmptyList_ServiceGetAllCalledOnce()
     {
         // arrange
         _mockService.Setup(service => service.GetAll()).Returns((IEnumerable<Tournament>)null);
         var controller = new TournamentController(_mockService.Object);
+        OkObjectResult okResult = null;
+        IEnumerable<Tournament> content = null;
 
         // act
         var result = controller.GetList();
@@ -54,7 +56,8 @@ public class UnitTestTournamentController
         // assert
         Assert.Multiple(
             () => _mockService.Verify(service => service.GetAll(), Times.Once),
-            () => Assert.IsType<NotFoundResult>(result)
+            () => okResult = Assert.IsType<OkObjectResult>(result),
+            () => Assert.Null(okResult.Value)
         );
     }
 
