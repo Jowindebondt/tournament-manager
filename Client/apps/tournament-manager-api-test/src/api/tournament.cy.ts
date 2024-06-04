@@ -14,34 +14,48 @@ describe('Tournament API', () => {
         // Check current list
         cy.request('GET', `${apiTournaments}/GetList`).then((response) => {
             expect(response.status).to.be.oneOf([200, 204]);
-            cy.log(`############## GetList body: ${response.body}`);
-            
+            const tournamentListOrigin = response.body ?? [];
+            expect(Cypress._.find(tournamentListOrigin, {name: tournamentName})).to.be.undefined;
+
             // Create new
             cy.request('POST', `${apiTournaments}/Create`, tournamentOrigin).then((response) => {
                 expect(response.status).to.eq(200);
-                cy.log(`############## Create body: ${response.body}`);
                 expect(response.body).has.property('id');
                 expect(response.body).has.property('name', tournamentName);
                 
                 const tournamentCreated = response.body;
                 const tournamentId = tournamentCreated.id;
 
-                // Get newly created
-                cy.request('GET', `${apiTournaments}/GetById/${tournamentId}`).then((response) => {
+                // Get list with newly created
+                cy.request('GET', `${apiTournaments}/GetList`).then((response) => {
                     expect(response.status).to.eq(200);
-                    expect(response.body).has.property('name', tournamentCreated.name);
+                    expect(Cypress._.find(response.body, {name: tournamentName})).to.be.not.null.and.to.be.not.undefined;
 
-                    const newId = uuid();
-                    tournamentCreated.name = `Tournament${newId}`;
-
-                    // Update newly created
-                    cy.request('PUT', `${apiTournaments}/Update/${tournamentId}`, tournamentCreated).then((response) => {
+                    // Get newly created
+                    cy.request('GET', `${apiTournaments}/GetById/${tournamentId}`).then((response) => {
                         expect(response.status).to.eq(200);
                         expect(response.body).has.property('name', tournamentCreated.name);
 
-                        // Remove newly created
-                        cy.request('DELETE', `${apiTournaments}/Delete/${tournamentId}`).then((response) => {
+                        const newId = uuid();
+                        tournamentCreated.name = `Tournament${newId}`;
+
+                        // Update newly created
+                        cy.request('PUT', `${apiTournaments}/Update/${tournamentId}`, tournamentCreated).then((response) => {
                             expect(response.status).to.eq(200);
+                            expect(response.body).has.property('name', tournamentCreated.name);
+
+                            // Remove newly created
+                            cy.request('DELETE', `${apiTournaments}/Delete/${tournamentId}`).then((response) => {
+                                expect(response.status).to.eq(200);
+
+                                // Get list without newly created
+                                cy.request('GET', `${apiTournaments}/GetList`).then((response) => {
+                                    expect(response.status).to.be.oneOf([200, 204]);
+                                    const tournamentListRemoved = response.body ?? [];
+                                    expect(Cypress._.find(tournamentListRemoved, {name: tournamentCreated.name})).to.be.undefined;
+                                    expect(Cypress._.find(tournamentListRemoved, {name: tournamentName})).to.be.undefined;
+                                });
+                            }); 
                         });
                     });
                 });
