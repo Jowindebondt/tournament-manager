@@ -12,7 +12,7 @@ public class Member : BaseEntity
     /// <summary>
     /// Identifier of the <see cref="Player"/>
     /// </summary>
-    public int PlayerId { get; set; }
+    public int? PlayerId { get; set; }
     /// <summary>
     /// Name of the member
     /// </summary>

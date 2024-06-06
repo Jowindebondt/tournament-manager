@@ -22,6 +22,16 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
             new PouleService(
                 new CrudService<Poule>(
                     new Repository<Poule>(_fixture.DbContext)
+                ),
+                new MemberService(
+                    new CrudService<Member>(
+                        new Repository<Member>(_fixture.DbContext)
+                    )
+                ),
+                new PlayerService(
+                    new CrudService<Player>(
+                        new Repository<Player>(_fixture.DbContext)
+                    )
                 )
             )
         );
@@ -156,6 +166,60 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
         // assert
         Assert.Multiple(
             () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void AddValidMembers_ReturnsOk()
+    {
+        // arrange
+
+        // act
+        var result = CreateController().AddMembers(-1, [-1,-2,-3]);
+
+        // assert
+        Assert.Multiple(
+            () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void AddNonExistingMembers_ThrowsArgumentException()
+    {
+        // arrange
+
+        // act & assert
+        Assert.Multiple(
+            () => Assert.Throws<ArgumentException>(() => CreateController().AddMembers(-1, [-10,-20,-30]))
+        );
+    }
+    
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void AddValidMembersAsTeam_ReturnsOk()
+    {
+        // arrange
+
+        // act
+        var result = CreateController().AddMembersAsTeam(-1, [-1,-2,-3]);
+
+        // assert
+        Assert.Multiple(
+            () => Assert.IsType<OkResult>(result)
+        );
+    }
+    
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void AddNonExistingMembersAsTeam_ThrowsArgumentException()
+    {
+        // arrange
+
+        // act
+        Assert.Multiple(
+            () => Assert.Throws<ArgumentException>(() => CreateController().AddMembersAsTeam(-1, [-10,-20,-30]))
         );
     }
 }

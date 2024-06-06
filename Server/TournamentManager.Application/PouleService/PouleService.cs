@@ -6,14 +6,85 @@ namespace TournamentManager.Application;
 public class PouleService : IPouleService
 {
     private readonly ICrudService<Poule> _crudService;
+    private readonly IMemberService _memberService;
+    private readonly IPlayerService _playerService;
 
     /// <summary>
     /// Initializes a new instance of <see cref="PouleService"/>
     /// </summary>
     /// <param name="crudService">Service for handling CRUD actions for the <see cref="Poule"/> model.</param>
-    public PouleService(ICrudService<Poule> crudService) 
+    public PouleService(ICrudService<Poule> crudService, IMemberService memberService, IPlayerService playerService) 
     {
         _crudService = crudService;
+        _memberService = memberService;
+        _playerService = playerService;
+    }
+
+    /// <inheritdoc/>
+    public void AddMembers(int id, IEnumerable<int> memberIds)
+    {
+        var poule = _crudService.Get(id) ?? throw new ArgumentException("Poule not found");
+        var tournamentId = poule.Round.TournamentId;
+
+        var membersNotFound = new List<int>();
+        foreach (var memberId in memberIds)
+        {
+            var member = _memberService.Get(memberId);
+            if (member == null || member.TournamentId != tournamentId)
+            {
+                membersNotFound.Add(memberId);
+            }
+            else 
+            {
+                var player = new Player
+                {
+                };
+                _playerService.Insert(player);
+
+                member.PlayerId = player.Id.Value;
+                _memberService.Update(memberId, member);
+            }
+        }
+
+        if (membersNotFound.Count > 0)
+        {
+            throw new ArgumentException($"The following members were not found in current tournament: {string.Join(',', membersNotFound)}");
+        }
+    }
+
+    /// <inheritdoc/>
+    public void AddMembersAsTeam(int id, IEnumerable<int> memberIds)
+    {
+        var poule = _crudService.Get(id) ?? throw new ArgumentException("Poule not found");
+        var tournamentId = poule.Round.TournamentId;
+
+        var player = new Player();
+        _playerService.Insert(player);
+
+        var membersNotFound = new List<int>();
+        foreach (var memberId in memberIds)
+        {
+            var member = _memberService.Get(memberId);
+            if (member == null || member.TournamentId != tournamentId)
+            {
+                membersNotFound.Add(memberId);
+            }
+            else 
+            {
+                member.PlayerId = player.Id.Value;
+                _memberService.Update(memberId, member);
+            }
+        }
+
+        if (membersNotFound.Count == memberIds.Count())
+        {
+            // if all members aren't found, then the newly created player can be removed because it won't have any references
+            _playerService.Delete(player.Id.Value);
+        }
+        if (membersNotFound.Count > 0)
+        {
+            throw new ArgumentException($"The following members were not found in current tournament: {string.Join(',', membersNotFound)}");
+        }
     }
 
     /// <inheritdoc/>

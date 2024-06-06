@@ -97,4 +97,28 @@ public class PouleController : ControllerBase
         _pouleService.Delete(id);
         return Ok();
     }
+
+    [HttpPost($"{nameof(AddMembers)}/{{id}}")]
+    public IActionResult AddMembers([FromRoute]int id, [FromBody]IEnumerable<int> memberIds)
+    {
+        if (memberIds == null || !memberIds.Any())
+        {
+            return BadRequest("Something went wrong");
+        }
+
+        _pouleService.AddMembers(id, memberIds);
+        return Ok();
+    }
+
+    [HttpPost($"{nameof(AddMembersAsTeam)}/{{id}}")]
+    public IActionResult AddMembersAsTeam([FromRoute]int id, [FromBody]IEnumerable<int> memberIds)
+    {
+        if (memberIds == null || !memberIds.Any())
+        {
+            return BadRequest("Something went wrong");
+        }
+
+        _pouleService.AddMembersAsTeam(id, memberIds);
+        return Ok();
+    }
 }

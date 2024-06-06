@@ -8,6 +8,18 @@ namespace TournamentManager.Application;
 public interface IPouleService
 {
     /// <summary>
+    /// Add the provided members to the current <see cref="Poule"/> as individual <see cref="Player"/>s
+    /// <summary>
+    /// <paramref name="id"/>The identifier of the <see cref="Poule"/></param>
+    /// <paramref name="memberIds"/>The identifiers of the <see cref="Member"/>s to add</param>
+    void AddMembers(int id, IEnumerable<int> memberIds);
+    /// <summary>
+    /// Add the provided members to the current <see cref="Poule"/> as a single <see cref="Player"/>
+    /// <summary>
+    /// <paramref name="id"/>The identifier of the <see cref="Poule"/></param>
+    /// <paramref name="memberIds"/>The identifiers of the <see cref="Member"/>s to add</param>
+    void AddMembersAsTeam(int id, IEnumerable<int> memberIds);
+    /// <summary>
     /// Deletes an existing <see cref="Poule"/> instance.
     /// </summary>
     /// <param name="id">The identifier of the <see cref="Poule"/></param>

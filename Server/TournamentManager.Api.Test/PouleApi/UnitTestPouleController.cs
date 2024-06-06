@@ -193,4 +193,72 @@ public class UnitTestPouleController
             () => Assert.IsType<OkResult>(result)
         );
     }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void AddMembers_ReturnsOk_ServiceAddMembersCalledOnce()
+    {
+        // arrange
+        _mockService.Setup(service => service.AddMembers(It.IsAny<int>(), It.IsAny<IEnumerable<int>>())).Callback(() => { });
+
+        // act
+        var result = _controller.AddMembers(-1, [-1,-2,-3]);
+
+        // assert
+        Assert.Multiple(
+            () => _mockService.Verify(service => service.AddMembers(It.IsAny<int>(), It.IsAny<IEnumerable<int>>()), Times.Once),
+            () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void AddNoMembers_ReturnsBadRequest_ServiceAddMembersCalledNever()
+    {
+        // arrange
+        _mockService.Setup(service => service.AddMembers(It.IsAny<int>(), It.IsAny<IEnumerable<int>>())).Callback(() => { });
+
+        // act
+        var result = _controller.AddMembers(-1, []);
+
+        // assert
+        Assert.Multiple(
+            () => _mockService.Verify(service => service.AddMembers(It.IsAny<int>(), It.IsAny<IEnumerable<int>>()), Times.Never),
+            () => Assert.IsType<BadRequestObjectResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void AddMembersAsTeam_ReturnsOk_ServiceAddMembersCalledOnce()
+    {
+        // arrange
+        _mockService.Setup(service => service.AddMembersAsTeam(It.IsAny<int>(), It.IsAny<IEnumerable<int>>())).Callback(() => { });
+
+        // act
+        var result = _controller.AddMembersAsTeam(-1, [-1,-2,-3]);
+
+        // assert
+        Assert.Multiple(
+            () => _mockService.Verify(service => service.AddMembersAsTeam(It.IsAny<int>(), It.IsAny<IEnumerable<int>>()), Times.Once),
+            () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void AddNoMembersAsTeam_ReturnsBadRequest_ServiceAddMembersCalledNever()
+    {
+        // arrange
+        _mockService.Setup(service => service.AddMembersAsTeam(It.IsAny<int>(), It.IsAny<IEnumerable<int>>())).Callback(() => { });
+
+        // act
+        var result = _controller.AddMembersAsTeam(-1, []);
+
+        // assert
+        Assert.Multiple(
+            () => _mockService.Verify(service => service.AddMembersAsTeam(It.IsAny<int>(), It.IsAny<IEnumerable<int>>()), Times.Never),
+            () => Assert.IsType<BadRequestObjectResult>(result)
+        );
+    }
 }
