@@ -51,32 +51,4 @@ public class MatchController : ControllerBase
         }
         return Ok(entity);
     }
-
-    /// <summary>
-    /// Creates a new <see cref="Match"/> object.
-    /// </summary>
-    /// <param name="match">The new <see cref="Match"/></param>
-    /// <returns>The created <see cref="Match"/></returns>
-    [HttpPost($"{nameof(Create)}")]
-    public IActionResult Create([FromBody]Match match) 
-    {
-        if (match == null) {
-            return BadRequest("Something went wrong");
-        }
-
-        _matchService.Insert(match);
-        return Ok(match);
-    }
-
-    /// <summary>
-    /// Deletes a <see cref="Match"/> based on its identifier
-    /// </summary>
-    /// <param name="id">The identifier of an existing <see cref="Match"/></param>
-    /// <returns>Status code 200 if deletion is successful</returns>
-    [HttpDelete($"{nameof(Delete)}/{{id}}")]
-    public IActionResult Delete(int id)
-    {
-        _matchService.Delete(id);
-        return Ok();
-    }
 }
