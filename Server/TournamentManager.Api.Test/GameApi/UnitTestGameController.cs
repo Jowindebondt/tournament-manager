@@ -97,47 +97,6 @@ public class UnitTestGameController
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void CreateValidInstance_ReturnsOkWithEntity_ServiceInsertCalledOnce()
-    {
-        // arrange
-        var newInstance = GameBuilder.GetSingleGame();
-        OkObjectResult okResult = null;
-
-        // act
-        var result = _controller.Create(newInstance);
-
-        // assert
-        Assert.Multiple(
-            () => _mockService.Verify(service => service.Insert(It.IsAny<Game>()), Times.Once),
-            () => okResult = Assert.IsType<OkObjectResult>(result),
-            () => Assert.NotNull(okResult.Value),
-            () => Assert.IsType<Game>(okResult.Value)
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void CreateNoInstance_ReturnsBadRequest_ServiceInsertCalledNever()
-    {
-        // arrange
-        BadRequestObjectResult badRequestResult = null;
-        string content = null;
-
-        // act
-        var result = _controller.Create(null);
-
-        // assert
-        Assert.Multiple(
-            () => _mockService.Verify(service => service.Insert(It.IsAny<Game>()), Times.Never),
-            () => badRequestResult = Assert.IsType<BadRequestObjectResult>(result),
-            () => Assert.NotNull(badRequestResult.Value),
-            () => content = Assert.IsType<string>(badRequestResult.Value),
-            () => Assert.False(string.IsNullOrEmpty(content))
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void UpdateValidInstance_ReturnsOkWithEntity_ServiceUpdateCalledOnce()
     {
         // arrange
@@ -174,23 +133,6 @@ public class UnitTestGameController
             () => Assert.NotNull(badRequestResult.Value),
             () => content = Assert.IsType<string>(badRequestResult.Value),
             () => Assert.False(string.IsNullOrEmpty(content))
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void Delete_ReturnsOk_ServiceDeleteCalledOnce()
-    {
-        // arrange
-        _mockService.Setup(service => service.Delete(It.IsAny<int>())).Callback(() => { });
-
-        // act
-        var result = _controller.Delete(-1);
-
-        // assert
-        Assert.Multiple(
-            () => _mockService.Verify(service => service.Delete(It.IsAny<int>()), Times.Once),
-            () => Assert.IsType<OkResult>(result)
         );
     }
 }

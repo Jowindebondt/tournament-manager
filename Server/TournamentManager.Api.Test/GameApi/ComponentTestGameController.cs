@@ -84,35 +84,6 @@ public class ComponentTestGameController: IClassFixture<SimpleGameDatabaseFixtur
         );
     }
 
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
-    public void CreateValidInstance_ReturnsOkWithEntity()
-    {
-        // arrange
-        var newInstance = new Game()
-        {
-            Score_1 = 0,
-            Score_2 = 0,
-            MatchId = -1,
-        };
-        OkObjectResult okResult = null;
-        Game addedInstance = null;
-
-        // act
-        var result = CreateController().Create(newInstance);
-
-        // assert
-        Assert.Multiple(
-            () => okResult = Assert.IsType<OkObjectResult>(result),
-            () => Assert.NotNull(okResult.Value),
-            () => addedInstance = Assert.IsType<Game>(okResult.Value),
-            () => Assert.NotNull(addedInstance.Id),
-            () => Assert.NotNull(addedInstance.MatchId),
-            () => Assert.NotNull(addedInstance.CreatedDate),
-            () => Assert.NotNull(addedInstance.ModifiedDate)
-        );
-    }
-
     [Theory]
     [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
     [InlineData(-1, 11, 9)]
@@ -141,23 +112,6 @@ public class ComponentTestGameController: IClassFixture<SimpleGameDatabaseFixtur
             () => Assert.Equal(updatingInstance.Score_1, updatedInstance.Score_1),
             () => Assert.Equal(updatingInstance.Score_2, updatedInstance.Score_2),
             () => Assert.NotEqual(updatedInstance.CreatedDate, updatedInstance.ModifiedDate)
-        );
-    }
-
-    [Theory]
-    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
-    [InlineData(-3)]
-    [InlineData(-4)]
-    public void Delete(int id)
-    {
-        // arrange
-
-        // act
-        var result = CreateController().Delete(id);
-
-        // assert
-        Assert.Multiple(
-            () => Assert.IsType<OkResult>(result)
         );
     }
 }

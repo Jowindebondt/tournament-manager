@@ -53,22 +53,6 @@ public class GameController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new <see cref="Game"/> object.
-    /// </summary>
-    /// <param name="game">The new <see cref="Game"/></param>
-    /// <returns>The created <see cref="Game"/></returns>
-    [HttpPost($"{nameof(Create)}")]
-    public IActionResult Create([FromBody]Game game) 
-    {
-        if (game == null) {
-            return BadRequest("Something went wrong");
-        }
-
-        _gameService.Insert(game);
-        return Ok(game);
-    }
-
-    /// <summary>
     /// Updates an existing <see cref="Game"/>
     /// </summary>
     /// <param name="id">Id of the existing <see cref="Game"/></param>
@@ -83,17 +67,5 @@ public class GameController : ControllerBase
 
         var modified = _gameService.Update(id, game);
         return Ok(modified);
-    }
-
-    /// <summary>
-    /// Deletes a <see cref="Game"/> based on its identifier
-    /// </summary>
-    /// <param name="id">The identifier of an existing <see cref="Game"/></param>
-    /// <returns>Status code 200 if deletion is successful</returns>
-    [HttpDelete($"{nameof(Delete)}/{{id}}")]
-    public IActionResult Delete(int id)
-    {
-        _gameService.Delete(id);
-        return Ok();
     }
 }
