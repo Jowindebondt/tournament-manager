@@ -31,9 +31,6 @@ public class GameController : ControllerBase
     public IActionResult GetList([FromRoute]int matchId) 
     {
         var list = _gameService.GetAll(matchId);
-        if (list == null) {
-            return NotFound();
-        }
         return Ok(list); 
     }
 

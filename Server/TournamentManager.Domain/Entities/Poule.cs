@@ -22,7 +22,7 @@ public class Poule : BaseEntity
     /// <summary>
     /// Reference to the related <see cref="Round"/>
     /// </summary>
-    public virtual Round Round { get; set; } = null!;
+    public virtual Round? Round { get; set; } = null!;
     
     /// <summary>
     /// Collection of <see cref="Match"/>es that are part of this poule

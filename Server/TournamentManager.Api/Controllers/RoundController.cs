@@ -30,9 +30,6 @@ public class RoundController : ControllerBase
     public IActionResult GetList([FromRoute]int tournamentId) 
     {
         var list = _roundService.GetAll(tournamentId);
-        if (list == null) {
-            return NotFound();
-        }
         return Ok(list); 
     }
 

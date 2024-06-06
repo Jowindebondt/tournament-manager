@@ -31,9 +31,6 @@ public class PouleController : ControllerBase
     public IActionResult GetList([FromRoute]int roundId) 
     {
         var list = _pouleService.GetAll(roundId);
-        if (list == null) {
-            return NotFound();
-        }
         return Ok(list); 
     }
 

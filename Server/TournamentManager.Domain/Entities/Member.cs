@@ -29,9 +29,9 @@ public class Member : BaseEntity
     /// <summary>
     /// Reference to the related <see cref="Tournament"/>
     /// </summary>
-    public virtual Tournament Tournament { get; set; } = null!;
+    public virtual Tournament? Tournament { get; set; } = null!;
     /// <summary>
     /// Reference to the <see cref="Player"/>
     /// </summary>
-    public virtual Player Player { get; set; } = null!; 
+    public virtual Player? Player { get; set; } = null!; 
 }

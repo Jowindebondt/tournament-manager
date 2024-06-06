@@ -43,10 +43,11 @@ public class UnitTestPouleController
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void GetList_ReturnsNotFound_ServiceGetAllCalledOnce()
+    public void GetList_ReturnsOkWithEmptyList_ServiceGetAllCalledOnce()
     {
         // arrange
         _mockService.Setup(service => service.GetAll(It.IsAny<int>())).Returns((IEnumerable<Poule>)null);
+        OkObjectResult okResult = null;
 
         // act
         var result = _controller.GetList(-1);
@@ -54,7 +55,8 @@ public class UnitTestPouleController
         // assert
         Assert.Multiple(
             () => _mockService.Verify(service => service.GetAll(It.IsAny<int>()), Times.Once),
-            () => Assert.IsType<NotFoundResult>(result)
+            () => okResult = Assert.IsType<OkObjectResult>(result),
+            () => Assert.Null(okResult.Value)
         );
     }
 

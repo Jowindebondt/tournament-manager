@@ -31,9 +31,6 @@ public class MatchController : ControllerBase
     public IActionResult GetList([FromRoute]int pouleId) 
     {
         var list = _matchService.GetAll(pouleId);
-        if (list == null) {
-            return NotFound();
-        }
         return Ok(list); 
     }
 

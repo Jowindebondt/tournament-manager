@@ -31,9 +31,6 @@ public class MemberController : ControllerBase
     public IActionResult GetList([FromRoute]int tournamentId) 
     {
         var list = _memberService.GetAll(tournamentId);
-        if (list == null) {
-            return NotFound();
-        }
         return Ok(list); 
     }
 

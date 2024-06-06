@@ -48,7 +48,6 @@ public class UnitTestTournamentController
         _mockService.Setup(service => service.GetAll()).Returns((IEnumerable<Tournament>)null);
         var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
-        IEnumerable<Tournament> content = null;
 
         // act
         var result = controller.GetList();

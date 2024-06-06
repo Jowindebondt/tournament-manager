@@ -20,6 +20,10 @@ builder.Services.AddScoped(typeof(ICrudService<>), typeof(CrudService<>));
 builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<IRoundService, RoundService>();
 builder.Services.AddScoped<IPouleService, PouleService>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IMatchService, MatchService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
 #endregion
 
 var app = builder.Build();
