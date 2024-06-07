@@ -92,4 +92,19 @@ public class RoundController : ControllerBase
         _roundService.Delete(id);
         return Ok();
     }
+
+    /// <summary>
+    /// Set the settings for the round
+    /// </summary>
+    /// <param name="settings">The settings object</param>
+    [HttpPost($"{nameof(SetSettings)}")]
+    public IActionResult SetSettings([FromBody]RoundSettings settings)
+    {
+        if (settings == null)
+        {
+            return BadRequest("Something went wrong");
+        }
+        _roundService.SetSettings(settings);
+        return Ok();
+    }
 }

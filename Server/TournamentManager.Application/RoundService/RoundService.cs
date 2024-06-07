@@ -9,15 +9,17 @@ namespace TournamentManager.Application;
 public class RoundService : IRoundService
 {
     private readonly ICrudService<Round> _crudService;
+    private readonly ICrudService<RoundSettings> _settingsCrudService;
 
     /// <summary>
     /// Initializes a new instance of <see cref="RoundService"/>
     /// </summary>
     /// <param name="tournamentService">Service handling all <see cref="Tournament"/> actions.</param>
     /// <param name="crudService">Service for handling CRUD actions for the <see cref="Round"/> model.</param>
-    public RoundService(ICrudService<Round> crudService)
+    public RoundService(ICrudService<Round> crudService, ICrudService<RoundSettings> settingsCrudService)
     {
         _crudService = crudService;
+        _settingsCrudService = settingsCrudService;
     }
 
     /// <inheritdoc/>
@@ -42,6 +44,13 @@ public class RoundService : IRoundService
     public void Insert(Round entity)
     {
         _crudService.Insert(entity);
+    }
+
+    /// <inheritdoc/>
+    public void SetSettings(RoundSettings settings)
+    {
+        var _ = _crudService.Get(settings.RoundId) ?? throw new ArgumentException("Round not found");
+        _settingsCrudService.Insert(settings);
     }
 
     /// <inheritdoc/>

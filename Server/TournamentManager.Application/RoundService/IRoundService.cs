@@ -30,6 +30,11 @@ public interface IRoundService
     /// <param name="entity">The new values for <see cref="Round"/></param>
     void Insert(Round entity);
     /// <summary>
+    /// Sets the settings for the <see cref="Round"/>
+    /// </summary>
+    /// <param name="settings">The settings</param>
+    void SetSettings(RoundSettings settings);
+    /// <summary>
     /// Updates an existing <see cref="Round"/> instance.
     /// </summary>
     /// <param name="id">The identifier of the <see cref="Round"/></param>

@@ -23,6 +23,9 @@ public class ComponentTestRoundController : IClassFixture<SimpleRoundDatabaseFix
             new RoundService(
                 new CrudService<Round>(
                     new Repository<Round>(_fixture.DbContext)
+                ),
+                new CrudService<RoundSettings>(
+                    new Repository<RoundSettings>(_fixture.DbContext)
                 )
             )
         );
@@ -153,6 +156,25 @@ public class ComponentTestRoundController : IClassFixture<SimpleRoundDatabaseFix
 
         // act
         var result = CreateController().Delete(id);
+
+        // assert
+        Assert.Multiple(
+            () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public void SetSettings_ReturnsOkResult()
+    {
+        // arrange
+        var settings = new TableTennisRoundSettings{
+            RoundId = -1,
+            BestOf = 5,
+        };
+
+        // act
+        var result = CreateController().SetSettings(settings);
 
         // assert
         Assert.Multiple(

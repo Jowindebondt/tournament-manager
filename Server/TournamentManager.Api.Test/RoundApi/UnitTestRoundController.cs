@@ -195,4 +195,42 @@ public class UnitTestRoundController
             () => Assert.IsType<OkResult>(result)
         );
     }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void SetSettings_ReturnsOk_ServiceSetSettingsCalledOnce()
+    {
+        // arrange
+        _mockService.Setup(service => service.SetSettings(It.IsAny<RoundSettings>())).Callback(() => { });
+
+        // act
+        var result = _controller.SetSettings(RoundSettingsBuilder.GetSingleRoundSettings<TableTennisRoundSettings>());
+
+        // assert
+        Assert.Multiple(
+            () => _mockService.Verify(service => service.SetSettings(It.IsAny<RoundSettings>()), Times.Once),
+            () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void SetSettings_ReturnsBadRequest_ServiceSetSettingsCalledNever()
+    {
+        // arrange
+        BadRequestObjectResult badRequestResult = null;
+        string content = null;
+        
+        // act
+        var result = _controller.SetSettings(null);
+
+        // assert
+        Assert.Multiple(
+            () => _mockService.Verify(service => service.SetSettings(It.IsAny<RoundSettings>()), Times.Never),
+            () => badRequestResult = Assert.IsType<BadRequestObjectResult>(result),
+            () => Assert.NotNull(badRequestResult.Value),
+            () => content = Assert.IsType<string>(badRequestResult.Value),
+            () => Assert.False(string.IsNullOrEmpty(content))
+        );
+    }
 }
