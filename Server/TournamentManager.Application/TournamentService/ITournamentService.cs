@@ -29,6 +29,11 @@ public interface ITournamentService
     /// <param name="entity">The new values for <see cref="Tournament"/></param>
     void Insert(Tournament entity);
     /// <summary>
+    /// Sets the settings for the <see cref="Tournament"/>
+    /// </summary>
+    /// <param name="settings">The settings</param>
+    void SetSettings(TournamentSettings settings);
+    /// <summary>
     /// Updates an existing <see cref="Tournament"/> instance.
     /// </summary>
     /// <param name="id">The identifier of the <see cref="Tournament"/></param>

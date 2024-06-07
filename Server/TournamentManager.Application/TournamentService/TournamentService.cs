@@ -9,13 +9,15 @@ namespace TournamentManager.Application;
 public class TournamentService : ITournamentService
 {
     private readonly ICrudService<Tournament> _crudService;
+    private readonly ICrudService<TournamentSettings> _settingsCrudService;
 
     /// <summary>
     /// Initializes a new instance of <see cref="TournamentService"/>
     /// </summary>
     /// <param name="crudService">Service for handling CRUD actions for the <see cref="Tournament"/> model.</param>
-    public TournamentService(ICrudService<Tournament> crudService){
+    public TournamentService(ICrudService<Tournament> crudService, ICrudService<TournamentSettings> settingsCrudService){
         _crudService = crudService;
+        _settingsCrudService = settingsCrudService;
     }
 
     /// <inheritdoc/>
@@ -40,6 +42,13 @@ public class TournamentService : ITournamentService
     public void Insert(Tournament entity)
     {
         _crudService.Insert(entity);
+    }
+
+    /// <inheritdoc/>
+    public void SetSettings(TournamentSettings settings)
+    {
+        var _ = _crudService.Get(settings.TournamentId) ?? throw new ArgumentException("Tournament not found");
+        _settingsCrudService.Insert(settings);
     }
 
     /// <inheritdoc/>

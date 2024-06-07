@@ -92,4 +92,19 @@ public class TournamentController : ControllerBase
         _tournamentService.Delete(id);
         return Ok();
     }
+
+    /// <summary>
+    /// Set the settings for the tournament
+    /// </summary>
+    /// <param name="settings">The settings object</param>
+    [HttpPost($"{nameof(SetSettings)}")]
+    public IActionResult SetSettings([FromBody]TournamentSettings settings)
+    {
+        if (settings == null)
+        {
+            return BadRequest("Something went wrong");
+        }
+        _tournamentService.SetSettings(settings);
+        return Ok();
+    }
 }

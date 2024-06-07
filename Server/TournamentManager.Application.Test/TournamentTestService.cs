@@ -10,12 +10,14 @@ namespace TournamentManager.Application.Test;
 public class TournamentTestService
 {
     private readonly Mock<ICrudService<Tournament>> _mockCrudService;
+    private readonly Mock<ICrudService<TournamentSettings>> _mockSettingsCrudService;
     private readonly TournamentService _service;
 
     public TournamentTestService() 
     {
         _mockCrudService = new Mock<ICrudService<Tournament>>();
-        _service = new TournamentService(_mockCrudService.Object);
+        _mockSettingsCrudService = new Mock<ICrudService<TournamentSettings>>();
+        _service = new TournamentService(_mockCrudService.Object, _mockSettingsCrudService.Object);
     }
 
     [Fact]
@@ -95,6 +97,44 @@ public class TournamentTestService
         // Assert
         Assert.Multiple(
             () => _mockCrudService.Verify(crud => crud.Update(It.IsAny<int>(), It.IsAny<Tournament>(), It.IsAny<Action<Tournament>>()), Times.Once)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void SetSettings_CrudGetCalledOnce_SettingsCrudInsertCalledOnce()
+    {
+        // Arrange
+        var tournament = TournamentBuilder.GetSingleTournament();
+        var settings = TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>(tournament.Id.Value);
+
+        _mockCrudService.Setup(crud => crud.Get(It.IsAny<int>())).Returns(tournament);
+        _mockSettingsCrudService.Setup(crud => crud.Insert(It.IsAny<TournamentSettings>())).Callback(() => {});
+
+        // Act
+        _service.SetSettings(settings);
+
+        // Assert
+        Assert.Multiple(
+            () => _mockCrudService.Verify(crud => crud.Get(It.IsAny<int>()), Times.Once),
+            () => _mockSettingsCrudService.Verify(crud => crud.Insert(It.IsAny<TournamentSettings>()), Times.Once)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void SetSettingsWithNonExistingTournament_ThrowsArgumentException_CrudGetCalledOnce_SettingsCrudInsertCalledNever()
+    {
+        // Arrange
+        var settings = TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>();
+
+        _mockCrudService.Setup(crud => crud.Get(It.IsAny<int>())).Returns((Tournament)null);
+
+        // Act & Assert
+        Assert.Multiple(
+            () => Assert.Throws<ArgumentException>(() => _service.SetSettings(settings)),
+            () => _mockCrudService.Verify(crud => crud.Get(It.IsAny<int>()), Times.Once),
+            () => _mockSettingsCrudService.Verify(crud => crud.Insert(It.IsAny<TournamentSettings>()), Times.Never)
         );
     }
 }

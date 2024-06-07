@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TournamentManager.Application;
@@ -202,6 +203,46 @@ public class UnitTestTournamentController
         Assert.Multiple(
             () => _mockService.Verify(service => service.Delete(It.IsAny<int>()), Times.Once),
             () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void SetSettings_ReturnsOk_ServiceSetSettingsCalledOnce()
+    {
+        // arrange
+        _mockService.Setup(service => service.SetSettings(It.IsAny<TournamentSettings>())).Callback(() => { });
+        var controller = new TournamentController(_mockService.Object);
+
+        // act
+        var result = controller.SetSettings(TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>());
+
+        // assert
+        Assert.Multiple(
+            () => _mockService.Verify(service => service.SetSettings(It.IsAny<TournamentSettings>()), Times.Once),
+            () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void SetSettings_ReturnsBadRequest_ServiceSetSettingsCalledNever()
+    {
+        // arrange
+        var controller = new TournamentController(_mockService.Object);
+        BadRequestObjectResult badRequestResult = null;
+        string content = null;
+        
+        // act
+        var result = controller.SetSettings(null);
+
+        // assert
+        Assert.Multiple(
+            () => _mockService.Verify(service => service.SetSettings(It.IsAny<TournamentSettings>()), Times.Never),
+            () => badRequestResult = Assert.IsType<BadRequestObjectResult>(result),
+            () => Assert.NotNull(badRequestResult.Value),
+            () => content = Assert.IsType<string>(badRequestResult.Value),
+            () => Assert.False(string.IsNullOrEmpty(content))
         );
     }
 }

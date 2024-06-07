@@ -26,6 +26,9 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
             new TournamentService(
                 new CrudService<Tournament>(
                     new Repository<Tournament>(_fixture.DbContext)
+                ),
+                new CrudService<TournamentSettings>(
+                    new Repository<TournamentSettings>(_fixture.DbContext)
                 )
             )
         );
@@ -148,12 +151,32 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
     [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
     [InlineData(-3)]
     [InlineData(-4)]
-    public void Delete(int id)
+    public void Delete_ReturnsOkResult(int id)
     {
         // arrange
 
         // act
         var result = CreateController().Delete(id);
+
+        // assert
+        Assert.Multiple(
+            () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public void SetSettings_ReturnsOkResult()
+    {
+        // arrange
+        var settings = new TableTennisSettings{
+            TournamentId = -1,
+            Handicap = TableTennisHandicap.None,
+            TournamentType = TableTennisTournamentType.Single
+        };
+
+        // act
+        var result = CreateController().SetSettings(settings);
 
         // assert
         Assert.Multiple(

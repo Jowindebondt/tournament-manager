@@ -10,5 +10,5 @@ public abstract class TournamentSettings : BaseEntity
     /// <summary>
     /// Reference of the <see cref="Tournament"/> these settings are part of
     /// </summary>
-    public virtual Tournament Tournament { get; set; } = null!;
+    public virtual Tournament? Tournament { get; set; } = null!;
 }
