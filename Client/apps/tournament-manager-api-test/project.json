@@ -1,10 +1,12 @@
 {
-  "name": "tournament-manager-e2e",
+  "name": "tournament-manager-api-test",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "apps/tournament-manager-e2e/src",
+  "sourceRoot": "apps/tournament-manager-api-test/src",
   "tags": [],
-  "implicitDependencies": ["tournament-manager"],
+  "implicitDependencies": [
+    "tournament-manager"
+  ],
   "// targets": "to see all targets run: nx show project tournament-manager-e2e --web",
   "targets": {}
 }
