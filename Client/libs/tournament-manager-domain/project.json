@@ -1,0 +1,19 @@
+{
+  "name": "tournament-manager-domain",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/tournament-manager-domain/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/tournament-manager-domain",
+        "main": "libs/tournament-manager-domain/src/index.ts",
+        "tsConfig": "libs/tournament-manager-domain/tsconfig.lib.json",
+        "assets": ["libs/tournament-manager-domain/*.md"]
+      }
+    }
+  }
+}
