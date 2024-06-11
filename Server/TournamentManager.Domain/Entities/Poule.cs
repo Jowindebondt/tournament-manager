@@ -17,7 +17,7 @@ public class Poule : BaseEntity
     /// <summary>
     /// Collection of assigned <see cref="Player"/>s to this poule
     /// </summary>
-    public List<Player> Players { get; set; } = [];
+    public virtual List<Player> Players { get; set; } = [];
 
     /// <summary>
     /// Reference to the related <see cref="Round"/>

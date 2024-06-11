@@ -3,7 +3,7 @@
 /// <summary>
 /// Class defining the base model
 /// </summary>
-public class BaseEntity
+public abstract class BaseEntity
 {
     /// <summary>
     /// Unique identifier
