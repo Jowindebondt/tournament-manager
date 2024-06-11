@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////
 
 export interface BaseEntity{
-    idd?: number
-    createddatereatedDate?: Date
-    modifieddateodifiedDate?: Date
+    id?: number
+    createdDate?: Date
+    modifiedDate?: Date
 }

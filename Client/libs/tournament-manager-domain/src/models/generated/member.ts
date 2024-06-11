@@ -5,9 +5,9 @@
 import { BaseEntity } from "./base-entity";
 
 export interface Member extends BaseEntity{
-    tournamentidournamentId: number
-    playeridlayerId?: number
-    nameame: string
-    ratingating: number
-    classlass: number
+    tournamentId: number
+    playerId?: number
+    name: string
+    rating: number
+    class: number
 }

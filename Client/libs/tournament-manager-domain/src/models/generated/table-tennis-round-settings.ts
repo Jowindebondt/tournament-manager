@@ -5,5 +5,5 @@
 import { RoundSettings } from "./round-settings";
 
 export interface TableTennisRoundSettings extends RoundSettings{
-    bestofestOf: number
+    bestOf: number
 }

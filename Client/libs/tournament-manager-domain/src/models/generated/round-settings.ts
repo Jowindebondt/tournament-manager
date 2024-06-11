@@ -5,5 +5,5 @@
 import { BaseEntity } from "./base-entity";
 
 export interface RoundSettings extends BaseEntity{
-    roundidoundId: number
+    roundId: number
 }

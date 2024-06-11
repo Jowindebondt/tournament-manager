@@ -5,7 +5,7 @@
 import { BaseEntity } from "./base-entity";
 
 export interface Match extends BaseEntity{
-    pouleidouleId: number
-    player1idlayer1Id: number
-    player2idlayer2Id: number
+    pouleId: number
+    player1Id: number
+    player2Id: number
 }

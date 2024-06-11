@@ -7,6 +7,6 @@ import { TableTennisHandicap } from "./../../enums/generated/table-tennis-handic
 import { TableTennisTournamentType } from "./../../enums/generated/table-tennis-tournament-type";
 
 export interface TableTennisSettings extends TournamentSettings{
-    handicapandicap: TableTennisHandicap
-    tournamenttypeournamentType: TableTennisTournamentType
+    handicap: TableTennisHandicap
+    tournamentType: TableTennisTournamentType
 }

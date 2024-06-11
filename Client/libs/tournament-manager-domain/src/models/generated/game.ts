@@ -5,7 +5,7 @@
 import { BaseEntity } from "./base-entity";
 
 export interface Game extends BaseEntity{
-    matchidatchId: number
-    score_1core_1: number
-    score_2core_2: number
+    matchId: number
+    score_1: number
+    score_2: number
 }

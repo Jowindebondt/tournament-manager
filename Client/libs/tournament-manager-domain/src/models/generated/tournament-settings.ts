@@ -5,5 +5,5 @@
 import { BaseEntity } from "./base-entity";
 
 export interface TournamentSettings extends BaseEntity{
-    tournamentidournamentId: number
+    tournamentId: number
 }

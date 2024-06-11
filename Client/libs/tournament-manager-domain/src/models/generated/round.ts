@@ -5,6 +5,6 @@
 import { BaseEntity } from "./base-entity";
 
 export interface Round extends BaseEntity{
-    tournamentidournamentId: number
-    nameame: string
+    tournamentId: number
+    name: string
 }

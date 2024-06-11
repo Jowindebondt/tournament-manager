@@ -6,6 +6,6 @@ import { BaseEntity } from "./base-entity";
 import { Sport } from "./../../enums/generated/sport";
 
 export interface Tournament extends BaseEntity{
-    nameame: string
-    sportport: Sport
+    name: string
+    sport: Sport
 }

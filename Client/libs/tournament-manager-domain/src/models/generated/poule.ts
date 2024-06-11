@@ -5,6 +5,6 @@
 import { BaseEntity } from "./base-entity";
 
 export interface Poule extends BaseEntity{
-    roundidoundId: number
-    nameame: string
+    roundId: number
+    name: string
 }

@@ -14,6 +14,6 @@ public static class StringExtensions
 
     public static string PascalToCamelCase(this string value)
     {
-        return $"{value.ToLower()}{value[1..]}";
+        return $"{value[0].ToString().ToLower()}{value[1..]}";
     }
 }
