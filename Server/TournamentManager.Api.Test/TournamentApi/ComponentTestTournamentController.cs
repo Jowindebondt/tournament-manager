@@ -29,7 +29,68 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
                 ),
                 new CrudService<TournamentSettings>(
                     new Repository<TournamentSettings>(_fixture.DbContext)
-                )
+                ),
+                delegate(Sport key) {
+                    return new TableTennisService(
+                        new TableTennisRoundGenerator(
+                            new RoundService(
+                                new CrudService<Round>(
+                                    new Repository<Round>(_fixture.DbContext)
+                                ),
+                                new CrudService<RoundSettings>(
+                                    new Repository<RoundSettings>(_fixture.DbContext)
+                                )
+                            )
+                        ),
+                        new TableTennisPouleGenerator(
+                            delegate(int key) {
+                                return new Poule3PlayerTemplateService();
+                            },
+                            new PouleService(
+                                new CrudService<Poule>(
+                                    new Repository<Poule>(_fixture.DbContext)
+                                ),
+                                new MemberService(
+                                    new CrudService<Member>(
+                                        new Repository<Member>(_fixture.DbContext)
+                                    )
+                                ),
+                                new PlayerService(
+                                    new CrudService<Player>(
+                                        new Repository<Player>(_fixture.DbContext)
+                                    )
+                                )
+                            )
+                        ),
+                        new TableTennisMatchGenerator(
+                            delegate(int key) {
+                                return new Poule3PlayerTemplateService();
+                            },
+                            new PouleService(
+                                new CrudService<Poule>(
+                                    new Repository<Poule>(_fixture.DbContext)
+                                ),
+                                new MemberService(
+                                    new CrudService<Member>(
+                                        new Repository<Member>(_fixture.DbContext)
+                                    )
+                                ),
+                                new PlayerService(
+                                    new CrudService<Player>(
+                                        new Repository<Player>(_fixture.DbContext)
+                                    )
+                                )
+                            )
+                        ),
+                        new TableTennisGameGenerator(
+                            new GameService(
+                                new CrudService<Game>(
+                                    new Repository<Game>(_fixture.DbContext)
+                                )
+                            )
+                        )
+                    );
+                }
             )
         );
     }
@@ -181,6 +242,25 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
         // assert
         Assert.Multiple(
             () => Assert.IsType<OkResult>(result)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public void Generate_ReturnsOkResult()
+    {
+        // arrange
+
+        // act
+        var result = CreateController().Generate(-1);
+
+        // assert
+        Assert.Multiple(
+            () => Assert.IsType<OkResult>(result),
+            () => Assert.Equal(1, _fixture.DbContext.Rounds.Where(u => u.TournamentId == -1).Count()),
+            () => Assert.Equal(1, _fixture.DbContext.Poules.Where(u => u.Round.TournamentId == -1).Count()),
+            () => Assert.Equal(3, _fixture.DbContext.Matches.Where(u => u.Poule.Round.TournamentId == -1).Count()),
+            () => Assert.Equal(15, _fixture.DbContext.Games.Where(u => u.Match.Poule.Round.TournamentId == -1).Count())
         );
     }
 }

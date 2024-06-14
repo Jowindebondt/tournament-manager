@@ -12,10 +12,12 @@ namespace TournamentManager.Api.Test.TournamentApi;
 public class UnitTestTournamentController
 {
     private readonly Mock<ITournamentService> _mockService;
+    private readonly TournamentController _controller;
 
     public UnitTestTournamentController()
     {
         _mockService = new Mock<ITournamentService>();
+        _controller = new TournamentController(_mockService.Object);
     }
 
     [Fact]
@@ -24,12 +26,11 @@ public class UnitTestTournamentController
     {
         // arrange
         _mockService.Setup(service => service.GetAll()).Returns(TournamentBuilder.GetListTournament(5));
-        var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
         IEnumerable<Tournament> content = null;
 
         // act
-        var result = controller.GetList();
+        var result = _controller.GetList();
 
         // assert
         Assert.Multiple(
@@ -47,11 +48,10 @@ public class UnitTestTournamentController
     {
         // arrange
         _mockService.Setup(service => service.GetAll()).Returns((IEnumerable<Tournament>)null);
-        var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
 
         // act
-        var result = controller.GetList();
+        var result = _controller.GetList();
 
         // assert
         Assert.Multiple(
@@ -67,11 +67,10 @@ public class UnitTestTournamentController
     {
         // arrange
         _mockService.Setup(service => service.Get(It.IsAny<int>())).Returns(TournamentBuilder.GetSingleTournament());
-        var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
 
         // act
-        var result = controller.GetById(-1);
+        var result = _controller.GetById(-1);
 
         // assert
         Assert.Multiple(
@@ -88,10 +87,9 @@ public class UnitTestTournamentController
     {
         // arrange
         _mockService.Setup(service => service.Get(It.IsAny<int>())).Returns((Tournament)null);
-        var controller = new TournamentController(_mockService.Object);
 
         // act
-        var result = controller.GetById(-1);
+        var result = _controller.GetById(-1);
 
         // assert
         Assert.Multiple(
@@ -108,11 +106,10 @@ public class UnitTestTournamentController
         var newInstance = TournamentBuilder.GetSingleTournament();
 
         _mockService.Setup(service => service.Insert(It.IsAny<Tournament>())).Callback(() => { });
-        var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
 
         // act
-        var result = controller.Create(newInstance);
+        var result = _controller.Create(newInstance);
 
         // assert
         Assert.Multiple(
@@ -128,12 +125,11 @@ public class UnitTestTournamentController
     public void CreateNoInstance_ReturnsBadRequest_ServiceInsertCalledNever()
     {
         // arrange
-        var controller = new TournamentController(_mockService.Object);
         BadRequestObjectResult badRequestResult = null;
         string content = null;
 
         // act
-        var result = controller.Create(null);
+        var result = _controller.Create(null);
 
         // assert
         Assert.Multiple(
@@ -151,11 +147,10 @@ public class UnitTestTournamentController
     {
         // arrange
         _mockService.Setup(service => service.Update(It.IsAny<int>(), It.IsAny<Tournament>())).Returns(TournamentBuilder.GetSingleTournament());
-        var controller = new TournamentController(_mockService.Object);
         OkObjectResult okResult = null;
 
         // act
-        var result = controller.Update(-1, TournamentBuilder.GetSingleTournament());
+        var result = _controller.Update(-1, TournamentBuilder.GetSingleTournament());
 
         // assert
         Assert.Multiple(
@@ -171,12 +166,11 @@ public class UnitTestTournamentController
     public void UpdateNoInstance_ReturnsBadRequest_ServiceUpdateCalledNever()
     {
         // arrange
-        var controller = new TournamentController(_mockService.Object);
         BadRequestObjectResult badRequestResult = null;
         string content = null;
 
         // act
-        var result = controller.Update(-1, null);
+        var result = _controller.Update(-1, null);
 
         // assert
         Assert.Multiple(
@@ -194,10 +188,9 @@ public class UnitTestTournamentController
     {
         // arrange
         _mockService.Setup(service => service.Delete(It.IsAny<int>())).Callback(() => { });
-        var controller = new TournamentController(_mockService.Object);
 
         // act
-        var result = controller.Delete(-1);
+        var result = _controller.Delete(-1);
 
         // assert
         Assert.Multiple(
@@ -212,10 +205,9 @@ public class UnitTestTournamentController
     {
         // arrange
         _mockService.Setup(service => service.SetSettings(It.IsAny<TournamentSettings>())).Callback(() => { });
-        var controller = new TournamentController(_mockService.Object);
 
         // act
-        var result = controller.SetSettings(TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>());
+        var result = _controller.SetSettings(TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>());
 
         // assert
         Assert.Multiple(
@@ -229,12 +221,11 @@ public class UnitTestTournamentController
     public void SetSettings_ReturnsBadRequest_ServiceSetSettingsCalledNever()
     {
         // arrange
-        var controller = new TournamentController(_mockService.Object);
         BadRequestObjectResult badRequestResult = null;
         string content = null;
         
         // act
-        var result = controller.SetSettings(null);
+        var result = _controller.SetSettings(null);
 
         // assert
         Assert.Multiple(
@@ -243,6 +234,23 @@ public class UnitTestTournamentController
             () => Assert.NotNull(badRequestResult.Value),
             () => content = Assert.IsType<string>(badRequestResult.Value),
             () => Assert.False(string.IsNullOrEmpty(content))
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void Generate_ReturnsOk_ServiceGenerateCalledOnce()
+    {
+        // arrange
+        _mockService.Setup(service => service.Generate(It.IsAny<int>())).Callback(() => { });
+
+        // act
+        var result = _controller.Generate(-1);
+
+        // assert
+        Assert.Multiple(
+            () => _mockService.Verify(service => service.Generate(It.IsAny<int>()), Times.Once),
+            () => Assert.IsType<OkResult>(result)
         );
     }
 }

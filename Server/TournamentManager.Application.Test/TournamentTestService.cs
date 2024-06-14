@@ -11,13 +11,19 @@ public class TournamentTestService
 {
     private readonly Mock<ICrudService<Tournament>> _mockCrudService;
     private readonly Mock<ICrudService<TournamentSettings>> _mockSettingsCrudService;
+    private readonly Mock<ISportService> _mockSportService;
+    private readonly Mock<SportServiceResolver> _mockSportServiceResolver;
     private readonly TournamentService _service;
 
     public TournamentTestService() 
     {
         _mockCrudService = new Mock<ICrudService<Tournament>>();
         _mockSettingsCrudService = new Mock<ICrudService<TournamentSettings>>();
-        _service = new TournamentService(_mockCrudService.Object, _mockSettingsCrudService.Object);
+        _mockSportService = new Mock<ISportService>();
+        _mockSportServiceResolver = new Mock<SportServiceResolver>();
+        _mockSportServiceResolver.Setup(resolve => resolve(It.IsAny<Sport>())).Returns(_mockSportService.Object);
+
+        _service = new TournamentService(_mockCrudService.Object, _mockSettingsCrudService.Object, _mockSportServiceResolver.Object);
     }
 
     [Fact]
@@ -135,6 +141,45 @@ public class TournamentTestService
             () => Assert.Throws<ArgumentException>(() => _service.SetSettings(settings)),
             () => _mockCrudService.Verify(crud => crud.Get(It.IsAny<int>()), Times.Once),
             () => _mockSettingsCrudService.Verify(crud => crud.Insert(It.IsAny<TournamentSettings>()), Times.Never)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void GenerateWithValidId_ResolvesSportService_GenerateCalledOnce()
+    {
+        // Arrange
+        var tournament = TournamentBuilder.GetSingleTournament();
+        tournament.Sport = Sport.TableTennis;
+        Tournament forwardedTournament = null!;
+
+        _mockCrudService.Setup(crud => crud.Get(It.IsAny<int>())).Returns(tournament);
+        _mockSportService.Setup(sport => sport.Generate(It.IsAny<Tournament>())).Callback<Tournament>(tournament => {forwardedTournament = tournament;});
+
+        // Act
+        _service.Generate(-1);
+
+        // Assert
+        Assert.Multiple(
+            () => _mockCrudService.Verify(crud => crud.Get(It.IsAny<int>()), Times.Once),
+            () => _mockSportService.Verify(sport => sport.Generate(It.IsAny<Tournament>()), Times.Once),
+            () => Assert.NotNull(forwardedTournament),
+            () => Assert.Equal(tournament, forwardedTournament)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void GenerateWithInValidId_ThrowsArgumentException_GenerateCalledNever()
+    {
+        // Arrange
+        _mockCrudService.Setup(crud => crud.Get(It.IsAny<int>())).Returns((Tournament)null!);
+
+        // Assert & Act
+        Assert.Multiple(
+            () => Assert.Throws<ArgumentException>(() => _service.Generate(-1)),
+            () => _mockCrudService.Verify(crud => crud.Get(It.IsAny<int>()), Times.Once),
+            () => _mockSportService.Verify(sport => sport.Generate(It.IsAny<Tournament>()), Times.Never)
         );
     }
 }

@@ -107,4 +107,11 @@ public class TournamentController : ControllerBase
         _tournamentService.SetSettings(settings);
         return Ok();
     }
+
+    [HttpPost($"{nameof(Generate)}/{{id}}")]
+    public IActionResult Generate([FromRoute]int id)
+    {
+        _tournamentService.Generate(id);
+        return Ok();
+    }
 }

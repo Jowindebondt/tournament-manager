@@ -13,6 +13,11 @@ public interface ITournamentService
     /// <param name="id">The identifier of the <see cref="Tournament"/></param>
     void Delete(int id);
     /// <summary>
+    /// Generates all matches and games according to the settings of the tournament and rounds.
+    /// </summary>
+    /// <param name="id">The identifier of the <see cref="Tournament"/></param>
+    void Generate(int id);
+    /// <summary>
     /// Gets a single <see cref="Tournament"/> based on its identifier.
     /// </summary>
     /// <param name="id">The identifier of a <see cref="Tournament"/></param>
