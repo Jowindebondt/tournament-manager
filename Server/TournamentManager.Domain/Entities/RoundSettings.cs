@@ -5,7 +5,7 @@ public abstract class RoundSettings : BaseEntity
     /// <summary>
     /// Identifier of the <see cref="Round"/> these settings are part of
     /// </summary>
-    public int RoundId { get; set; }
+    public int? RoundId { get; set; }
 
     /// <summary>
     /// Reference of the <see cref="Round"/> these settings are part of
