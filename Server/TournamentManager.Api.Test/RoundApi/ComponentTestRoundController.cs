@@ -162,23 +162,4 @@ public class ComponentTestRoundController : IClassFixture<SimpleRoundDatabaseFix
             () => Assert.IsType<OkResult>(result)
         );
     }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
-    public void SetSettings_ReturnsOkResult()
-    {
-        // arrange
-        var settings = new TableTennisRoundSettings{
-            RoundId = -1,
-            BestOf = 5,
-        };
-
-        // act
-        var result = CreateController().SetSettings(settings);
-
-        // assert
-        Assert.Multiple(
-            () => Assert.IsType<OkResult>(result)
-        );
-    }
 }

@@ -28,6 +28,7 @@ public interface ITournamentService
     /// </summary>
     /// <returns>List of <see cref="Tournament"/>s</returns>
     IEnumerable<Tournament> GetAll();
+    TournamentSettings GetSettings(int id);
     /// <summary>
     /// Create a new instance of <see cref="Tournament"/>
     /// </summary>

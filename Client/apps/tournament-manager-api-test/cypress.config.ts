@@ -5,7 +5,7 @@ import { defineConfig } from 'cypress';
 export default defineConfig({
   e2e: {
     ...nxE2EPreset(__filename, {
-      cypressDir: 'src'
+      cypressDir: 'src',
       // webServerCommands: {
       //   default: 'nx run tournament-manager:serve:development',
       //   production: 'nx run tournament-manager:serve:production',

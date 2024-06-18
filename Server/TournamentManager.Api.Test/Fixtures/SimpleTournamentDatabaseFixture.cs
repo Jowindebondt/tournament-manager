@@ -18,6 +18,7 @@ public class SimpleTournamentDatabaseFixture : DatabaseFixture
         DbContext.Members.RemoveRange(DbContext.Members);
         DbContext.Poules.RemoveRange(DbContext.Poules);
         DbContext.Rounds.RemoveRange(DbContext.Rounds);
+        DbContext.TableTennisSettings.RemoveRange(DbContext.TableTennisSettings);
         DbContext.Tournaments.RemoveRange(DbContext.Tournaments);
     }
 
@@ -27,12 +28,11 @@ public class SimpleTournamentDatabaseFixture : DatabaseFixture
         for (var i = 0; i < 10; i++)
         {
             var tournament = TournamentBuilder.GetSingleTournament(i + 1);
-            tournament.Settings = new TableTennisSettings
-            {
-                TournamentType = TableTennisTournamentType.Single
-            };
             DbContext.Tournaments.Add(tournament);
-            
+
+            var settings = TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>(i + 1, i + 1);
+            DbContext.TableTennisSettings.Add(settings as TableTennisSettings);
+
             for (var j = 0; j < 3; j++)
             {
                 var member = MemberBuilder.GetSingleMember(memberId, i + 1);

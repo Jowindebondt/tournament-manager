@@ -12,6 +12,7 @@ public class TestRepository
 {
     private readonly Mock<DbSet<Tournament>> _dbSet;
     private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Repository<Tournament> _repo;
 
     public TestRepository() 
     {
@@ -20,6 +21,7 @@ public class TestRepository
         _dbSet = new Mock<DbSet<Tournament>>();
         _dbContextMock = new Mock<ApplicationDbContext>(dbContextOptions);
         _dbContextMock.Setup(context => context.Set<Tournament>()).Returns(_dbSet.Object);
+        _repo = new Repository<Tournament>(_dbContextMock.Object);
     }
 
     [Fact]
@@ -28,10 +30,9 @@ public class TestRepository
     {
         // arrange
         _dbSet.Setup(set => set.Find(It.IsAny<int>())).Returns(TournamentBuilder.GetSingleTournament());
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
 
         // act
-        var tournament = repo.Get(-1);
+        var tournament = _repo.Get(-1);
 
         // assert
         Assert.Multiple(
@@ -46,10 +47,9 @@ public class TestRepository
     {
         // arrange
         _dbSet.Setup(set => set.Find(It.IsAny<int>())).Returns((Tournament)null);
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
 
         // act
-        var tournament = repo.Get(-1);
+        var tournament = _repo.Get(-1);
 
         // assert
         Assert.Multiple(
@@ -64,10 +64,9 @@ public class TestRepository
     {
         // arrange
         _dbSet.Setup(set => set.AsQueryable()).Returns(TournamentBuilder.GetListTournamentAsQueryable(5));
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
 
         // act
-        var tournaments = repo.GetAll();
+        var tournaments = _repo.GetAll();
 
         // assert
         Assert.Multiple(
@@ -82,10 +81,9 @@ public class TestRepository
     {
         // arrange
         _dbSet.Setup(set => set.AsQueryable()).Returns(TournamentBuilder.GetListTournamentAsQueryable(0));
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
 
         // act
-        var tournaments = repo.GetAll();
+        var tournaments = _repo.GetAll();
 
         // assert
         Assert.Multiple(
@@ -100,10 +98,9 @@ public class TestRepository
     {
         // arrange
         _dbSet.Setup(set => set.AsQueryable()).Returns((IQueryable<Tournament>)null);
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
 
         // act
-        var tournaments = repo.GetAll();
+        var tournaments = _repo.GetAll();
 
         // assert
         Assert.Multiple(
@@ -117,10 +114,9 @@ public class TestRepository
     public void InsertWithValidInstance_DbSetAddCalledOnce_DbContextSaveChangesCalledOnce() 
     {
         // arrange
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
         
         // act
-        repo.Insert(TournamentBuilder.GetSingleTournament());
+        _repo.Insert(TournamentBuilder.GetSingleTournament());
 
         // assert
         Assert.Multiple(
@@ -134,11 +130,10 @@ public class TestRepository
     public void InsertWithNull_DbSetAddCalledNever_DbContextSaveChangesCalledNever_ThrowsArgumentNullException() 
     {
         // arrange
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
         
         Assert.Multiple(
             // act
-            () => Assert.Throws<ArgumentNullException>(() => repo.Insert(null)),
+            () => Assert.Throws<ArgumentNullException>(() => _repo.Insert(null)),
 
             // assert
             () => _dbSet.Verify(set => set.Add(It.IsAny<Tournament>()), Times.Never()),
@@ -151,10 +146,9 @@ public class TestRepository
     public void UpdateWithValidInstance_DbSetAddCalledOnce_DbContextSaveChangesCalledOnce() 
     {
         // arrange
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
         
         // act
-        repo.Update(TournamentBuilder.GetSingleTournament());
+        _repo.Update(TournamentBuilder.GetSingleTournament());
 
         // assert
         Assert.Multiple(
@@ -168,11 +162,10 @@ public class TestRepository
     public void UpdateWithNull_DbSetAddCalledNever_DbContextSaveChangesCalledNever_ThrowsArgumentNullException() 
     {
         // arrange
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
         
         Assert.Multiple(
             // act
-            () => Assert.Throws<ArgumentNullException>(() => repo.Update(null)),
+            () => Assert.Throws<ArgumentNullException>(() => _repo.Update(null)),
 
             // assert
             () => _dbSet.Verify(set => set.Update(It.IsAny<Tournament>()), Times.Never()),
@@ -185,10 +178,9 @@ public class TestRepository
     public void DeleteWithValidInstance_DbSetAddCalledOnce_DbContextSaveChangesCalledOnce() 
     {
         // arrange
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
         
         // act
-        repo.Delete(TournamentBuilder.GetSingleTournament());
+        _repo.Delete(TournamentBuilder.GetSingleTournament());
 
         // assert
         Assert.Multiple(
@@ -202,11 +194,10 @@ public class TestRepository
     public void DeleteWithNull_DbSetAddCalledNever_DbContextSaveChangesCalledNever_ThrowsArgumentNullException() 
     {
         // arrange
-        var repo = new Repository<Tournament>(_dbContextMock.Object);
         
         Assert.Multiple(
             // act
-            () => Assert.Throws<ArgumentNullException>(() => repo.Delete(null)),
+            () => Assert.Throws<ArgumentNullException>(() => _repo.Delete(null)),
 
             // assert
             () => _dbSet.Verify(set => set.Remove(It.IsAny<Tournament>()), Times.Never()),

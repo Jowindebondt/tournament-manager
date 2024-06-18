@@ -9,6 +9,7 @@ namespace TournamentManager.Application;
 public class TournamentService : ITournamentService
 {
     private readonly ICrudService<Tournament> _crudService;
+    private readonly ITournamentRepository _tournamentRepository;
     private readonly ICrudService<TournamentSettings> _settingsCrudService;
     private readonly SportServiceResolver _sportServiceResolver;
 
@@ -16,8 +17,9 @@ public class TournamentService : ITournamentService
     /// Initializes a new instance of <see cref="TournamentService"/>
     /// </summary>
     /// <param name="crudService">Service for handling CRUD actions for the <see cref="Tournament"/> model.</param>
-    public TournamentService(ICrudService<Tournament> crudService, ICrudService<TournamentSettings> settingsCrudService, SportServiceResolver sportServiceResolver){
+    public TournamentService(ICrudService<Tournament> crudService, ITournamentRepository tournamentRepository, ICrudService<TournamentSettings> settingsCrudService, SportServiceResolver sportServiceResolver){
         _crudService = crudService;
+        _tournamentRepository = tournamentRepository;
         _settingsCrudService = settingsCrudService;
         _sportServiceResolver = sportServiceResolver;
     }
@@ -31,7 +33,7 @@ public class TournamentService : ITournamentService
     /// <inheritdoc/>
     public void Generate(int id)
     {
-        var tournament = _crudService.Get(id) ?? throw new ArgumentException("Tournament not found");
+        var tournament = _tournamentRepository.GetWithAllReferences(id) ?? throw new ArgumentException("Tournament not found");
         _sportServiceResolver(tournament.Sport).Generate(tournament);
     }
 
@@ -48,6 +50,17 @@ public class TournamentService : ITournamentService
     }
 
     /// <inheritdoc/>
+    public TournamentSettings GetSettings(int id)
+    {
+        var tournament = GetWithSettings(id) ?? throw new ArgumentException("Tournament not found");
+        if (tournament.Settings == null)
+        {
+            throw new ArgumentException("Settings not found");
+        }
+        return tournament.Settings;
+    }
+
+    /// <inheritdoc/>
     public void Insert(Tournament entity)
     {
         _crudService.Insert(entity);
@@ -56,7 +69,12 @@ public class TournamentService : ITournamentService
     /// <inheritdoc/>
     public void SetSettings(TournamentSettings settings)
     {
-        var _ = _crudService.Get(settings.TournamentId) ?? throw new ArgumentException("Tournament not found");
+        var tournament = GetWithSettings(settings.TournamentId.Value) ?? throw new ArgumentException("Tournament not found");
+        if (tournament.Settings != null)
+        {
+            // Remove old settings
+            _settingsCrudService.Delete(tournament.Settings.Id.Value);
+        }
         _settingsCrudService.Insert(settings);
     }
 
@@ -66,5 +84,10 @@ public class TournamentService : ITournamentService
         return _crudService.Update(id, entity, origin => {
             origin.Name = entity.Name;
         });
+    }
+
+    private Tournament GetWithSettings(int id)
+    {
+        return _tournamentRepository.GetWithSettings(id);
     }
 }

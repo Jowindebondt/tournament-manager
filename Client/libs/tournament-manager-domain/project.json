@@ -4,16 +4,6 @@
   "sourceRoot": "libs/tournament-manager-domain/src",
   "projectType": "library",
   "tags": [],
-  "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/tournament-manager-domain",
-        "main": "libs/tournament-manager-domain/src/index.ts",
-        "tsConfig": "libs/tournament-manager-domain/tsconfig.lib.json",
-        "assets": ["libs/tournament-manager-domain/*.md"]
-      }
-    }
-  }
+  "// targets": "to see all targets run: nx show project test --web",
+  "targets": {}
 }

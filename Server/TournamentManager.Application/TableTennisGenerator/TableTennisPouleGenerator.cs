@@ -21,7 +21,6 @@ public class TableTennisPouleGenerator : TableTennisBaseGenerator
     protected override void Handle(Tournament tournament)
     {
         var tournamentSettings = tournament.Settings as TableTennisSettings;
-        
         var totalPlayers = tournamentSettings.TournamentType == TableTennisTournamentType.Single
             ? tournament.Members.Count
             : tournament.Members.Count / 2;

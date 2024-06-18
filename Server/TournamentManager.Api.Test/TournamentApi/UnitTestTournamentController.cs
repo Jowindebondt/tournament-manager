@@ -201,44 +201,6 @@ public class UnitTestTournamentController
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void SetSettings_ReturnsOk_ServiceSetSettingsCalledOnce()
-    {
-        // arrange
-        _mockService.Setup(service => service.SetSettings(It.IsAny<TournamentSettings>())).Callback(() => { });
-
-        // act
-        var result = _controller.SetSettings(TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>());
-
-        // assert
-        Assert.Multiple(
-            () => _mockService.Verify(service => service.SetSettings(It.IsAny<TournamentSettings>()), Times.Once),
-            () => Assert.IsType<OkResult>(result)
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void SetSettings_ReturnsBadRequest_ServiceSetSettingsCalledNever()
-    {
-        // arrange
-        BadRequestObjectResult badRequestResult = null;
-        string content = null;
-        
-        // act
-        var result = _controller.SetSettings(null);
-
-        // assert
-        Assert.Multiple(
-            () => _mockService.Verify(service => service.SetSettings(It.IsAny<TournamentSettings>()), Times.Never),
-            () => badRequestResult = Assert.IsType<BadRequestObjectResult>(result),
-            () => Assert.NotNull(badRequestResult.Value),
-            () => content = Assert.IsType<string>(badRequestResult.Value),
-            () => Assert.False(string.IsNullOrEmpty(content))
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
     public void Generate_ReturnsOk_ServiceGenerateCalledOnce()
     {
         // arrange

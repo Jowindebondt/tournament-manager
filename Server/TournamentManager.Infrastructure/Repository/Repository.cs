@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using TournamentManager.Application.Repositories;
 using TournamentManager.Domain;
 
@@ -10,16 +11,16 @@ namespace TournamentManager.Infrastructure;
 /// <typeparam name="T">Type of the <see cref="BaseEntity"/> model</typeparam>
 public class Repository<T> : IRepository<T> where T : BaseEntity
 {
-    private readonly ApplicationDbContext _applicationDbContext;
-    private DbSet<T> _entities;
+    protected ApplicationDbContext ApplicationDbContext { get; }
+    protected DbSet<T> Entities { get; }
 
     /// <summary>
     /// Initializes a new instance of <see cref="Repository{T}"/>
     /// </summary>
     /// <param name="applicationDbContext">The database context</param>
     public Repository(ApplicationDbContext applicationDbContext) {
-        _applicationDbContext = applicationDbContext;
-        _entities = _applicationDbContext.Set<T>();
+        ApplicationDbContext = applicationDbContext;
+        Entities = ApplicationDbContext.Set<T>();
     }
 
     /// <inheritdoc/>
@@ -27,20 +28,20 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        _entities.Remove(entity);
-        _applicationDbContext.SaveChanges();
+        Entities.Remove(entity);
+        ApplicationDbContext.SaveChanges();
     }
 
     /// <inheritdoc/>
     public T Get(int id)
     {
-        return _entities.Find(id);
+        return Entities.Find(id);
     }
 
     /// <inheritdoc/>
     public IEnumerable<T> GetAll()
     {
-        return _entities.AsQueryable();
+        return Entities.AsQueryable();
     }
 
     /// <inheritdoc/>
@@ -48,8 +49,8 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        _entities.Add(entity);
-        _applicationDbContext.SaveChanges();
+        Entities.Add(entity);
+        ApplicationDbContext.SaveChanges();
     }
 
     /// <inheritdoc/>
@@ -57,7 +58,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        _entities.Update(entity);
-        _applicationDbContext.SaveChanges();
+        Entities.Update(entity);
+        ApplicationDbContext.SaveChanges();
     }
 }

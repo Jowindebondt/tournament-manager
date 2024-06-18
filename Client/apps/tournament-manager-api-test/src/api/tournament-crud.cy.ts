@@ -1,6 +1,8 @@
+import { Sport, TableTennisHandicap, TableTennisSettings, TableTennisTournamentType, Tournament } from '@tournament-manager/tournament-manager-domain';
 import { uuid } from '../support/app.po';
 
 const apiTournaments = `${Cypress.env('APIURL')}/tournament`
+const apiTableTennis = `${Cypress.env('APIURL')}/tabletennis`
 
 describe('Tournament API', () => {
     it('validates CRUD', () => {
@@ -58,6 +60,37 @@ describe('Tournament API', () => {
                             }); 
                         });
                     });
+                });
+            });
+        });
+    });
+
+    it('set settings', () => {
+        const id = uuid();
+        const tournamentName = `Tournament${id}`;
+
+        let tournament: Tournament = {
+            name: tournamentName,
+            sport: Sport.TableTennis
+        };
+
+        // Create new
+        cy.request('POST', `${apiTournaments}/Create`, tournament).then((response) => {
+            tournament = response.body;
+
+            let tournamentSettings: TableTennisSettings = {
+                tournamentId: <number>tournament.id,
+                handicap: TableTennisHandicap.None,
+                tournamentType: TableTennisTournamentType.Single,
+            };
+
+            // Set settings
+            cy.request('POST', `${apiTableTennis}/SetTournamentSettings`, tournamentSettings).then(() => {
+                // Get settings
+                cy.request('GET', `${apiTableTennis}/GetTournamentSettings/${tournament.id}`).then((response) => {
+                    expect(response.body).to.not.be.null;
+                    expect(response.body).to.have.property("tournamentId", tournament.id);
+                    expect(response.body).to.have.property("handicap", TableTennisHandicap.None);
                 });
             });
         });

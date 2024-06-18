@@ -1,3 +1,4 @@
+using System.Reflection.Emit;
 using Moq;
 using TournamentManager.Application.Repositories;
 using TournamentManager.Domain;
@@ -13,6 +14,7 @@ public class TournamentTestService
     private readonly Mock<ICrudService<TournamentSettings>> _mockSettingsCrudService;
     private readonly Mock<ISportService> _mockSportService;
     private readonly Mock<SportServiceResolver> _mockSportServiceResolver;
+    private readonly Mock<ITournamentRepository> _mockTournamentRepository;
     private readonly TournamentService _service;
 
     public TournamentTestService() 
@@ -22,8 +24,8 @@ public class TournamentTestService
         _mockSportService = new Mock<ISportService>();
         _mockSportServiceResolver = new Mock<SportServiceResolver>();
         _mockSportServiceResolver.Setup(resolve => resolve(It.IsAny<Sport>())).Returns(_mockSportService.Object);
-
-        _service = new TournamentService(_mockCrudService.Object, _mockSettingsCrudService.Object, _mockSportServiceResolver.Object);
+        _mockTournamentRepository = new Mock<ITournamentRepository>();
+        _service = new TournamentService(_mockCrudService.Object, _mockTournamentRepository.Object, _mockSettingsCrudService.Object, _mockSportServiceResolver.Object);
     }
 
     [Fact]
@@ -108,13 +110,13 @@ public class TournamentTestService
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void SetSettings_CrudGetCalledOnce_SettingsCrudInsertCalledOnce()
+    public void SetSettings_TournamentRepoGetWithSettingsCalledOnce_SettingsCrudInsertCalledOnce_SettingsCrudDeleteCalledNever()
     {
         // Arrange
         var tournament = TournamentBuilder.GetSingleTournament();
         var settings = TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>(tournament.Id.Value);
 
-        _mockCrudService.Setup(crud => crud.Get(It.IsAny<int>())).Returns(tournament);
+        _mockTournamentRepository.Setup(repo => repo.GetWithSettings(It.IsAny<int>())).Returns(tournament);
         _mockSettingsCrudService.Setup(crud => crud.Insert(It.IsAny<TournamentSettings>())).Callback(() => {});
 
         // Act
@@ -122,25 +124,50 @@ public class TournamentTestService
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Get(It.IsAny<int>()), Times.Once),
-            () => _mockSettingsCrudService.Verify(crud => crud.Insert(It.IsAny<TournamentSettings>()), Times.Once)
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithSettings(It.IsAny<int>()), Times.Once),
+            () => _mockSettingsCrudService.Verify(crud => crud.Insert(It.IsAny<TournamentSettings>()), Times.Once),
+            () => _mockSettingsCrudService.Verify(crud => crud.Delete(It.IsAny<int>()), Times.Never)
         );
     }
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
-    public void SetSettingsWithNonExistingTournament_ThrowsArgumentException_CrudGetCalledOnce_SettingsCrudInsertCalledNever()
+    public void SetSettingsForOverwrite_TournamentRepoGetWithSettingsCalledOnce_SettingsCrudInsertCalledOnce_SettingsCrudDeleteCalledOnce()
+    {
+        // Arrange
+        var tournament = TournamentBuilder.GetSingleTournament();
+        tournament.Settings = TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>(1, tournament.Id.Value);
+        var settings = TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>(2, tournament.Id.Value);
+
+        _mockTournamentRepository.Setup(repo => repo.GetWithSettings(It.IsAny<int>())).Returns(tournament);
+        _mockSettingsCrudService.Setup(crud => crud.Insert(It.IsAny<TournamentSettings>())).Callback(() => {});
+
+        // Act
+        _service.SetSettings(settings);
+
+        // Assert
+        Assert.Multiple(
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithSettings(It.IsAny<int>()), Times.Once),
+            () => _mockSettingsCrudService.Verify(crud => crud.Insert(It.IsAny<TournamentSettings>()), Times.Once),
+            () => _mockSettingsCrudService.Verify(crud => crud.Delete(It.IsAny<int>()), Times.Once)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void SetSettingsWithNonExistingTournament_ThrowsArgumentException_TournamentRepoGetWithSettingsCalledOnce_SettingsCrudInsertCalledNever_SettingsCrudDeleteCalledNever()
     {
         // Arrange
         var settings = TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>();
 
-        _mockCrudService.Setup(crud => crud.Get(It.IsAny<int>())).Returns((Tournament)null);
+        _mockTournamentRepository.Setup(repo => repo.GetWithSettings(It.IsAny<int>())).Returns((Tournament)null);
 
         // Act & Assert
         Assert.Multiple(
             () => Assert.Throws<ArgumentException>(() => _service.SetSettings(settings)),
-            () => _mockCrudService.Verify(crud => crud.Get(It.IsAny<int>()), Times.Once),
-            () => _mockSettingsCrudService.Verify(crud => crud.Insert(It.IsAny<TournamentSettings>()), Times.Never)
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithSettings(It.IsAny<int>()), Times.Once),
+            () => _mockSettingsCrudService.Verify(crud => crud.Insert(It.IsAny<TournamentSettings>()), Times.Never),
+            () => _mockSettingsCrudService.Verify(crud => crud.Delete(It.IsAny<int>()), Times.Never)
         );
     }
 
@@ -153,7 +180,7 @@ public class TournamentTestService
         tournament.Sport = Sport.TableTennis;
         Tournament forwardedTournament = null!;
 
-        _mockCrudService.Setup(crud => crud.Get(It.IsAny<int>())).Returns(tournament);
+        _mockTournamentRepository.Setup(repo => repo.GetWithAllReferences(It.IsAny<int>())).Returns(tournament);
         _mockSportService.Setup(sport => sport.Generate(It.IsAny<Tournament>())).Callback<Tournament>(tournament => {forwardedTournament = tournament;});
 
         // Act
@@ -161,7 +188,7 @@ public class TournamentTestService
 
         // Assert
         Assert.Multiple(
-            () => _mockCrudService.Verify(crud => crud.Get(It.IsAny<int>()), Times.Once),
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithAllReferences(It.IsAny<int>()), Times.Once),
             () => _mockSportService.Verify(sport => sport.Generate(It.IsAny<Tournament>()), Times.Once),
             () => Assert.NotNull(forwardedTournament),
             () => Assert.Equal(tournament, forwardedTournament)
@@ -173,13 +200,64 @@ public class TournamentTestService
     public void GenerateWithInValidId_ThrowsArgumentException_GenerateCalledNever()
     {
         // Arrange
-        _mockCrudService.Setup(crud => crud.Get(It.IsAny<int>())).Returns((Tournament)null!);
+        _mockTournamentRepository.Setup(repo => repo.GetWithAllReferences(It.IsAny<int>())).Returns((Tournament)null!);
 
         // Assert & Act
         Assert.Multiple(
             () => Assert.Throws<ArgumentException>(() => _service.Generate(-1)),
-            () => _mockCrudService.Verify(crud => crud.Get(It.IsAny<int>()), Times.Once),
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithAllReferences(It.IsAny<int>()), Times.Once),
             () => _mockSportService.Verify(sport => sport.Generate(It.IsAny<Tournament>()), Times.Never)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void GetSettings_ExistingTournament_RepoGetWithSettingsCalledOnce()
+    {
+        // arrange
+        var tournament = TournamentBuilder.GetSingleTournament(1);
+        tournament.Settings = TournamentSettingsBuilder.GetSingleTournamentSettings<TableTennisSettings>(1, 1);
+        _mockTournamentRepository.Setup(repo => repo.GetWithSettings(It.IsAny<int>())).Returns(tournament);
+
+        // act
+        _service.GetSettings(-1);
+
+        // assert
+        Assert.Multiple(
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithSettings(It.IsAny<int>()), Times.Once)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void GetSettings_NonExistingTournament_RepoGetWithSettingsCalledOnce_ThrowsArgumentException()
+    {
+        // arrange
+        _mockTournamentRepository.Setup(repo => repo.GetWithSettings(It.IsAny<int>())).Returns((Tournament)null!);
+
+        Assert.Multiple(
+            // act
+            () => Assert.Throws<ArgumentException>(() => _service.GetSettings(-1)),
+
+            // assert
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithSettings(It.IsAny<int>()), Times.Once)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.UnitTest)]
+    public void GetNonExistingSettings_ExistingTournament_RepoGetWithSettingsCalledOnce_ThrowsArgumentException()
+    {
+        // arrange
+        var tournament = TournamentBuilder.GetSingleTournament(1);
+        _mockTournamentRepository.Setup(repo => repo.GetWithSettings(It.IsAny<int>())).Returns(tournament);
+
+        Assert.Multiple(
+            // act
+            () => Assert.Throws<ArgumentException>(() => _service.GetSettings(-1)),
+
+            // assert
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithSettings(It.IsAny<int>()), Times.Once)
         );
     }
 }

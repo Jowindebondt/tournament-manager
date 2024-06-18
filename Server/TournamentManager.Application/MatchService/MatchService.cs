@@ -26,7 +26,7 @@ public class MatchService : IMatchService
     /// <inheritdoc/>
     public IEnumerable<Match> GetAll(int parentId)
     {
-        return _crudService.GetAll(u => u.Poule.Id == parentId);
+        return _crudService.GetAll(u => u.PouleId == parentId);
     }
 
     /// <inheritdoc/>

@@ -49,7 +49,7 @@ public class RoundService : IRoundService
     /// <inheritdoc/>
     public void SetSettings(RoundSettings settings)
     {
-        var _ = _crudService.Get(settings.RoundId) ?? throw new ArgumentException("Round not found");
+        var _ = _crudService.Get(settings.RoundId.Value) ?? throw new ArgumentException("Round not found");
         _settingsCrudService.Insert(settings);
     }
 

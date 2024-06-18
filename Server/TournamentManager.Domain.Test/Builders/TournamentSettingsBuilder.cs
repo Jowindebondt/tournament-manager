@@ -3,22 +3,22 @@ namespace TournamentManager.Domain.Test;
 
 public static class TournamentSettingsBuilder
 {
-    public static TournamentSettings GetSingleTournamentSettings<T>()
+    public static T GetSingleTournamentSettings<T>()
         where T : TournamentSettings
     {
         return GetSingleTournamentSettings<T>(1);
     }
     
-    public static TournamentSettings GetSingleTournamentSettings<T>(int id)
+    public static T GetSingleTournamentSettings<T>(int id)
         where T : TournamentSettings
     {
         return GetSingleTournamentSettings<T>(id, id);
     }
     
-    public static TournamentSettings GetSingleTournamentSettings<T>(int id, int tournamentId)
+    public static T GetSingleTournamentSettings<T>(int id, int tournamentId)
         where T : TournamentSettings
     {
-        return GetTournamentSettings<T>(id, tournamentId);
+        return (T)GetTournamentSettings<T>(id, tournamentId);
     }
 
     private static TournamentSettings GetTournamentSettings<T>(int id, int tournamentId)
