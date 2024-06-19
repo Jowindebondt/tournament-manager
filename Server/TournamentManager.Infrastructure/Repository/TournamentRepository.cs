@@ -18,15 +18,30 @@ public class TournamentRepository : Repository<Tournament>, ITournamentRepositor
     }
 
     /// <inheritdoc/>
-    public Tournament GetWithAllReferences(int id)
+    public Tournament GetWithAllRelations(int id)
     {
         return Entities
-            .Include(u => u.Settings)
-            .Include(u => u.Members)
-            .Include(u => u.Rounds)
-                .ThenInclude(u => u.Poules)
-                    .ThenInclude(u => u.Matches)
-                        .ThenInclude(u => u.Games)
+            .Include(t => t.Settings)
+            .Include(t => t.Members)
+                .ThenInclude(m => m.Player)
+            .Include(t => t.Rounds)
+                .ThenInclude(r => r.Settings)
+            .Include(t => t.Rounds)
+                .ThenInclude(r => r.Poules)
+                    .ThenInclude(pp => pp.Players)
+            .Include(t => t.Rounds)
+                .ThenInclude(r => r.Poules)
+                    .ThenInclude(p => p.Matches)
+                        .ThenInclude(m => m.Games)
+            .Include(t => t.Rounds)
+                .ThenInclude(r => r.Poules)
+                    .ThenInclude(p => p.Matches)
+                        .ThenInclude(m => m.Player1)
+            .Include(t => t.Rounds)
+                .ThenInclude(r => r.Poules)
+                    .ThenInclude(p => p.Matches)
+                        .ThenInclude(m => m.Player2)
+            .AsSplitQuery()
             .FirstOrDefault(u => u.Id == id);
     }
 

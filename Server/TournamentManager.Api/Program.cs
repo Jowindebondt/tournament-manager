@@ -21,6 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(ICrudService<>), typeof(CrudService<>));
 builder.Services.AddScoped(typeof(ITournamentRepository), typeof(TournamentRepository));
+builder.Services.AddScoped(typeof(IPouleRepository), typeof(PouleRepository));
 builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<IRoundService, RoundService>();
 builder.Services.AddScoped<IPouleService, PouleService>();

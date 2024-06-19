@@ -9,11 +9,11 @@ namespace TournamentManager.Application;
 public interface ITournamentRepository : IRepository<Tournament>
 {
     /// <summary>
-    /// Gets a single instance from the datasource with all (child-)references loaded.
+    /// Gets a single instance from the datasource with all (sub-)relations loaded.
     /// </summary>
     /// <param name="id">The identifier of the instance</param>
     /// <returns>The requested instance of <see cref="T"/></returns>
-    Tournament GetWithAllReferences(int id);
+    Tournament GetWithAllRelations(int id);
     /// <summary>
     /// Gets a single instance from the datasource with the <see cref="Tournament.Settings"/> reference loaded.
     /// </summary>

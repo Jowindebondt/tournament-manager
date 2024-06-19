@@ -60,7 +60,8 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
                                     new CrudService<Player>(
                                         new Repository<Player>(_fixture.DbContext)
                                     )
-                                )
+                                ),
+                                new PouleRepository(_fixture.DbContext)
                             )
                         ),
                         new TableTennisMatchGenerator(
@@ -80,7 +81,8 @@ public class ComponentTestTournamentController : IClassFixture<SimpleTournamentD
                                     new CrudService<Player>(
                                         new Repository<Player>(_fixture.DbContext)
                                     )
-                                )
+                                ),
+                                new PouleRepository(_fixture.DbContext)
                             )
                         ),
                         new TableTennisGameGenerator(

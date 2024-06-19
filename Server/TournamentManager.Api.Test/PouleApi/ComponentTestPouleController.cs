@@ -32,7 +32,8 @@ public class ComponentTestPouleController : IClassFixture<SimplePouleDatabaseFix
                     new CrudService<Player>(
                         new Repository<Player>(_fixture.DbContext)
                     )
-                )
+                ),
+                new PouleRepository(_fixture.DbContext)
             )
         );
     }

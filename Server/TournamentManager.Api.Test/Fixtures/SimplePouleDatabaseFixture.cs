@@ -13,11 +13,15 @@ public class SimplePouleDatabaseFixture : DatabaseFixture
         DbContext.Members.RemoveRange(DbContext.Members);
         DbContext.Poules.RemoveRange(DbContext.Poules);
         DbContext.Rounds.RemoveRange(DbContext.Rounds);
+        DbContext.Tournaments.RemoveRange(DbContext.Tournaments);
     }
 
     protected override void FillContext()
     {
-        var round = RoundBuilder.GetSingleRound(1);
+        var tournament = TournamentBuilder.GetSingleTournament(1);
+        DbContext.Tournaments.Add(tournament);
+
+        var round = RoundBuilder.GetSingleRound(1, 1);
         DbContext.Rounds.Add(round);
 
         var member1 = MemberBuilder.GetSingleMember(1, 1);
@@ -29,8 +33,7 @@ public class SimplePouleDatabaseFixture : DatabaseFixture
 
         for (var i = 0; i < 10; i++)
         {
-            var poule = PouleBuilder.GetSinglePoule(i + 1);
-            poule.RoundId = round.Id.Value;
+            var poule = PouleBuilder.GetSinglePoule(i + 1, 1);
             DbContext.Poules.Add(poule);
         }
     }

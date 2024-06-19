@@ -180,7 +180,7 @@ public class TournamentTestService
         tournament.Sport = Sport.TableTennis;
         Tournament forwardedTournament = null!;
 
-        _mockTournamentRepository.Setup(repo => repo.GetWithAllReferences(It.IsAny<int>())).Returns(tournament);
+        _mockTournamentRepository.Setup(repo => repo.GetWithAllRelations(It.IsAny<int>())).Returns(tournament);
         _mockSportService.Setup(sport => sport.Generate(It.IsAny<Tournament>())).Callback<Tournament>(tournament => {forwardedTournament = tournament;});
 
         // Act
@@ -188,7 +188,7 @@ public class TournamentTestService
 
         // Assert
         Assert.Multiple(
-            () => _mockTournamentRepository.Verify(repo => repo.GetWithAllReferences(It.IsAny<int>()), Times.Once),
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithAllRelations(It.IsAny<int>()), Times.Once),
             () => _mockSportService.Verify(sport => sport.Generate(It.IsAny<Tournament>()), Times.Once),
             () => Assert.NotNull(forwardedTournament),
             () => Assert.Equal(tournament, forwardedTournament)
@@ -200,12 +200,12 @@ public class TournamentTestService
     public void GenerateWithInValidId_ThrowsArgumentException_GenerateCalledNever()
     {
         // Arrange
-        _mockTournamentRepository.Setup(repo => repo.GetWithAllReferences(It.IsAny<int>())).Returns((Tournament)null!);
+        _mockTournamentRepository.Setup(repo => repo.GetWithAllRelations(It.IsAny<int>())).Returns((Tournament)null!);
 
         // Assert & Act
         Assert.Multiple(
             () => Assert.Throws<ArgumentException>(() => _service.Generate(-1)),
-            () => _mockTournamentRepository.Verify(repo => repo.GetWithAllReferences(It.IsAny<int>()), Times.Once),
+            () => _mockTournamentRepository.Verify(repo => repo.GetWithAllRelations(It.IsAny<int>()), Times.Once),
             () => _mockSportService.Verify(sport => sport.Generate(It.IsAny<Tournament>()), Times.Never)
         );
     }

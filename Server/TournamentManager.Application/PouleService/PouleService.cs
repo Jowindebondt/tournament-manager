@@ -8,22 +8,24 @@ public class PouleService : IPouleService
     private readonly ICrudService<Poule> _crudService;
     private readonly IMemberService _memberService;
     private readonly IPlayerService _playerService;
+    private readonly IPouleRepository _pouleRepository;
 
     /// <summary>
     /// Initializes a new instance of <see cref="PouleService"/>
     /// </summary>
     /// <param name="crudService">Service for handling CRUD actions for the <see cref="Poule"/> model.</param>
-    public PouleService(ICrudService<Poule> crudService, IMemberService memberService, IPlayerService playerService) 
+    public PouleService(ICrudService<Poule> crudService, IMemberService memberService, IPlayerService playerService, IPouleRepository pouleRepository) 
     {
         _crudService = crudService;
         _memberService = memberService;
         _playerService = playerService;
+        _pouleRepository = pouleRepository;
     }
 
     /// <inheritdoc/>
     public void AddMembers(int id, IEnumerable<int> memberIds)
     {
-        var poule = _crudService.Get(id) ?? throw new ArgumentException("Poule not found");
+        var poule = _pouleRepository.GetWithAncestors(id) ?? throw new ArgumentException("Poule not found");
         var tournamentId = poule.Round.TournamentId;
 
         var membersNotFound = new List<int>();
@@ -43,6 +45,9 @@ public class PouleService : IPouleService
 
                 member.PlayerId = player.Id.Value;
                 _memberService.Update(memberId, member);
+
+                poule.Players.Add(player);
+                _crudService.Update(poule.Id.Value, poule, _ => {});
             }
         }
 
@@ -55,7 +60,7 @@ public class PouleService : IPouleService
     /// <inheritdoc/>
     public void AddMembersAsTeam(int id, IEnumerable<int> memberIds)
     {
-        var poule = _crudService.Get(id) ?? throw new ArgumentException("Poule not found");
+        var poule = _pouleRepository.GetWithAncestors(id) ?? throw new ArgumentException("Poule not found");
         var tournamentId = poule.Round.TournamentId;
 
         var player = new Player();
@@ -80,6 +85,11 @@ public class PouleService : IPouleService
         {
             // if all members aren't found, then the newly created player can be removed because it won't have any references
             _playerService.Delete(player.Id.Value);
+        }
+        else
+        {
+            poule.Players.Add(player);
+            _crudService.Update(poule.Id.Value, poule, _ => {});
         }
         if (membersNotFound.Count > 0)
         {

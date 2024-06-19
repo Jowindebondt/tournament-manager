@@ -33,7 +33,7 @@ public class TournamentService : ITournamentService
     /// <inheritdoc/>
     public void Generate(int id)
     {
-        var tournament = _tournamentRepository.GetWithAllReferences(id) ?? throw new ArgumentException("Tournament not found");
+        var tournament = _tournamentRepository.GetWithAllRelations(id) ?? throw new ArgumentException("Tournament not found");
         _sportServiceResolver(tournament.Sport).Generate(tournament);
     }
 
