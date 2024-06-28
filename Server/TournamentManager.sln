@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.Domain.Test", "TournamentManager.Domain.Test\TournamentManager.Domain.Test.csproj", "{1F9BC8F9-876F-4D88-84B4-285E3C12ACB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TournamentManager.TestHelper", "TournamentManager.TestHelper\TournamentManager.TestHelper.csproj", "{85FA7D93-E71E-46E5-9514-DA87831D8210}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "EventBus\EventBus.csproj", "{F7B13377-C768-4A85-BAF6-E916D80AB44D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,5 +68,9 @@ Global
 		{85FA7D93-E71E-46E5-9514-DA87831D8210}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85FA7D93-E71E-46E5-9514-DA87831D8210}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85FA7D93-E71E-46E5-9514-DA87831D8210}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7B13377-C768-4A85-BAF6-E916D80AB44D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7B13377-C768-4A85-BAF6-E916D80AB44D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7B13377-C768-4A85-BAF6-E916D80AB44D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7B13377-C768-4A85-BAF6-E916D80AB44D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
