@@ -1,4 +1,5 @@
 using AutoMapper;
+using Design.Api.Controllers;
 using Design.Api.ViewModels;
 using Design.Application.DTOs;
 using Design.Application.Services;
@@ -8,19 +9,19 @@ using Moq;
 using TournamentManager.TestHelper;
 using Xunit;
 
-namespace Test.Design.Api.PouleController;
+namespace Test.Design.Api;
 
 public class UnitTestPouleController
 {
     private readonly Mock<IMapper> _mockMapper;
     private readonly Mock<PouleService> _mockService;
-    private readonly global::Design.Api.Controllers.PouleController _controller;
+    private readonly PouleController _controller;
 
     public UnitTestPouleController()
     {
         _mockMapper = new Mock<IMapper>();
         _mockService = new Mock<PouleService>(_mockMapper.Object, Mock.Of<IPouleRepository>(), null!);
-        _controller = new global::Design.Api.Controllers.PouleController(_mockMapper.Object, _mockService.Object);
+        _controller = new PouleController(_mockMapper.Object, _mockService.Object);
     }
 
     [Fact]
