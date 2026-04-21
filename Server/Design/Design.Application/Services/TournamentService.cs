@@ -17,19 +17,19 @@ public class TournamentService
         _tournamentRepository = tournamentRepository;
     }
 
-    public async Task<IEnumerable<TournamentDTO>> GetAllAsync()
+    public virtual async Task<IEnumerable<TournamentDTO>> GetAllAsync()
     {
         var tournaments = await _tournamentRepository.GetAllAsync();
         return _mapper.Map<IEnumerable<TournamentDTO>>(tournaments);
     }
 
-    public async Task<TournamentDTO> GetByIdAsync(Guid id)
+    public virtual async Task<TournamentDTO> GetByIdAsync(Guid id)
     {
         var tournament = await _tournamentRepository.GetByIdAsync(new TournamentId(id));
         return _mapper.Map<TournamentDTO>(tournament);
     }
 
-    public async Task<TournamentDTO> CreateAsync(CreateTournamentDTO createTournament)
+    public virtual async Task<TournamentDTO> CreateAsync(CreateTournamentDTO createTournament)
     {
         var tournamentId = new TournamentId(Guid.NewGuid());
         var tournamentName = TournamentName.Create(createTournament.Name);
@@ -40,25 +40,25 @@ public class TournamentService
         return _mapper.Map<TournamentDTO>(tournament);
     }
 
-    public async Task RenameAsync(RenameTournamentDTO renameTournament)
+    public virtual async Task RenameAsync(RenameTournamentDTO renameTournament)
     {
         var tournament = await _tournamentRepository.GetByIdAsync(new TournamentId(renameTournament.Id)) ?? throw new ArgumentException("Tournament not found");
         tournament.Rename(TournamentName.Create(renameTournament.Name));
         await _tournamentRepository.UpdateAsync(tournament);
     }
 
-    public async Task LoadTemplateAsync(Guid id, Guid templateId)
+    public virtual async Task LoadTemplateAsync(Guid id, Guid templateId)
     {
 
     }
 
-    public async Task DeleteAsync(Guid id)
+    public virtual async Task DeleteAsync(Guid id)
     {
         var tournament = await _tournamentRepository.GetByIdAsync(new TournamentId(id)) ?? throw new ArgumentException("Tournament not found");
         await _tournamentRepository.RemoveAsync(tournament);
     }
 
-    public async Task GenerateAsync(Guid id)
+    public virtual async Task GenerateAsync(Guid id)
     {
 
     }

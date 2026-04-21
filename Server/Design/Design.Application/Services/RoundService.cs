@@ -21,19 +21,19 @@ public class RoundService
         _pouleService = pouleService;
     }
 
-    public async Task<IEnumerable<RoundDto>> GetAllByTournamentAsync(Guid tournamentId)
+    public virtual async Task<IEnumerable<RoundDto>> GetAllByTournamentAsync(Guid tournamentId)
     {
         var rounds = await _roundRepository.GetAllByTournamentAsync(new TournamentId(tournamentId));
         return _mapper.Map<IEnumerable<RoundDto>>(rounds);
     }
 
-    public async Task<RoundDto> GetByIdAsync(Guid id)
+    public virtual async Task<RoundDto> GetByIdAsync(Guid id)
     {
         var round = await _roundRepository.GetByIdAsync(new RoundId(id));
         return _mapper.Map<RoundDto>(round);
     }
 
-    public async Task<RoundDto> CreateAsync(CreateRoundDto createRound)
+    public virtual async Task<RoundDto> CreateAsync(CreateRoundDto createRound)
     {
         var tournament = await _tournamentService.GetByIdAsync(createRound.TournamentId);
 
@@ -46,7 +46,7 @@ public class RoundService
         return _mapper.Map<RoundDto>(round);
     }
 
-    public async Task RenameAsync(RenameRoundDto renameRound)
+    public virtual async Task RenameAsync(RenameRoundDto renameRound)
     {
         var round = await _roundRepository.GetByIdAsync(new RoundId(renameRound.Id)) ?? throw new ArgumentException("Round not found");
         
@@ -55,7 +55,7 @@ public class RoundService
         await _roundRepository.UpdateAsync(round);
     }
 
-    public async Task SetPreviousRoundAsync(SetPreviousRoundDto setPreviousRound)
+    public virtual async Task SetPreviousRoundAsync(SetPreviousRoundDto setPreviousRound)
     {
         var round = await _roundRepository.GetByIdAsync(new RoundId(setPreviousRound.Id)) ?? throw new ArgumentException("Round not found");
         var previousRound = await _roundRepository.GetByIdAsync(new RoundId(setPreviousRound.PreviousId)) ?? throw new ArgumentException("Previous round not found");
@@ -65,7 +65,7 @@ public class RoundService
         await _roundRepository.UpdateAsync(round);
     }
 
-    public async Task SetTableTennisSettingsAsync(SetTableTennisRoundSettingsDto setTableTennisRoundSettings)
+    public virtual async Task SetTableTennisSettingsAsync(SetTableTennisRoundSettingsDto setTableTennisRoundSettings)
     {
         var round = await _roundRepository.GetByIdAsync(new RoundId(setTableTennisRoundSettings.Id)) ?? throw new ArgumentException("Round not found");
 
@@ -74,7 +74,7 @@ public class RoundService
         await _roundRepository.UpdateAsync(round);
     }
 
-    public async Task SetRoundPoulePositionAsync(SetRoundPoulePositionDto setRoundPoulePosition)
+    public virtual async Task SetRoundPoulePositionAsync(SetRoundPoulePositionDto setRoundPoulePosition)
     {
         var round = await _roundRepository.GetByIdAsync(new RoundId(setRoundPoulePosition.Id)) ?? throw new ArgumentException("Round not found");
 
@@ -103,7 +103,7 @@ public class RoundService
         await _roundRepository.UpdateAsync(round);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public virtual async Task DeleteAsync(Guid id)
     {
         var round = await _roundRepository.GetByIdAsync(new RoundId(id)) ?? throw new ArgumentException("Round not found");
         await _roundRepository.RemoveAsync(round);

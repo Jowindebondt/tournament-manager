@@ -20,19 +20,19 @@ public class PouleService
         _roundService = roundService;
     }
 
-    public async Task<IEnumerable<PouleDto>> GetAllByRoundAndTournamentAsync(Guid roundId, Guid tournamentId)
+    public virtual async Task<IEnumerable<PouleDto>> GetAllByRoundAndTournamentAsync(Guid roundId, Guid tournamentId)
     {
         var poules = await _pouleRepository.GetAllByTournamentAndRoundAsync(new TournamentId(tournamentId), new RoundId(roundId));
         return _mapper.Map<IEnumerable<PouleDto>>(poules);
     }
 
-    public async Task<PouleDto> GetByIdAsync(Guid id)
+    public virtual async Task<PouleDto> GetByIdAsync(Guid id)
     {
         var poule = await _pouleRepository.GetByIdAsync(new PouleId(id));
         return _mapper.Map<PouleDto>(poule);
     }
 
-    public async Task<PouleDto> CreateAsync(CreatePouleDto createPoule)
+    public virtual async Task<PouleDto> CreateAsync(CreatePouleDto createPoule)
     {
         var round = await _roundService.GetByIdAsync(createPoule.RoundId);
 
@@ -46,7 +46,7 @@ public class PouleService
         return _mapper.Map<PouleDto>(poule);
     }
 
-    public async Task RenameAsync(RenamePouleDto renamePoule)
+    public virtual async Task RenameAsync(RenamePouleDto renamePoule)
     {
         var poule = await _pouleRepository.GetByIdAsync(new PouleId(renamePoule.Id)) ?? throw new ArgumentException("Poule not found");
 
@@ -55,7 +55,7 @@ public class PouleService
         await _pouleRepository.UpdateAsync(poule);
     }
 
-    public async Task SetTotalPlayersAsync(SetTotalPlayersPouleDto setTotalPlayersPoule)
+    public virtual async Task SetTotalPlayersAsync(SetTotalPlayersPouleDto setTotalPlayersPoule)
     {
         var poule = await _pouleRepository.GetByIdAsync(new PouleId(setTotalPlayersPoule.Id)) ?? throw new ArgumentException("Poule not found");
 
@@ -64,7 +64,7 @@ public class PouleService
         await _pouleRepository.UpdateAsync(poule);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public virtual async Task DeleteAsync(Guid id)
     {
         var poule = await _pouleRepository.GetByIdAsync(new PouleId(id)) ?? throw new ArgumentException("Poule not found");
         await _pouleRepository.RemoveAsync(poule);
