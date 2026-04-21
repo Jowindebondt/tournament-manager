@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Design.Api.ViewModels;
 using Design.Application.DTOs;
-using Design.Application.Services;
+using Design.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Design.Api.Controllers;
@@ -11,9 +11,9 @@ namespace Design.Api.Controllers;
 public class PouleController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly PouleService _pouleService;
+    private readonly IPouleService _pouleService;
 
-    public PouleController(IMapper mapper, PouleService pouleService)
+    public PouleController(IMapper mapper, IPouleService pouleService)
     {
         _mapper = mapper;
         _pouleService = pouleService;

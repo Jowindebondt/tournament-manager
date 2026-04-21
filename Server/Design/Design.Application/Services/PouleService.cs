@@ -1,19 +1,20 @@
 ﻿using System.ComponentModel;
 using AutoMapper;
 using Design.Application.DTOs;
+using Design.Application.Interfaces;
 using Design.Domain;
 using Design.Domain.Entities;
 using Design.Domain.ValueObjects;
 
 namespace Design.Application.Services;
 
-public class PouleService
+public class PouleService : IPouleService
 {
     private readonly IMapper _mapper;
     private readonly IPouleRepository _pouleRepository;
-    private readonly RoundService _roundService;
+    private readonly IRoundService _roundService;
 
-    public PouleService(IMapper mapper, IPouleRepository pouleRepository, RoundService roundService)
+    public PouleService(IMapper mapper, IPouleRepository pouleRepository, IRoundService roundService)
     {
         _mapper = mapper;
         _pouleRepository = pouleRepository;

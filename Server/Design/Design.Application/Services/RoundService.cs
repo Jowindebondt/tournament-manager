@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
 using Design.Application.DTOs;
+using Design.Application.Interfaces;
 using Design.Domain;
 using Design.Domain.Entities;
 using Design.Domain.ValueObjects;
 
 namespace Design.Application.Services;
 
-public class RoundService
+public class RoundService : IRoundService
 {
     private readonly IMapper _mapper;
     private readonly IRoundRepository _roundRepository;
-    private readonly TournamentService _tournamentService;
-    private readonly PouleService _pouleService;
+    private readonly ITournamentService _tournamentService;
+    private readonly IPouleService _pouleService;
 
-    public RoundService(IMapper mapper, IRoundRepository roundRepository, TournamentService tournamentService, PouleService pouleService)
+    public RoundService(IMapper mapper, IRoundRepository roundRepository, ITournamentService tournamentService, IPouleService pouleService)
     {
         _mapper = mapper;
         _roundRepository = roundRepository;

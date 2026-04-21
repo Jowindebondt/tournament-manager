@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Design.Application.DTOs;
+using Design.Application.Interfaces;
 using Design.Domain;
 using Design.Domain.Entities;
 using Design.Domain.ValueObjects;
 
 namespace Design.Application.Services;
 
-public class TournamentService
+public class TournamentService : ITournamentService
 {
     private readonly IMapper _mapper;
     private readonly ITournamentRepository _tournamentRepository;

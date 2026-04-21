@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Design.Api.ViewModels;
 using Design.Application.DTOs;
-using Design.Application.Services;
+using Design.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Design.Api.Controllers;
@@ -11,9 +11,9 @@ namespace Design.Api.Controllers;
 public class RoundController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly RoundService _roundService;
+    private readonly IRoundService _roundService;
 
-    public RoundController(IMapper mapper, RoundService roundService)
+    public RoundController(IMapper mapper, IRoundService roundService)
     {
         _mapper = mapper;
         _roundService = roundService;
