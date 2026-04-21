@@ -1,6 +1,6 @@
 using Design.Application.DTOs;
 
-namespace Design.Application.Services;
+namespace Design.Application.Interfaces;
 
 public interface ITournamentService
 {

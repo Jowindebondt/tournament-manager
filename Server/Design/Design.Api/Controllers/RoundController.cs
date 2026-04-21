@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Design.Api.ViewModels;
 using Design.Application.DTOs;
-using Design.Application.Services;
+using Design.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Design.Api.Controllers;

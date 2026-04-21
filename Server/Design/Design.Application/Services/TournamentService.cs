@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Design.Application.DTOs;
+using Design.Application.Interfaces;
 using Design.Domain;
 using Design.Domain.Entities;
 using Design.Domain.ValueObjects;

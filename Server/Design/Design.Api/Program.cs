@@ -1,3 +1,4 @@
+using Design.Application.Interfaces;
 using Design.Application.Services;
 using Design.Domain;
 using Design.Infrastructure.Persistence;
