@@ -2,7 +2,6 @@ using AutoMapper;
 using Design.Api.ViewModels;
 using Design.Application.DTOs;
 using Design.Application.Services;
-using Design.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TournamentManager.TestHelper;
@@ -13,13 +12,13 @@ namespace Test.Design.Api.Controllers;
 public class UnitTestRoundController
 {
     private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<RoundService> _mockService;
+    private readonly Mock<IRoundService> _mockService;
     private readonly global::Design.Api.Controllers.RoundController _controller;
 
     public UnitTestRoundController()
     {
         _mockMapper = new Mock<IMapper>();
-        _mockService = new Mock<RoundService>(_mockMapper.Object, Mock.Of<IRoundRepository>(), null!, null!);
+        _mockService = new Mock<IRoundService>();
         _controller = new global::Design.Api.Controllers.RoundController(_mockMapper.Object, _mockService.Object);
     }
 

@@ -2,7 +2,6 @@ using AutoMapper;
 using Design.Api.ViewModels;
 using Design.Application.DTOs;
 using Design.Application.Services;
-using Design.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TournamentManager.TestHelper;
@@ -13,13 +12,13 @@ namespace Test.Design.Api.Controllers;
 public class UnitTestPouleController
 {
     private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<PouleService> _mockService;
+    private readonly Mock<IPouleService> _mockService;
     private readonly global::Design.Api.Controllers.PouleController _controller;
 
     public UnitTestPouleController()
     {
         _mockMapper = new Mock<IMapper>();
-        _mockService = new Mock<PouleService>(_mockMapper.Object, Mock.Of<IPouleRepository>(), null!);
+        _mockService = new Mock<IPouleService>();
         _controller = new global::Design.Api.Controllers.PouleController(_mockMapper.Object, _mockService.Object);
     }
 

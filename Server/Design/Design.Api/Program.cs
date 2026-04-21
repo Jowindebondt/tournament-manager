@@ -30,9 +30,9 @@ builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<IRoundRepository, RoundRepository>();
 builder.Services.AddScoped<IPouleRepository, PouleRepository>();
 
-builder.Services.AddScoped<TournamentService>();
-builder.Services.AddScoped<RoundService>();
-builder.Services.AddScoped<PouleService>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<IRoundService, RoundService>();
+builder.Services.AddScoped<IPouleService, PouleService>();
 
 builder.Services.AddSingleton<IEventQueue>(provider => EventQueueFactory.CreateEventQueue(eventQueueType, eventQueueConnectionString));
 #endregion
