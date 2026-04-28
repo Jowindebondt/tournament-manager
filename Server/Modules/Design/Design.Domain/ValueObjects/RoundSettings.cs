@@ -4,5 +4,5 @@ namespace Design.Domain.ValueObjects;
 
 public abstract class RoundSettings : ValueObject
 {
-    public ICollection<PoulePositionMapping> PoulePositions { get; } = [];
+    public IReadOnlyCollection<PoulePositionMapping> PoulePositions { get; } = [];
 }
