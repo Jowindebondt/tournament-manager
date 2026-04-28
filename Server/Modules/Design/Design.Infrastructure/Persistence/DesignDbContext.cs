@@ -5,9 +5,9 @@ namespace Design.Infrastructure.Persistence;
 
 public class DesignDbContext : DbContext
 {
-    public DbSet<Tournament> Tournaments { get; set; }
-    public DbSet<Round> Rounds { get; set; }
-    public DbSet<Poule> Poules { get; set; }
+    public DbSet<Tournament> Tournaments { get; set; } = null!;
+    public DbSet<Round> Rounds { get; set; } = null!;
+    public DbSet<Poule> Poules { get; set; } = null!;
 
     public DesignDbContext(DbContextOptions options) : base(options)
     {
