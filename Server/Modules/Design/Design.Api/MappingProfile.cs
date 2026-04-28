@@ -16,7 +16,7 @@ public class MappingProfile : Profile
         CreateMap<PouleDto, PouleViewModel>();
 
         CreateMap<CreateTournamentViewModel, CreateTournamentDto>()
-            .ForMember(dest => dest.Sport, opt => opt.MapFrom(src => Enum.Parse<Sport>(src.Sport, true)));
+            .ForMember(dest => dest.Sport, opt => opt.MapFrom(src => ParseSport(src.Sport)));
 
         CreateMap<CreateRoundViewModel, CreateRoundDto>();
         CreateMap<CreatePouleViewModel, CreatePouleDto>();
@@ -28,5 +28,14 @@ public class MappingProfile : Profile
         CreateMap<SetTotalPlayersPouleViewModel, SetTotalPlayersPouleDto>();
         CreateMap<SetPreviousRoundViewModel, SetPreviousRoundDto>();
         CreateMap<SetRoundPoulePositionViewModel, SetRoundPoulePositionDto>();
+    }
+
+    private static Sport ParseSport(string value)
+    {
+        if (!Enum.TryParse<Sport>(value, ignoreCase: true, out var sport))
+        {
+            throw new ArgumentException($"Invalid sport value: '{value}'.");
+        }
+        return sport;
     }
 }

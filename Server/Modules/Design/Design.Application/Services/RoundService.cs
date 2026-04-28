@@ -96,6 +96,7 @@ public class RoundService : IRoundService
 
         var currentPoulePosition = PoulePosition.Create(currentPoule, (short)setRoundPoulePosition.CurrentPosition);
         var previousPoulePosition = PoulePosition.Create(previousPoule, (short)setRoundPoulePosition.PreviousPosition);
+        // Validate that the mapping is constructable; persistence is handled by the repository on UpdateAsync
         PoulePositionMapping.Create(previousPoulePosition, currentPoulePosition, round.Settings);
 
         await _roundRepository.UpdateAsync(round);
