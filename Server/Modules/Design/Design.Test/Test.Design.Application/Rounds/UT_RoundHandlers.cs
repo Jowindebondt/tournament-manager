@@ -237,4 +237,190 @@ public class UT_RoundHandlers
         // act & assert
         await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(new SetPreviousRoundCommand(Guid.NewGuid(), Guid.NewGuid()), CancellationToken.None));
     }
+
+    [Fact]
+    public async Task SetRoundSettingsCommandHandler_ExistingId_SetsSettingsAndUpdates()
+    {
+        // arrange
+        var roundId = Guid.NewGuid();
+        var round = new Round(new RoundId(roundId), RoundName.Create("Round"), new TournamentId(Guid.NewGuid()));
+        var settingsMock = new Mock<RoundSettings>();
+
+        _roundRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<RoundId>())).ReturnsAsync(round);
+        _roundRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<Round>())).Returns(Task.CompletedTask);
+
+        var handler = new SetRoundSettingsCommandHandler(_roundRepositoryMock.Object);
+
+        // act
+        await handler.Handle(new SetRoundSettingsCommand(roundId, settingsMock.Object), CancellationToken.None);
+
+        // assert
+        Assert.Multiple(
+            () => Assert.Equal(settingsMock.Object, round.Settings),
+            () => _roundRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Round>()), Times.Once)
+        );
+    }
+
+    [Fact]
+    public async Task SetRoundSettingsCommandHandler_NonExistingId_ThrowsArgumentException()
+    {
+        // arrange
+        _roundRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<RoundId>())).ReturnsAsync((Round?)null);
+        var settingsMock = new Mock<RoundSettings>();
+
+        var handler = new SetRoundSettingsCommandHandler(_roundRepositoryMock.Object);
+
+        // act & assert
+        await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(new SetRoundSettingsCommand(Guid.NewGuid(), settingsMock.Object), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task SetRoundPoulePositionCommandHandler_ValidCommand_UpdatesRound()
+    {
+        // arrange
+        var tournamentId = new TournamentId(Guid.NewGuid());
+        var roundId = Guid.NewGuid();
+        var previousRoundId = Guid.NewGuid();
+        var round = new Round(new RoundId(roundId), RoundName.Create("Round"), tournamentId);
+        var previousRound = new Round(new RoundId(previousRoundId), RoundName.Create("Previous Round"), tournamentId);
+        round.SetPreviousRound(previousRound);
+        var settingsMock = new Mock<RoundSettings>();
+        round.SetSettings(settingsMock.Object);
+
+        var currentPouleId = Guid.NewGuid();
+        var previousPouleId = Guid.NewGuid();
+        var currentPoule = new Poule(new PouleId(currentPouleId), PouleName.Create("Current Poule"), PoulePlayersCount.Create(4), new RoundId(roundId));
+        var previousPoule = new Poule(new PouleId(previousPouleId), PouleName.Create("Previous Poule"), PoulePlayersCount.Create(4), new RoundId(previousRoundId));
+
+        _roundRepositoryMock.Setup(r => r.GetByIdAsync(It.Is<RoundId>(rid => rid.Value == roundId))).ReturnsAsync(round);
+        _pouleRepositoryMock.Setup(r => r.GetByIdAsync(It.Is<PouleId>(pid => pid.Value == currentPouleId))).ReturnsAsync(currentPoule);
+        _pouleRepositoryMock.Setup(r => r.GetByIdAsync(It.Is<PouleId>(pid => pid.Value == previousPouleId))).ReturnsAsync(previousPoule);
+        _roundRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<Round>())).Returns(Task.CompletedTask);
+
+        var handler = new SetRoundPoulePositionCommandHandler(_roundRepositoryMock.Object, _pouleRepositoryMock.Object);
+
+        // act
+        await handler.Handle(new SetRoundPoulePositionCommand(roundId, previousPouleId, 1, currentPouleId, 1), CancellationToken.None);
+
+        // assert
+        _roundRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Round>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task SetRoundPoulePositionCommandHandler_RoundNotFound_ThrowsArgumentException()
+    {
+        // arrange
+        _roundRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<RoundId>())).ReturnsAsync((Round?)null);
+
+        var handler = new SetRoundPoulePositionCommandHandler(_roundRepositoryMock.Object, _pouleRepositoryMock.Object);
+
+        // act & assert
+        await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(new SetRoundPoulePositionCommand(Guid.NewGuid(), Guid.NewGuid(), 1, Guid.NewGuid(), 1), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task SetRoundPoulePositionCommandHandler_NoPreviousRound_ThrowsArgumentException()
+    {
+        // arrange
+        var round = new Round(new RoundId(Guid.NewGuid()), RoundName.Create("Round"), new TournamentId(Guid.NewGuid()));
+        _roundRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<RoundId>())).ReturnsAsync(round);
+
+        var handler = new SetRoundPoulePositionCommandHandler(_roundRepositoryMock.Object, _pouleRepositoryMock.Object);
+
+        // act & assert
+        await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(new SetRoundPoulePositionCommand(round.Id.Value, Guid.NewGuid(), 1, Guid.NewGuid(), 1), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task SetRoundPoulePositionCommandHandler_CurrentPouleNotFound_ThrowsArgumentException()
+    {
+        // arrange
+        var tournamentId = new TournamentId(Guid.NewGuid());
+        var round = new Round(new RoundId(Guid.NewGuid()), RoundName.Create("Round"), tournamentId);
+        var previousRound = new Round(new RoundId(Guid.NewGuid()), RoundName.Create("Previous Round"), tournamentId);
+        round.SetPreviousRound(previousRound);
+
+        _roundRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<RoundId>())).ReturnsAsync(round);
+        _pouleRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<PouleId>())).ReturnsAsync((Poule?)null);
+
+        var handler = new SetRoundPoulePositionCommandHandler(_roundRepositoryMock.Object, _pouleRepositoryMock.Object);
+
+        // act & assert
+        await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(new SetRoundPoulePositionCommand(round.Id.Value, Guid.NewGuid(), 1, Guid.NewGuid(), 1), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task SetRoundPoulePositionCommandHandler_CurrentPouleNotInRound_ThrowsArgumentException()
+    {
+        // arrange
+        var tournamentId = new TournamentId(Guid.NewGuid());
+        var roundId = Guid.NewGuid();
+        var round = new Round(new RoundId(roundId), RoundName.Create("Round"), tournamentId);
+        var previousRound = new Round(new RoundId(Guid.NewGuid()), RoundName.Create("Previous Round"), tournamentId);
+        round.SetPreviousRound(previousRound);
+
+        var currentPouleId = Guid.NewGuid();
+        var wrongRoundId = Guid.NewGuid();
+        var currentPoule = new Poule(new PouleId(currentPouleId), PouleName.Create("Current Poule"), PoulePlayersCount.Create(4), new RoundId(wrongRoundId));
+
+        _roundRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<RoundId>())).ReturnsAsync(round);
+        _pouleRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<PouleId>())).ReturnsAsync(currentPoule);
+
+        var handler = new SetRoundPoulePositionCommandHandler(_roundRepositoryMock.Object, _pouleRepositoryMock.Object);
+
+        // act & assert
+        await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(new SetRoundPoulePositionCommand(roundId, Guid.NewGuid(), 1, currentPouleId, 1), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task SetRoundPoulePositionCommandHandler_PreviousPouleNotFound_ThrowsArgumentException()
+    {
+        // arrange
+        var tournamentId = new TournamentId(Guid.NewGuid());
+        var roundId = Guid.NewGuid();
+        var previousRoundId = Guid.NewGuid();
+        var round = new Round(new RoundId(roundId), RoundName.Create("Round"), tournamentId);
+        var previousRound = new Round(new RoundId(previousRoundId), RoundName.Create("Previous Round"), tournamentId);
+        round.SetPreviousRound(previousRound);
+
+        var currentPouleId = Guid.NewGuid();
+        var previousPouleId = Guid.NewGuid();
+        var currentPoule = new Poule(new PouleId(currentPouleId), PouleName.Create("Current Poule"), PoulePlayersCount.Create(4), new RoundId(roundId));
+
+        _roundRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<RoundId>())).ReturnsAsync(round);
+        _pouleRepositoryMock.Setup(r => r.GetByIdAsync(It.Is<PouleId>(pid => pid.Value == currentPouleId))).ReturnsAsync(currentPoule);
+        _pouleRepositoryMock.Setup(r => r.GetByIdAsync(It.Is<PouleId>(pid => pid.Value == previousPouleId))).ReturnsAsync((Poule?)null);
+
+        var handler = new SetRoundPoulePositionCommandHandler(_roundRepositoryMock.Object, _pouleRepositoryMock.Object);
+
+        // act & assert
+        await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(new SetRoundPoulePositionCommand(roundId, previousPouleId, 1, currentPouleId, 1), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task SetRoundPoulePositionCommandHandler_PreviousPouleNotInPreviousRound_ThrowsArgumentException()
+    {
+        // arrange
+        var tournamentId = new TournamentId(Guid.NewGuid());
+        var roundId = Guid.NewGuid();
+        var previousRoundId = Guid.NewGuid();
+        var round = new Round(new RoundId(roundId), RoundName.Create("Round"), tournamentId);
+        var previousRound = new Round(new RoundId(previousRoundId), RoundName.Create("Previous Round"), tournamentId);
+        round.SetPreviousRound(previousRound);
+
+        var currentPouleId = Guid.NewGuid();
+        var previousPouleId = Guid.NewGuid();
+        var currentPoule = new Poule(new PouleId(currentPouleId), PouleName.Create("Current Poule"), PoulePlayersCount.Create(4), new RoundId(roundId));
+        var wrongRoundId = Guid.NewGuid();
+        var previousPoule = new Poule(new PouleId(previousPouleId), PouleName.Create("Previous Poule"), PoulePlayersCount.Create(4), new RoundId(wrongRoundId));
+
+        _roundRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<RoundId>())).ReturnsAsync(round);
+        _pouleRepositoryMock.Setup(r => r.GetByIdAsync(It.Is<PouleId>(pid => pid.Value == currentPouleId))).ReturnsAsync(currentPoule);
+        _pouleRepositoryMock.Setup(r => r.GetByIdAsync(It.Is<PouleId>(pid => pid.Value == previousPouleId))).ReturnsAsync(previousPoule);
+
+        var handler = new SetRoundPoulePositionCommandHandler(_roundRepositoryMock.Object, _pouleRepositoryMock.Object);
+
+        // act & assert
+        await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(new SetRoundPoulePositionCommand(roundId, previousPouleId, 1, currentPouleId, 1), CancellationToken.None));
+    }
 }
