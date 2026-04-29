@@ -202,6 +202,35 @@ public class CT_TournamentController : IDisposable
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public async Task GenerateAsync_TournamentWithRoundRobinAndKnockOutRounds_PlansPersistedCorrectly()
+    {
+        // arrange — create a round with RoundRobin type and another with KnockOut Final
+        var roundController = new global::Design.Api.Controllers.RoundController(_mapper, _mediator);
+        var roundRobinResult = await roundController.CreateAsync(new CreateRoundViewModel { Name = "Round Robin", TournamentId = _existingId });
+        var roundRobin = (RoundViewModel)((CreatedAtActionResult)roundRobinResult).Value!;
+        await roundController.SetRoundTypeAsync(roundRobin.Id, new SetRoundTypeViewModel { CompetitionType = "RoundRobin" });
+
+        var knockOutResult = await roundController.CreateAsync(new CreateRoundViewModel { Name = "Final", TournamentId = _existingId });
+        var knockOut = (RoundViewModel)((CreatedAtActionResult)knockOutResult).Value!;
+        await roundController.SetRoundTypeAsync(knockOut.Id, new SetRoundTypeViewModel { CompetitionType = "KnockOut", KnockOutPhase = "Final" });
+
+        // act
+        var result = await CreateController().GenerateAsync(_existingId);
+
+        // assert
+        var competition = _competitionDbContext.Competitions.Single();
+        var rounds = _competitionDbContext.CompetitionRounds.ToList();
+        Assert.Multiple(
+            () => Assert.IsType<NoContentResult>(result),
+            () => Assert.Equal(2, rounds.Count),
+            () => Assert.IsType<Competition.Domain.ValueObjects.RoundRobinPlan>(rounds.First(r => r.Name.Value == "Round Robin").Plan),
+            () => Assert.IsType<Competition.Domain.ValueObjects.KnockOutPlan>(rounds.First(r => r.Name.Value == "Final").Plan),
+            () => Assert.Equal(Competition.Domain.Enums.KnockOutPhase.Final, ((Competition.Domain.ValueObjects.KnockOutPlan)rounds.First(r => r.Name.Value == "Final").Plan).Phase)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
     public async Task GenerateAsync_CalledTwice_TwoCompetitionsCreatedInDb()
     {
         // act
