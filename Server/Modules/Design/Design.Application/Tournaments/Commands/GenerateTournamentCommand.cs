@@ -68,7 +68,15 @@ public class GenerateTournamentCommandHandler(
     private static CompetitionPlan MapToPlan(Design.Domain.ValueObjects.RoundType roundType) => roundType switch
     {
         RoundRobinType => new RoundRobinPlan(),
-        KnockOutType ko => new KnockOutPlan((KnockOutPhase)(int)ko.Phase),
+        KnockOutType ko => new KnockOutPlan(MapKnockOutPhase(ko.Phase)),
         _ => throw new ArgumentOutOfRangeException(nameof(roundType), $"Unsupported round type: {roundType.GetType().Name}")
+    };
+
+    private static KnockOutPhase MapKnockOutPhase(Design.Domain.Enums.KnockOutPhase phase) => phase switch
+    {
+        Design.Domain.Enums.KnockOutPhase.SemiFinal => KnockOutPhase.SemiFinal,
+        Design.Domain.Enums.KnockOutPhase.ThirdPlace => KnockOutPhase.ThirdPlace,
+        Design.Domain.Enums.KnockOutPhase.Final => KnockOutPhase.Final,
+        _ => throw new ArgumentOutOfRangeException(nameof(phase), $"Unsupported knock-out phase: {phase}")
     };
 }

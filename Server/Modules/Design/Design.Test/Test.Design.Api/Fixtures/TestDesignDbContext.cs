@@ -69,10 +69,12 @@ public class TestDesignDbContext : DesignDbContext
         });
     }
 
+    private const string KnockOutPrefix = "KnockOut:";
+
     private static string SerializeRoundType(RoundType type) => type switch
     {
         RoundRobinType => "RoundRobin",
-        KnockOutType ko => $"KnockOut:{ko.Phase}",
+        KnockOutType ko => $"{KnockOutPrefix}{ko.Phase}",
         _ => throw new ArgumentOutOfRangeException(nameof(type))
     };
 
@@ -81,7 +83,7 @@ public class TestDesignDbContext : DesignDbContext
         if (value == "RoundRobin")
             return new RoundRobinType();
 
-        if (value.StartsWith("KnockOut:") && Enum.TryParse<KnockOutPhase>(value["KnockOut:".Length..], out var phase))
+        if (value.StartsWith(KnockOutPrefix) && Enum.TryParse<KnockOutPhase>(value[KnockOutPrefix.Length..], out var phase))
             return new KnockOutType(phase);
 
         throw new ArgumentException($"Cannot deserialize RoundType from '{value}'.");
