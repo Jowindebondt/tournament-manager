@@ -40,9 +40,10 @@ public class GenerateTournamentCommandHandler(
             var roundName = Competition.Domain.ValueObjects.RoundName.Create(designRound.Name.Value);
             var round = new Round(roundId, roundName, competitionId);
 
+            RoundPlan? plan = null;
             if (designRound.Type != null)
             {
-                var plan = MapRoundPlan(designRound.Type);
+                plan = MapRoundPlan(designRound.Type);
                 round.SetPlan(plan);
             }
 
@@ -53,6 +54,9 @@ public class GenerateTournamentCommandHandler(
                 var pouleName = Competition.Domain.ValueObjects.PouleName.Create(designPoule.Name.Value);
                 var totalPlayers = Competition.Domain.ValueObjects.PoulePlayersCount.Create(designPoule.TotalPlayers.Value);
                 var poule = new Poule(pouleId, pouleName, totalPlayers, roundId);
+
+                GenerateMatches(poule, plan);
+
                 round.Poules.Add(poule);
             }
 
@@ -60,6 +64,37 @@ public class GenerateTournamentCommandHandler(
         }
 
         await competitionRepository.AddAsync(competition);
+    }
+
+    private static void GenerateMatches(Poule poule, RoundPlan? plan)
+    {
+        var n = poule.TotalPlayers.Value;
+
+        switch (plan)
+        {
+            case RoundRobinPlan:
+                for (short i = 1; i <= n; i++)
+                {
+                    for (short j = (short)(i + 1); j <= n; j++)
+                    {
+                        poule.Matches.Add(new Match(
+                            new Competition.Domain.ValueObjects.MatchId(Guid.NewGuid()),
+                            i, j,
+                            poule.Id));
+                    }
+                }
+                break;
+
+            case KnockOutPlan:
+                for (short i = 1; i + 1 <= n; i += 2)
+                {
+                    poule.Matches.Add(new Match(
+                        new Competition.Domain.ValueObjects.MatchId(Guid.NewGuid()),
+                        i, (short)(i + 1),
+                        poule.Id));
+                }
+                break;
+        }
     }
 
     private static RoundPlan MapRoundPlan(Design.Domain.ValueObjects.RoundType roundType) => roundType switch

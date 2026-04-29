@@ -11,6 +11,8 @@ public sealed class Poule : Entity<PouleId>
     public RoundId RoundId { get; private set; }
     public Round Round { get; private set; } = null!;
 
+    public ICollection<Match> Matches { get; private set; } = [];
+
     public Poule(PouleId id, PouleName name, PoulePlayersCount totalPlayers, RoundId roundId) : base(id)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
