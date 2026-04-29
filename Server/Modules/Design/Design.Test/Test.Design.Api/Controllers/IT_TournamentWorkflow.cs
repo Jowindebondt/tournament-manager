@@ -1,4 +1,6 @@
 using AutoMapper;
+using Competition.Domain.Interfaces;
+using Competition.Infrastructure.Repositories;
 using Design.Application.Tournaments.Commands;
 using Design.Domain.Interfaces;
 using Design.Domain.ValueObjects;
@@ -18,6 +20,7 @@ namespace Test.Design.Api.Controllers;
 public class IT_TournamentWorkflow : IDisposable
 {
     private readonly TestDesignDbContext _dbContext;
+    private readonly TestCompetitionDbContext _competitionDbContext;
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
@@ -28,6 +31,11 @@ public class IT_TournamentWorkflow : IDisposable
             .Options;
         _dbContext = new TestDesignDbContext(options);
 
+        var competitionOptions = new DbContextOptionsBuilder<TestCompetitionDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        _competitionDbContext = new TestCompetitionDbContext(competitionOptions);
+
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddAutoMapper(
@@ -37,6 +45,7 @@ public class IT_TournamentWorkflow : IDisposable
         services.AddSingleton<ITournamentRepository>(new TournamentRepository(_dbContext));
         services.AddSingleton<IRoundRepository>(new RoundRepository(_dbContext));
         services.AddSingleton<IPouleRepository>(new PouleRepository(_dbContext));
+        services.AddSingleton<ICompetitionRepository>(new CompetitionRepository(_competitionDbContext));
         var sp = services.BuildServiceProvider();
         _mapper = sp.GetRequiredService<IMapper>();
         _mediator = sp.GetRequiredService<IMediator>();
@@ -51,7 +60,11 @@ public class IT_TournamentWorkflow : IDisposable
     private global::Design.Api.Controllers.PouleController CreatePouleController()
         => new(_mapper, _mediator);
 
-    public void Dispose() => _dbContext.Dispose();
+    public void Dispose()
+    {
+        _dbContext.Dispose();
+        _competitionDbContext.Dispose();
+    }
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.IntegrationTest)]
@@ -244,6 +257,66 @@ public class IT_TournamentWorkflow : IDisposable
             () => Assert.Single(roundsForB),
             () => Assert.All(roundsForA, r => Assert.Equal(tournamentA.Id, r.Tournament.Id)),
             () => Assert.All(roundsForB, r => Assert.Equal(tournamentB.Id, r.Tournament.Id))
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.IntegrationTest)]
+    public async Task GenerateTournamentWithRoundsAndPoules_CompetitionCreatedWithMatchingStructure()
+    {
+        // act - step 1: create tournament with 1 round and 2 poules
+        var tournamentResult = await CreateTournamentController().CreateAsync(
+            new CreateTournamentViewModel { Name = "Generated Tournament", Sport = "TableTennis" });
+        var tournament = (TournamentViewModel)((CreatedAtActionResult)tournamentResult).Value!;
+
+        var roundResult = await CreateRoundController().CreateAsync(
+            new CreateRoundViewModel { Name = "Round 1", TournamentId = tournament.Id });
+        var round = (RoundViewModel)((CreatedAtActionResult)roundResult).Value!;
+
+        await CreatePouleController().CreateAsync(
+            new CreatePouleViewModel { Name = "Poule A", TotalPlayers = 4, RoundId = round.Id });
+        await CreatePouleController().CreateAsync(
+            new CreatePouleViewModel { Name = "Poule B", TotalPlayers = 4, RoundId = round.Id });
+
+        // act - step 2: generate competition from tournament
+        var generateResult = await CreateTournamentController().GenerateAsync(tournament.Id);
+
+        // assert
+        Assert.Multiple(
+            () => Assert.IsType<NoContentResult>(generateResult),
+            () => Assert.Equal(1, _competitionDbContext.Competitions.Count()),
+            () => Assert.Equal(1, _competitionDbContext.Rounds.Count()),
+            () => Assert.Equal(2, _competitionDbContext.Poules.Count()),
+            () => Assert.Equal("Generated Tournament", _competitionDbContext.Competitions.First().Name.Value)
+        );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.IntegrationTest)]
+    public async Task GenerateTournamentTwice_TwoIndependentCompetitionsCreated()
+    {
+        // act - step 1: create tournament
+        var tournamentResult = await CreateTournamentController().CreateAsync(
+            new CreateTournamentViewModel { Name = "Reusable Design", Sport = "TableTennis" });
+        var tournament = (TournamentViewModel)((CreatedAtActionResult)tournamentResult).Value!;
+
+        var roundResult = await CreateRoundController().CreateAsync(
+            new CreateRoundViewModel { Name = "Round 1", TournamentId = tournament.Id });
+        var round = (RoundViewModel)((CreatedAtActionResult)roundResult).Value!;
+
+        await CreatePouleController().CreateAsync(
+            new CreatePouleViewModel { Name = "Poule A", TotalPlayers = 3, RoundId = round.Id });
+
+        // act - step 2: generate competition twice from same design
+        await CreateTournamentController().GenerateAsync(tournament.Id);
+        await CreateTournamentController().GenerateAsync(tournament.Id);
+
+        // assert: two independent competitions are created from the same design
+        Assert.Multiple(
+            () => Assert.Equal(2, _competitionDbContext.Competitions.Count()),
+            () => Assert.Equal(2, _competitionDbContext.Rounds.Count()),
+            () => Assert.Equal(2, _competitionDbContext.Poules.Count()),
+            () => Assert.All(_competitionDbContext.Competitions, c => Assert.Equal("Reusable Design", c.Name.Value))
         );
     }
 }
