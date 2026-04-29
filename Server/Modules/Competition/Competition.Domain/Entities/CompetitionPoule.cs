@@ -10,6 +10,9 @@ public sealed class CompetitionPoule : Entity<CompetitionPouleId>
     public CompetitionRoundId CompetitionRoundId { get; private set; }
     public CompetitionRound CompetitionRound { get; private set; } = null!;
 
+    public ICollection<Competitor> Competitors { get; private set; } = [];
+    public ICollection<RoundRobinGame> Games { get; private set; } = [];
+
     public CompetitionPoule(CompetitionPouleId id, CompetitionPouleName name, CompetitionRoundId competitionRoundId) : base(id)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));

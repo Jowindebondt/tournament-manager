@@ -181,4 +181,60 @@ public class UT_ValueObjects
         CompetitionPlan plan2 = new RoundRobinPlan();
         Assert.NotEqual(plan1, plan2);
     }
+
+    // CompetitorId
+    [Fact]
+    public void CompetitorId_Constructor_StoresValue()
+    {
+        var guid = Guid.NewGuid();
+        var id = new CompetitorId(guid);
+        Assert.Equal(guid, id.Value);
+    }
+
+    // CompetitorName
+    [Fact]
+    public void CompetitorName_Create_ValidValue_ReturnsInstance()
+    {
+        var name = CompetitorName.Create("Player A");
+        Assert.Equal("Player A", name.Value);
+    }
+
+    [Fact]
+    public void CompetitorName_Create_EmptyValue_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => CompetitorName.Create(string.Empty));
+    }
+
+    [Fact]
+    public void CompetitorName_Create_TooLongValue_ThrowsArgumentException()
+    {
+        var tooLong = new string('a', CompetitorName.MaxLength + 1);
+        Assert.Throws<ArgumentException>(() => CompetitorName.Create(tooLong));
+    }
+
+    [Fact]
+    public void CompetitorName_Create_MaxLengthValue_ReturnsInstance()
+    {
+        var maxLength = new string('a', CompetitorName.MaxLength);
+        var name = CompetitorName.Create(maxLength);
+        Assert.Equal(maxLength, name.Value);
+    }
+
+    // RoundRobinGameId
+    [Fact]
+    public void RoundRobinGameId_Constructor_StoresValue()
+    {
+        var guid = Guid.NewGuid();
+        var id = new RoundRobinGameId(guid);
+        Assert.Equal(guid, id.Value);
+    }
+
+    // BracketGameId
+    [Fact]
+    public void BracketGameId_Constructor_StoresValue()
+    {
+        var guid = Guid.NewGuid();
+        var id = new BracketGameId(guid);
+        Assert.Equal(guid, id.Value);
+    }
 }

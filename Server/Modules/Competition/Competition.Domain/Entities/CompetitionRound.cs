@@ -12,6 +12,7 @@ public sealed class CompetitionRound : Entity<CompetitionRoundId>
     public Competition Competition { get; private set; } = null!;
 
     public ICollection<CompetitionPoule> Poules { get; private set; } = [];
+    public ICollection<BracketGame> BracketGames { get; private set; } = [];
 
     public CompetitionRound(CompetitionRoundId id, CompetitionRoundName name, CompetitionId competitionId) : base(id)
     {

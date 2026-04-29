@@ -12,6 +12,9 @@ public class CompetitionDbContext : DbContext
     public DbSet<Competition.Domain.Entities.Competition> Competitions { get; set; } = null!;
     public DbSet<CompetitionRound> CompetitionRounds { get; set; } = null!;
     public DbSet<CompetitionPoule> CompetitionPoules { get; set; } = null!;
+    public DbSet<Competitor> Competitors { get; set; } = null!;
+    public DbSet<RoundRobinGame> RoundRobinGames { get; set; } = null!;
+    public DbSet<BracketGame> BracketGames { get; set; } = null!;
 
     public CompetitionDbContext(DbContextOptions options) : base(options)
     {
@@ -65,6 +68,68 @@ public class CompetitionDbContext : DbContext
             entity.HasOne(p => p.CompetitionRound)
                 .WithMany(r => r.Poules)
                 .HasForeignKey(p => p.CompetitionRoundId);
+        });
+
+        modelBuilder.Entity<Competitor>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.Id)
+                .HasConversion(id => id.Value, value => new CompetitorId(value));
+            entity.Property(c => c.Name)
+                .HasConversion(n => n.Value, value => CompetitorName.Create(value));
+            entity.Property(c => c.CompetitionPouleId)
+                .HasConversion(id => id.Value, value => new CompetitionPouleId(value));
+            entity.HasOne(c => c.CompetitionPoule)
+                .WithMany(p => p.Competitors)
+                .HasForeignKey(c => c.CompetitionPouleId);
+        });
+
+        modelBuilder.Entity<RoundRobinGame>(entity =>
+        {
+            entity.HasKey(g => g.Id);
+            entity.Property(g => g.Id)
+                .HasConversion(id => id.Value, value => new RoundRobinGameId(value));
+            entity.Property(g => g.CompetitionPouleId)
+                .HasConversion(id => id.Value, value => new CompetitionPouleId(value));
+            entity.HasOne(g => g.CompetitionPoule)
+                .WithMany(p => p.Games)
+                .HasForeignKey(g => g.CompetitionPouleId);
+            entity.Property(g => g.HomeCompetitorId)
+                .HasConversion(id => id.Value, value => new CompetitorId(value));
+            entity.HasOne(g => g.HomeCompetitor)
+                .WithMany()
+                .HasForeignKey(g => g.HomeCompetitorId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.Property(g => g.AwayCompetitorId)
+                .HasConversion(id => id.Value, value => new CompetitorId(value));
+            entity.HasOne(g => g.AwayCompetitor)
+                .WithMany()
+                .HasForeignKey(g => g.AwayCompetitorId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<BracketGame>(entity =>
+        {
+            entity.HasKey(g => g.Id);
+            entity.Property(g => g.Id)
+                .HasConversion(id => id.Value, value => new BracketGameId(value));
+            entity.Property(g => g.CompetitionRoundId)
+                .HasConversion(id => id.Value, value => new CompetitionRoundId(value));
+            entity.HasOne(g => g.CompetitionRound)
+                .WithMany(r => r.BracketGames)
+                .HasForeignKey(g => g.CompetitionRoundId);
+            entity.Property(g => g.HomeCompetitorId)
+                .HasConversion(id => id!.Value, value => new CompetitorId(value));
+            entity.HasOne(g => g.HomeCompetitor)
+                .WithMany()
+                .HasForeignKey(g => g.HomeCompetitorId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.Property(g => g.AwayCompetitorId)
+                .HasConversion(id => id!.Value, value => new CompetitorId(value));
+            entity.HasOne(g => g.AwayCompetitor)
+                .WithMany()
+                .HasForeignKey(g => g.AwayCompetitorId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 
