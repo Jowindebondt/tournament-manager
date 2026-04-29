@@ -76,7 +76,8 @@ public class RoundController : ControllerBase
         RoundType roundType = setRoundType.Type switch
         {
             "RoundRobin" => RoundRobinType.Instance,
-            "KnockOut" when Enum.TryParse<KnockOutPhase>(setRoundType.KnockOutPhase, out var phase) => new KnockOutType(phase),
+            "KnockOut" when setRoundType.KnockOutPhase != null && Enum.TryParse<KnockOutPhase>(setRoundType.KnockOutPhase, out var phase) => new KnockOutType(phase),
+            "KnockOut" => throw new ArgumentException($"A valid KnockOutPhase is required for KnockOut round type. Valid values: {string.Join(", ", Enum.GetNames<KnockOutPhase>())}."),
             _ => throw new ArgumentException($"Unsupported round type '{setRoundType.Type}'.")
         };
         await _mediator.Send(new SetRoundTypeCommand(id, roundType));
