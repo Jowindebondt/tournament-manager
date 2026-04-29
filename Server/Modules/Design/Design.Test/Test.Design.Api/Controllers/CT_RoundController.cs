@@ -174,4 +174,32 @@ public class CT_RoundController : IDisposable
             () => Assert.Equal(_seedRoundCount - 1, _dbContext.Rounds.Count())
         );
     }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public async Task SetRoundTypeAsync_RoundRobin_ReturnsNoContent()
+    {
+        // arrange
+        var setRoundTypeViewModel = new SetRoundTypeViewModel { Type = "RoundRobin" };
+
+        // act
+        var result = await CreateController().SetRoundTypeAsync(_existingRoundId, setRoundTypeViewModel);
+
+        // assert
+        Assert.IsType<NoContentResult>(result);
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public async Task SetRoundTypeAsync_KnockOut_ReturnsNoContent()
+    {
+        // arrange
+        var setRoundTypeViewModel = new SetRoundTypeViewModel { Type = "KnockOut", KnockOutPhase = "Final" };
+
+        // act
+        var result = await CreateController().SetRoundTypeAsync(_existingRoundId, setRoundTypeViewModel);
+
+        // assert
+        Assert.IsType<NoContentResult>(result);
+    }
 }

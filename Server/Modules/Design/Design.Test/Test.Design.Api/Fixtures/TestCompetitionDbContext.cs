@@ -43,6 +43,7 @@ public class TestCompetitionDbContext : CompetitionDbContext
             entity.HasOne(r => r.Competition)
                 .WithMany(c => c.Rounds)
                 .HasForeignKey(r => r.CompetitionId);
+            entity.Ignore(r => r.Plan);
         });
 
         modelBuilder.Entity<Poule>(entity =>

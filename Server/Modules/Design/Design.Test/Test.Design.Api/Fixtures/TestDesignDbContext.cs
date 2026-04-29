@@ -43,6 +43,7 @@ public class TestDesignDbContext : DesignDbContext
                 .WithMany(t => t.Rounds)
                 .HasForeignKey(r => r.TournamentId);
             entity.Ignore(r => r.Settings);
+            entity.Ignore(r => r.Type);
             entity.Ignore(r => r.PreviousRound);
             entity.Ignore(r => r.NextRound);
         });

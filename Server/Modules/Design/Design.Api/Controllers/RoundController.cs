@@ -2,6 +2,8 @@
 using Design.Api.ViewModels;
 using Design.Application.Rounds.Commands;
 using Design.Application.Rounds.Queries;
+using Design.Domain.Enums;
+using Design.Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Sports.TableTennis.Domain.ValueObjects;
@@ -65,6 +67,20 @@ public class RoundController : ControllerBase
     {
         var settings = TableTennisRoundSettings.Create((short)setTableTennisSettings.BestOf);
         await _mediator.Send(new SetRoundSettingsCommand(id, settings));
+        return NoContent();
+    }
+
+    [HttpPost($"{{{nameof(id)}}}/setroundtype")]
+    public async Task<IActionResult> SetRoundTypeAsync([FromRoute] Guid id, [FromBody] SetRoundTypeViewModel setRoundType)
+    {
+        RoundType roundType = setRoundType.Type switch
+        {
+            "RoundRobin" => RoundRobinType.Instance,
+            "KnockOut" when setRoundType.KnockOutPhase != null && Enum.TryParse<KnockOutPhase>(setRoundType.KnockOutPhase, out var phase) => new KnockOutType(phase),
+            "KnockOut" => throw new ArgumentException($"A valid KnockOutPhase is required for KnockOut round type. Valid values: {string.Join(", ", Enum.GetNames<KnockOutPhase>())}."),
+            _ => throw new ArgumentException($"Unsupported round type '{setRoundType.Type}'.")
+        };
+        await _mediator.Send(new SetRoundTypeCommand(id, roundType));
         return NoContent();
     }
 

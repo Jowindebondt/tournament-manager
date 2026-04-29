@@ -6,6 +6,7 @@ namespace Competition.Domain.Entities;
 public sealed class Round : Entity<RoundId>
 {
     public RoundName Name { get; private set; }
+    public RoundPlan? Plan { get; private set; }
 
     public CompetitionId CompetitionId { get; private set; }
     public Competition Competition { get; private set; } = null!;
@@ -20,5 +21,12 @@ public sealed class Round : Entity<RoundId>
 
         Name = name;
         CompetitionId = competitionId;
+    }
+
+    public void SetPlan(RoundPlan plan)
+    {
+        ArgumentNullException.ThrowIfNull(plan, nameof(plan));
+
+        Plan = plan;
     }
 }

@@ -237,4 +237,40 @@ public class UT_RoundController
             () => Assert.IsType<NoContentResult>(result)
         );
     }
+
+    [Fact]
+    public async Task SetRoundTypeAsync_RoundRobin_ReturnsNoContent_MediatorCalledOnce()
+    {
+        // arrange
+        var id = Guid.NewGuid();
+        var setRoundTypeViewModel = new SetRoundTypeViewModel { Type = "RoundRobin" };
+        _mediatorMock.Setup(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+        // act
+        var result = await _controller.SetRoundTypeAsync(id, setRoundTypeViewModel);
+
+        // assert
+        Assert.Multiple(
+            () => _mediatorMock.Verify(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>()), Times.Once),
+            () => Assert.IsType<NoContentResult>(result)
+        );
+    }
+
+    [Fact]
+    public async Task SetRoundTypeAsync_KnockOut_ReturnsNoContent_MediatorCalledOnce()
+    {
+        // arrange
+        var id = Guid.NewGuid();
+        var setRoundTypeViewModel = new SetRoundTypeViewModel { Type = "KnockOut", KnockOutPhase = "Final" };
+        _mediatorMock.Setup(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+        // act
+        var result = await _controller.SetRoundTypeAsync(id, setRoundTypeViewModel);
+
+        // assert
+        Assert.Multiple(
+            () => _mediatorMock.Verify(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>()), Times.Once),
+            () => Assert.IsType<NoContentResult>(result)
+        );
+    }
 }
