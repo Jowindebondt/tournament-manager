@@ -40,6 +40,12 @@ public class GenerateTournamentCommandHandler(
             var roundName = Competition.Domain.ValueObjects.RoundName.Create(designRound.Name.Value);
             var round = new Round(roundId, roundName, competitionId);
 
+            if (designRound.Type != null)
+            {
+                var plan = MapRoundPlan(designRound.Type);
+                round.SetPlan(plan);
+            }
+
             var poules = await pouleRepository.GetAllByRoundAndTournamentAsync(tournament.Id, designRound.Id);
             foreach (var designPoule in poules)
             {
@@ -55,5 +61,22 @@ public class GenerateTournamentCommandHandler(
 
         await competitionRepository.AddAsync(competition);
     }
+
+    private static RoundPlan MapRoundPlan(Design.Domain.ValueObjects.RoundType roundType) => roundType switch
+    {
+        RoundRobinType => RoundRobinPlan.Instance,
+        KnockOutType knockOut => new KnockOutPlan(MapKnockOutPhase(knockOut.Phase)),
+        _ => throw new ArgumentOutOfRangeException(nameof(roundType), "Unsupported round type.")
+    };
+
+    private static Competition.Domain.Enums.KnockOutPhase MapKnockOutPhase(Design.Domain.Enums.KnockOutPhase phase) => phase switch
+    {
+        Design.Domain.Enums.KnockOutPhase.Final => Competition.Domain.Enums.KnockOutPhase.Final,
+        Design.Domain.Enums.KnockOutPhase.SemiFinal => Competition.Domain.Enums.KnockOutPhase.SemiFinal,
+        Design.Domain.Enums.KnockOutPhase.QuarterFinal => Competition.Domain.Enums.KnockOutPhase.QuarterFinal,
+        Design.Domain.Enums.KnockOutPhase.RoundOf16 => Competition.Domain.Enums.KnockOutPhase.RoundOf16,
+        Design.Domain.Enums.KnockOutPhase.RoundOf32 => Competition.Domain.Enums.KnockOutPhase.RoundOf32,
+        _ => throw new ArgumentOutOfRangeException(nameof(phase), "Unsupported knock-out phase.")
+    };
 }
 
