@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Design.Api.ViewModels;
-using Design.Application.DTOs;
-using Design.Application.Interfaces;
+using Design.Application.Tournaments.Commands;
+using Design.Application.Tournaments.Queries;
+using Design.Domain.Enums;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Design.Api.Controllers;
@@ -11,25 +13,25 @@ namespace Design.Api.Controllers;
 public class TournamentController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly ITournamentService _tournamentService;
+    private readonly IMediator _mediator;
 
-    public TournamentController(IMapper mapper, ITournamentService tournamentService)
+    public TournamentController(IMapper mapper, IMediator mediator)
     {
         _mapper = mapper;
-        _tournamentService = tournamentService;
+        _mediator = mediator;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        var tournaments = await _tournamentService.GetAllAsync();
+        var tournaments = await _mediator.Send(new GetAllTournamentsQuery());
         return Ok(_mapper.Map<IEnumerable<TournamentViewModel>>(tournaments));
     }
 
     [HttpGet($"{{{nameof(id)}}}")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var tournament = await _tournamentService.GetByIdAsync(id);
+        var tournament = await _mediator.Send(new GetTournamentByIdQuery(id));
         if (tournament == null)
         {
             return NotFound();
@@ -40,29 +42,32 @@ public class TournamentController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CreateTournamentViewModel createTournament)
     {
-        var tournament = await _tournamentService.CreateAsync(_mapper.Map<CreateTournamentDto>(createTournament));
+        if (!Enum.TryParse<Sport>(createTournament.Sport, ignoreCase: true, out var sport))
+        {
+            return BadRequest($"Invalid sport value: '{createTournament.Sport}'.");
+        }
+        var tournament = await _mediator.Send(new CreateTournamentCommand(createTournament.Name, sport));
         return CreatedAtAction(nameof(GetByIdAsync), new { id = tournament.Id }, _mapper.Map<TournamentViewModel>(tournament));
     }
 
     [HttpPost($"{{{nameof(id)}}}/rename")]
     public async Task<IActionResult> RenameAsync([FromRoute] Guid id, [FromBody] RenameTournamentViewModel renameTournament)
     {
-        var renameDto = _mapper.Map<RenameTournamentDto>(renameTournament, opt => opt.AfterMap((src, dest) => dest.Id = id));
-        await _tournamentService.RenameAsync(renameDto);
+        await _mediator.Send(new RenameTournamentCommand(id, renameTournament.Name));
         return NoContent();
     }
 
     [HttpPost($"{{{nameof(id)}}}/generate")]
     public async Task<IActionResult> GenerateAsync([FromRoute] Guid id)
     {
-        await _tournamentService.GenerateAsync(id);
+        await _mediator.Send(new GenerateTournamentCommand(id));
         return NoContent();
     }
 
     [HttpDelete($"{{{nameof(id)}}}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
-        await _tournamentService.DeleteAsync(id);
+        await _mediator.Send(new DeleteTournamentCommand(id));
         return NoContent();
     }
 }

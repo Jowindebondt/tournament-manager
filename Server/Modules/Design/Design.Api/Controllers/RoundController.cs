@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Design.Api.ViewModels;
-using Design.Application.DTOs;
-using Design.Application.Interfaces;
+using Design.Application.Rounds.Commands;
+using Design.Application.Rounds.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Sports.TableTennis.Domain.ValueObjects;
 
@@ -12,25 +13,25 @@ namespace Design.Api.Controllers;
 public class RoundController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly IRoundService _roundService;
+    private readonly IMediator _mediator;
 
-    public RoundController(IMapper mapper, IRoundService roundService)
+    public RoundController(IMapper mapper, IMediator mediator)
     {
         _mapper = mapper;
-        _roundService = roundService;
+        _mediator = mediator;
     }
 
     [HttpGet($"/api/Tournament/{{{nameof(tournamentId)}}}/rounds")]
     public async Task<IActionResult> GetAllByTournamentAsync([FromRoute] Guid tournamentId)
     {
-        var rounds = await _roundService.GetAllByTournamentAsync(tournamentId);
+        var rounds = await _mediator.Send(new GetAllRoundsByTournamentQuery(tournamentId));
         return Ok(_mapper.Map<IEnumerable<RoundViewModel>>(rounds));
     }
 
     [HttpGet($"{{{nameof(id)}}}")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var round = await _roundService.GetByIdAsync(id);
+        var round = await _mediator.Send(new GetRoundByIdQuery(id));
         if (round == null)
         {
             return NotFound();
@@ -41,23 +42,21 @@ public class RoundController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CreateRoundViewModel createRound)
     {
-        var round = await _roundService.CreateAsync(_mapper.Map<CreateRoundDto>(createRound));
+        var round = await _mediator.Send(new CreateRoundCommand(createRound.Name, createRound.TournamentId));
         return CreatedAtAction(nameof(GetByIdAsync), new { id = round.Id }, _mapper.Map<RoundViewModel>(round));
     }
 
     [HttpPost($"{{{nameof(id)}}}/rename")]
     public async Task<IActionResult> RenameAsync([FromRoute] Guid id, [FromBody] RenameRoundViewModel renameRound)
     {
-        var renameDto = _mapper.Map<RenameRoundDto>(renameRound, opt => opt.AfterMap((src, dest) => dest.Id = id));
-        await _roundService.RenameAsync(renameDto);
+        await _mediator.Send(new RenameRoundCommand(id, renameRound.Name));
         return NoContent();
     }
 
     [HttpPost($"{{{nameof(id)}}}/setpreviousround")]
     public async Task<IActionResult> SetPreviousRoundAsync([FromRoute] Guid id, [FromBody] SetPreviousRoundViewModel setPreviousRound)
     {
-        var setPreviousRoundDto = _mapper.Map<SetPreviousRoundDto>(setPreviousRound, opt => opt.AfterMap((src, dest) => dest.Id = id));
-        await _roundService.SetPreviousRoundAsync(setPreviousRoundDto);
+        await _mediator.Send(new SetPreviousRoundCommand(id, setPreviousRound.PreviousId));
         return NoContent();
     }
 
@@ -65,7 +64,7 @@ public class RoundController : ControllerBase
     public async Task<IActionResult> SetTableTennisSettingsAsync([FromRoute] Guid id, [FromBody] SetTableTennisSettingsRoundViewModel setTableTennisSettings)
     {
         var settings = TableTennisRoundSettings.Create((short)setTableTennisSettings.BestOf);
-        await _roundService.SetRoundSettingsAsync(id, settings);
+        await _mediator.Send(new SetRoundSettingsCommand(id, settings));
         return NoContent();
     }
 
@@ -74,8 +73,12 @@ public class RoundController : ControllerBase
     {
         foreach (var setRoundPoulePosition in setRoundPoulePositions)
         {
-            var dto = _mapper.Map<SetRoundPoulePositionDto>(setRoundPoulePosition, opt => opt.AfterMap((src, dest) => dest.Id = id));
-            await _roundService.SetRoundPoulePositionAsync(dto);
+            await _mediator.Send(new SetRoundPoulePositionCommand(
+                id,
+                setRoundPoulePosition.PreviousPouleId,
+                setRoundPoulePosition.PreviousPosition,
+                setRoundPoulePosition.CurrentPouleId,
+                setRoundPoulePosition.CurrentPosition));
         }
         return NoContent();
     }
@@ -83,7 +86,7 @@ public class RoundController : ControllerBase
     [HttpDelete($"{{{nameof(id)}}}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
-        await _roundService.DeleteAsync(id);
+        await _mediator.Send(new DeleteRoundCommand(id));
         return NoContent();
     }
 }
