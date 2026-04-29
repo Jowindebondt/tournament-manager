@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Design.Api.ViewModels;
 using Design.Application.Rounds.Commands;
 using Design.Application.Rounds.Queries;
+using Design.Domain.Enums;
+using Design.Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Sports.TableTennis.Domain.ValueObjects;
@@ -65,6 +67,30 @@ public class RoundController : ControllerBase
     {
         var settings = TableTennisRoundSettings.Create((short)setTableTennisSettings.BestOf);
         await _mediator.Send(new SetRoundSettingsCommand(id, settings));
+        return NoContent();
+    }
+
+    [HttpPost($"{{{nameof(id)}}}/setroundtype")]
+    public async Task<IActionResult> SetRoundTypeAsync([FromRoute] Guid id, [FromBody] SetRoundTypeViewModel setRoundType)
+    {
+        RoundType roundType;
+        switch (setRoundType.CompetitionType)
+        {
+            case "RoundRobin":
+                roundType = new RoundRobinType();
+                break;
+            case "KnockOut":
+                if (!Enum.TryParse<KnockOutPhase>(setRoundType.KnockOutPhase, ignoreCase: true, out var phase))
+                {
+                    return BadRequest($"Invalid KnockOutPhase value: '{setRoundType.KnockOutPhase}'.");
+                }
+                roundType = new KnockOutType(phase);
+                break;
+            default:
+                return BadRequest($"Invalid CompetitionType value: '{setRoundType.CompetitionType}'. Use 'RoundRobin' or 'KnockOut'.");
+        }
+
+        await _mediator.Send(new SetRoundTypeCommand(id, roundType));
         return NoContent();
     }
 

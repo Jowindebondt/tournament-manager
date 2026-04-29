@@ -1,4 +1,5 @@
 using Design.Domain.Entities;
+using Design.Domain.Enums;
 using Design.Domain.ValueObjects;
 using Xunit;
 
@@ -193,5 +194,67 @@ public class UT_ValueObjects
             new RoundId(Guid.NewGuid()));
 
         Assert.Throws<ArgumentException>(() => PoulePosition.Create(poule, 5));
+    }
+
+    // RoundRobinType
+    [Fact]
+    public void RoundRobinType_Constructor_CreatesInstance()
+    {
+        var type = new RoundRobinType();
+        Assert.NotNull(type);
+    }
+
+    [Fact]
+    public void RoundRobinType_TwoInstances_AreEqual()
+    {
+        var type1 = new RoundRobinType();
+        var type2 = new RoundRobinType();
+        Assert.Equal(type1, type2);
+    }
+
+    // KnockOutType
+    [Fact]
+    public void KnockOutType_Constructor_SemiFinal_StoresPhase()
+    {
+        var type = new KnockOutType(KnockOutPhase.SemiFinal);
+        Assert.Equal(KnockOutPhase.SemiFinal, type.Phase);
+    }
+
+    [Fact]
+    public void KnockOutType_Constructor_ThirdPlace_StoresPhase()
+    {
+        var type = new KnockOutType(KnockOutPhase.ThirdPlace);
+        Assert.Equal(KnockOutPhase.ThirdPlace, type.Phase);
+    }
+
+    [Fact]
+    public void KnockOutType_Constructor_Final_StoresPhase()
+    {
+        var type = new KnockOutType(KnockOutPhase.Final);
+        Assert.Equal(KnockOutPhase.Final, type.Phase);
+    }
+
+    [Fact]
+    public void KnockOutType_SamePhase_AreEqual()
+    {
+        var type1 = new KnockOutType(KnockOutPhase.Final);
+        var type2 = new KnockOutType(KnockOutPhase.Final);
+        Assert.Equal(type1, type2);
+    }
+
+    [Fact]
+    public void KnockOutType_DifferentPhase_AreNotEqual()
+    {
+        var type1 = new KnockOutType(KnockOutPhase.SemiFinal);
+        var type2 = new KnockOutType(KnockOutPhase.Final);
+        Assert.NotEqual(type1, type2);
+    }
+
+    [Fact]
+    public void KnockOutType_AndRoundRobinType_AreNotEqual()
+    {
+        RoundType type1 = new KnockOutType(KnockOutPhase.Final);
+        RoundType type2 = new RoundRobinType();
+        Assert.NotEqual(type1, type2);
     }
 }

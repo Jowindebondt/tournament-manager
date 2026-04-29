@@ -7,7 +7,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
-
 namespace Test.Design.Api.Controllers;
 
 public class UT_RoundController
@@ -235,6 +234,112 @@ public class UT_RoundController
         Assert.Multiple(
             () => _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteRoundCommand>(), It.IsAny<CancellationToken>()), Times.Once),
             () => Assert.IsType<NoContentResult>(result)
+        );
+    }
+
+    [Fact]
+    public async Task SetRoundTypeAsync_RoundRobin_ReturnsNoContent_MediatorCalledOnce()
+    {
+        // arrange
+        var id = Guid.NewGuid();
+        var viewModel = new SetRoundTypeViewModel { CompetitionType = "RoundRobin" };
+        _mediatorMock.Setup(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+        // act
+        var result = await _controller.SetRoundTypeAsync(id, viewModel);
+
+        // assert
+        Assert.Multiple(
+            () => _mediatorMock.Verify(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>()), Times.Once),
+            () => Assert.IsType<NoContentResult>(result)
+        );
+    }
+
+    [Fact]
+    public async Task SetRoundTypeAsync_KnockOutSemiFinal_ReturnsNoContent_MediatorCalledOnce()
+    {
+        // arrange
+        var id = Guid.NewGuid();
+        var viewModel = new SetRoundTypeViewModel { CompetitionType = "KnockOut", KnockOutPhase = "SemiFinal" };
+        _mediatorMock.Setup(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+        // act
+        var result = await _controller.SetRoundTypeAsync(id, viewModel);
+
+        // assert
+        Assert.Multiple(
+            () => _mediatorMock.Verify(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>()), Times.Once),
+            () => Assert.IsType<NoContentResult>(result)
+        );
+    }
+
+    [Fact]
+    public async Task SetRoundTypeAsync_KnockOutThirdPlace_ReturnsNoContent_MediatorCalledOnce()
+    {
+        // arrange
+        var id = Guid.NewGuid();
+        var viewModel = new SetRoundTypeViewModel { CompetitionType = "KnockOut", KnockOutPhase = "ThirdPlace" };
+        _mediatorMock.Setup(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+        // act
+        var result = await _controller.SetRoundTypeAsync(id, viewModel);
+
+        // assert
+        Assert.Multiple(
+            () => _mediatorMock.Verify(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>()), Times.Once),
+            () => Assert.IsType<NoContentResult>(result)
+        );
+    }
+
+    [Fact]
+    public async Task SetRoundTypeAsync_KnockOutFinal_ReturnsNoContent_MediatorCalledOnce()
+    {
+        // arrange
+        var id = Guid.NewGuid();
+        var viewModel = new SetRoundTypeViewModel { CompetitionType = "KnockOut", KnockOutPhase = "Final" };
+        _mediatorMock.Setup(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+        // act
+        var result = await _controller.SetRoundTypeAsync(id, viewModel);
+
+        // assert
+        Assert.Multiple(
+            () => _mediatorMock.Verify(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>()), Times.Once),
+            () => Assert.IsType<NoContentResult>(result)
+        );
+    }
+
+    [Fact]
+    public async Task SetRoundTypeAsync_InvalidCompetitionType_ReturnsBadRequest_MediatorNotCalled()
+    {
+        // arrange
+        var id = Guid.NewGuid();
+        var viewModel = new SetRoundTypeViewModel { CompetitionType = "InvalidType" };
+
+        // act
+        var result = await _controller.SetRoundTypeAsync(id, viewModel);
+
+        // assert
+        Assert.Multiple(
+            () => _mediatorMock.Verify(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>()), Times.Never),
+            () => Assert.IsType<BadRequestObjectResult>(result)
+        );
+    }
+
+    [Fact]
+    public async Task SetRoundTypeAsync_KnockOutInvalidPhase_ReturnsBadRequest_MediatorNotCalled()
+    {
+        // arrange
+        var id = Guid.NewGuid();
+        var viewModel = new SetRoundTypeViewModel { CompetitionType = "KnockOut", KnockOutPhase = "InvalidPhase" };
+
+        // act
+        var result = await _controller.SetRoundTypeAsync(id, viewModel);
+
+        // assert
+        Assert.Multiple(
+            () => _mediatorMock.Verify(m => m.Send(It.IsAny<SetRoundTypeCommand>(), It.IsAny<CancellationToken>()), Times.Never),
+            () => Assert.IsType<BadRequestObjectResult>(result)
         );
     }
 }

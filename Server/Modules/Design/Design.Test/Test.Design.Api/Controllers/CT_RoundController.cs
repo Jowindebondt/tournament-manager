@@ -1,4 +1,6 @@
 using AutoMapper;
+using Competition.Domain.Interfaces;
+using Competition.Infrastructure.Repositories;
 using Design.Application.Rounds.Commands;
 using Design.Domain.Entities;
 using Design.Domain.Enums;
@@ -19,6 +21,7 @@ namespace Test.Design.Api.Controllers;
 public class CT_RoundController : IDisposable
 {
     private readonly TestDesignDbContext _dbContext;
+    private readonly TestCompetitionDbContext _competitionDbContext;
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
@@ -34,6 +37,11 @@ public class CT_RoundController : IDisposable
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
         _dbContext = new TestDesignDbContext(options);
+
+        var competitionOptions = new DbContextOptionsBuilder<TestCompetitionDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        _competitionDbContext = new TestCompetitionDbContext(competitionOptions);
 
         _tournamentId = Guid.NewGuid();
         _existingRoundId = Guid.NewGuid();
@@ -58,6 +66,7 @@ public class CT_RoundController : IDisposable
         services.AddSingleton<ITournamentRepository>(new TournamentRepository(_dbContext));
         services.AddSingleton<IRoundRepository>(new RoundRepository(_dbContext));
         services.AddSingleton<IPouleRepository>(new PouleRepository(_dbContext));
+        services.AddSingleton<ICompetitionRepository>(new CompetitionRepository(_competitionDbContext));
         var sp = services.BuildServiceProvider();
         _mapper = sp.GetRequiredService<IMapper>();
         _mediator = sp.GetRequiredService<IMediator>();
@@ -66,7 +75,11 @@ public class CT_RoundController : IDisposable
     private global::Design.Api.Controllers.RoundController CreateController()
         => new global::Design.Api.Controllers.RoundController(_mapper, _mediator);
 
-    public void Dispose() => _dbContext.Dispose();
+    public void Dispose()
+    {
+        _dbContext.Dispose();
+        _competitionDbContext.Dispose();
+    }
 
     [Fact]
     [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
@@ -159,6 +172,62 @@ public class CT_RoundController : IDisposable
             () => Assert.IsType<NoContentResult>(result),
             () => Assert.Equal("Renamed Round", _dbContext.Rounds.Single(r => r.Id == new RoundId(_renameRoundId)).Name.Value)
         );
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public async Task SetRoundTypeAsync_RoundRobin_ReturnsNoContent()
+    {
+        // arrange
+        var setTypeViewModel = new SetRoundTypeViewModel { CompetitionType = "RoundRobin" };
+
+        // act
+        var result = await CreateController().SetRoundTypeAsync(_existingRoundId, setTypeViewModel);
+
+        // assert
+        Assert.IsType<NoContentResult>(result);
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public async Task SetRoundTypeAsync_KnockOutFinal_ReturnsNoContent()
+    {
+        // arrange
+        var setTypeViewModel = new SetRoundTypeViewModel { CompetitionType = "KnockOut", KnockOutPhase = "Final" };
+
+        // act
+        var result = await CreateController().SetRoundTypeAsync(_existingRoundId, setTypeViewModel);
+
+        // assert
+        Assert.IsType<NoContentResult>(result);
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public async Task SetRoundTypeAsync_InvalidCompetitionType_ReturnsBadRequest()
+    {
+        // arrange
+        var setTypeViewModel = new SetRoundTypeViewModel { CompetitionType = "InvalidType" };
+
+        // act
+        var result = await CreateController().SetRoundTypeAsync(_existingRoundId, setTypeViewModel);
+
+        // assert
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
+    public async Task SetRoundTypeAsync_KnockOutInvalidPhase_ReturnsBadRequest()
+    {
+        // arrange
+        var setTypeViewModel = new SetRoundTypeViewModel { CompetitionType = "KnockOut", KnockOutPhase = "InvalidPhase" };
+
+        // act
+        var result = await CreateController().SetRoundTypeAsync(_existingRoundId, setTypeViewModel);
+
+        // assert
+        Assert.IsType<BadRequestObjectResult>(result);
     }
 
     [Fact]

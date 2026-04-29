@@ -179,6 +179,44 @@ public class UT_Entities
         Assert.Throws<ArgumentNullException>(() => round.SetSettings(null!));
     }
 
+    [Fact]
+    public void Round_SetType_RoundRobinType_UpdatesType()
+    {
+        var round = new Round(new RoundId(Guid.NewGuid()), RoundName.Create("Round"), new TournamentId(Guid.NewGuid()));
+        var type = new RoundRobinType();
+
+        round.SetType(type);
+
+        Assert.Equal(type, round.Type);
+    }
+
+    [Fact]
+    public void Round_SetType_KnockOutType_UpdatesType()
+    {
+        var round = new Round(new RoundId(Guid.NewGuid()), RoundName.Create("Round"), new TournamentId(Guid.NewGuid()));
+        var type = new KnockOutType(KnockOutPhase.Final);
+
+        round.SetType(type);
+
+        Assert.Equal(type, round.Type);
+    }
+
+    [Fact]
+    public void Round_SetType_NullType_ThrowsArgumentNullException()
+    {
+        var round = new Round(new RoundId(Guid.NewGuid()), RoundName.Create("Round"), new TournamentId(Guid.NewGuid()));
+
+        Assert.Throws<ArgumentNullException>(() => round.SetType(null!));
+    }
+
+    [Fact]
+    public void Round_Type_DefaultsToNull()
+    {
+        var round = new Round(new RoundId(Guid.NewGuid()), RoundName.Create("Round"), new TournamentId(Guid.NewGuid()));
+
+        Assert.Null(round.Type);
+    }
+
     // Poule
     [Fact]
     public void Poule_Constructor_ValidArgs_CreatesInstance()

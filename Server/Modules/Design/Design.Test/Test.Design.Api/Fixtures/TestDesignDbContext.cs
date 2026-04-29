@@ -1,4 +1,5 @@
 using Design.Domain.Entities;
+using Design.Domain.Enums;
 using Design.Domain.ValueObjects;
 using Design.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +43,10 @@ public class TestDesignDbContext : DesignDbContext
             entity.HasOne(r => r.Tournament)
                 .WithMany(t => t.Rounds)
                 .HasForeignKey(r => r.TournamentId);
+            entity.Property(r => r.Type)
+                .HasConversion(
+                    type => type == null ? null : SerializeRoundType(type),
+                    str => str == null ? null : DeserializeRoundType(str));
             entity.Ignore(r => r.Settings);
             entity.Ignore(r => r.PreviousRound);
             entity.Ignore(r => r.NextRound);
@@ -62,5 +67,23 @@ public class TestDesignDbContext : DesignDbContext
                 .WithMany(r => r.Poules)
                 .HasForeignKey(p => p.RoundId);
         });
+    }
+
+    private static string SerializeRoundType(RoundType type) => type switch
+    {
+        RoundRobinType => "RoundRobin",
+        KnockOutType ko => $"KnockOut:{ko.Phase}",
+        _ => throw new ArgumentOutOfRangeException(nameof(type))
+    };
+
+    private static RoundType DeserializeRoundType(string value)
+    {
+        if (value == "RoundRobin")
+            return new RoundRobinType();
+
+        if (value.StartsWith("KnockOut:") && Enum.TryParse<KnockOutPhase>(value["KnockOut:".Length..], out var phase))
+            return new KnockOutType(phase);
+
+        throw new ArgumentException($"Cannot deserialize RoundType from '{value}'.");
     }
 }

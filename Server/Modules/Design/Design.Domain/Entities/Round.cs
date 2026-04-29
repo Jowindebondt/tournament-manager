@@ -6,6 +6,7 @@ namespace Design.Domain.Entities;
 public sealed class Round : Entity<RoundId>
 {
     public RoundName Name { get; private set; }
+    public RoundType? Type { get; private set; }
     public RoundSettings Settings { get; private set; } = null!;
     public Round PreviousRound { get; private set; } = null!;
     public Round NextRound { get; private set; } = null!;
@@ -52,5 +53,12 @@ public sealed class Round : Entity<RoundId>
         ArgumentNullException.ThrowIfNull(settings, nameof(settings));
 
         Settings = settings;
+    }
+
+    public void SetType(RoundType type)
+    {
+        ArgumentNullException.ThrowIfNull(type, nameof(type));
+
+        Type = type;
     }
 }
