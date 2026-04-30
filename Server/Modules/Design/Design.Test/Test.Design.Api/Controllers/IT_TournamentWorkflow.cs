@@ -5,6 +5,7 @@ using Design.Application.Tournaments.Commands;
 using Design.Domain.Interfaces;
 using Design.Domain.ValueObjects;
 using Design.Infrastructure.Repositories;
+using Generation.Application.Tournaments.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,11 @@ public class IT_TournamentWorkflow : IDisposable
         services.AddAutoMapper(
             typeof(global::Design.Api.MappingProfile),
             typeof(global::Design.Application.MappingProfile));
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateTournamentCommand).Assembly));
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(CreateTournamentCommand).Assembly);
+            cfg.RegisterServicesFromAssembly(typeof(GenerateCompetitionCommand).Assembly);
+        });
         services.AddSingleton<ITournamentRepository>(new TournamentRepository(_dbContext));
         services.AddSingleton<IRoundRepository>(new RoundRepository(_dbContext));
         services.AddSingleton<IPouleRepository>(new PouleRepository(_dbContext));
@@ -59,6 +64,9 @@ public class IT_TournamentWorkflow : IDisposable
 
     private global::Design.Api.Controllers.PouleController CreatePouleController()
         => new(_mapper, _mediator);
+
+    private global::Generation.Api.Controllers.GenerationController CreateGenerationController()
+        => new(_mediator);
 
     public void Dispose()
     {
@@ -279,7 +287,7 @@ public class IT_TournamentWorkflow : IDisposable
             new CreatePouleViewModel { Name = "Poule B", TotalPlayers = 4, RoundId = round.Id });
 
         // act - step 2: generate competition from tournament
-        var generateResult = await CreateTournamentController().GenerateAsync(tournament.Id);
+        var generateResult = await CreateGenerationController().GenerateAsync(tournament.Id);
 
         // assert
         Assert.Multiple(
@@ -308,8 +316,8 @@ public class IT_TournamentWorkflow : IDisposable
             new CreatePouleViewModel { Name = "Poule A", TotalPlayers = 3, RoundId = round.Id });
 
         // act - step 2: generate competition twice from same design
-        await CreateTournamentController().GenerateAsync(tournament.Id);
-        await CreateTournamentController().GenerateAsync(tournament.Id);
+        await CreateGenerationController().GenerateAsync(tournament.Id);
+        await CreateGenerationController().GenerateAsync(tournament.Id);
 
         // assert: two independent competitions are created from the same design
         Assert.Multiple(

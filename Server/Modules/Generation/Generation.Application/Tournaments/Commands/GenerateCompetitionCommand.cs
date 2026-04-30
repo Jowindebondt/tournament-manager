@@ -6,25 +6,30 @@ using Design.Domain.ValueObjects;
 using MediatR;
 using CompetitionEntity = Competition.Domain.Entities.Competition;
 using CompetitionSport = Competition.Domain.Enums.Sport;
+using CompPouleId = Competition.Domain.ValueObjects.PouleId;
+using CompPouleName = Competition.Domain.ValueObjects.PouleName;
+using CompPoulePlayersCount = Competition.Domain.ValueObjects.PoulePlayersCount;
+using CompRoundId = Competition.Domain.ValueObjects.RoundId;
+using CompRoundName = Competition.Domain.ValueObjects.RoundName;
 
-namespace Design.Application.Tournaments.Commands;
+namespace Generation.Application.Tournaments.Commands;
 
-public record GenerateTournamentCommand(Guid Id) : IRequest;
+public record GenerateCompetitionCommand(Guid TournamentId) : IRequest;
 
-public class GenerateTournamentCommandHandler(
+public class GenerateCompetitionCommandHandler(
     ITournamentRepository tournamentRepository,
     IRoundRepository roundRepository,
     IPouleRepository pouleRepository,
     ICompetitionRepository competitionRepository)
-    : IRequestHandler<GenerateTournamentCommand>
+    : IRequestHandler<GenerateCompetitionCommand>
 {
-    public async Task Handle(GenerateTournamentCommand request, CancellationToken cancellationToken)
+    public async Task Handle(GenerateCompetitionCommand request, CancellationToken cancellationToken)
     {
-        var tournament = await tournamentRepository.GetByIdAsync(new TournamentId(request.Id))
+        var tournament = await tournamentRepository.GetByIdAsync(new TournamentId(request.TournamentId))
             ?? throw new ArgumentException("Tournament not found");
 
-        var competitionId = new Competition.Domain.ValueObjects.CompetitionId(Guid.NewGuid());
-        var competitionName = Competition.Domain.ValueObjects.CompetitionName.Create(tournament.Name.Value);
+        var competitionId = new CompetitionId(Guid.NewGuid());
+        var competitionName = CompetitionName.Create(tournament.Name.Value);
         var competitionSport = tournament.Sport switch
         {
             Design.Domain.Enums.Sport.TableTennis => CompetitionSport.TableTennis,
@@ -36,8 +41,8 @@ public class GenerateTournamentCommandHandler(
         var rounds = await roundRepository.GetAllByTournamentAsync(tournament.Id);
         foreach (var designRound in rounds)
         {
-            var roundId = new Competition.Domain.ValueObjects.RoundId(Guid.NewGuid());
-            var roundName = Competition.Domain.ValueObjects.RoundName.Create(designRound.Name.Value);
+            var roundId = new CompRoundId(Guid.NewGuid());
+            var roundName = CompRoundName.Create(designRound.Name.Value);
             var round = new Round(roundId, roundName, competitionId);
 
             RoundPlan? plan = null;
@@ -50,9 +55,9 @@ public class GenerateTournamentCommandHandler(
             var poules = await pouleRepository.GetAllByRoundAndTournamentAsync(tournament.Id, designRound.Id);
             foreach (var designPoule in poules)
             {
-                var pouleId = new Competition.Domain.ValueObjects.PouleId(Guid.NewGuid());
-                var pouleName = Competition.Domain.ValueObjects.PouleName.Create(designPoule.Name.Value);
-                var totalPlayers = Competition.Domain.ValueObjects.PoulePlayersCount.Create(designPoule.TotalPlayers.Value);
+                var pouleId = new CompPouleId(Guid.NewGuid());
+                var pouleName = CompPouleName.Create(designPoule.Name.Value);
+                var totalPlayers = CompPoulePlayersCount.Create(designPoule.TotalPlayers.Value);
                 var poule = new Poule(pouleId, pouleName, totalPlayers, roundId);
 
                 GenerateMatches(poule, plan);
@@ -78,7 +83,7 @@ public class GenerateTournamentCommandHandler(
                     for (short j = (short)(i + 1); j <= n; j++)
                     {
                         poule.Matches.Add(new Match(
-                            new Competition.Domain.ValueObjects.MatchId(Guid.NewGuid()),
+                            new MatchId(Guid.NewGuid()),
                             i, j,
                             poule.Id));
                     }
@@ -89,7 +94,7 @@ public class GenerateTournamentCommandHandler(
                 for (short i = 1; i < n; i += 2)
                 {
                     poule.Matches.Add(new Match(
-                        new Competition.Domain.ValueObjects.MatchId(Guid.NewGuid()),
+                        new MatchId(Guid.NewGuid()),
                         i, (short)(i + 1),
                         poule.Id));
                 }
@@ -114,4 +119,3 @@ public class GenerateTournamentCommandHandler(
         _ => throw new ArgumentOutOfRangeException(nameof(phase), "Unsupported knock-out phase.")
     };
 }
-

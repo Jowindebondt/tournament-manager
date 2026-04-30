@@ -31,6 +31,7 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(Design.Application.MappingProfile).Assembly);
     cfg.RegisterServicesFromAssembly(typeof(Competition.Application.MappingProfile).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(Generation.Application.MappingProfile).Assembly);
 });
 
 // ── AutoMapper (all module mapping profiles) ──────────────────────────────────
@@ -71,6 +72,13 @@ builder.Services.AddSwaggerGen(options =>
         Description = "API for managing live competitions (matches, results)."
     });
 
+    options.SwaggerDoc("generation", new OpenApiInfo
+    {
+        Title = "Generation Module",
+        Version = "v1",
+        Description = "API for generating competitions from tournament designs."
+    });
+
     // Only include operations that belong to the current document's group
     options.DocInclusionPredicate((docName, apiDesc) =>
     {
@@ -104,6 +112,7 @@ app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/design/swagger.json", "Design Module");
     options.SwaggerEndpoint("/swagger/competition/swagger.json", "Competition Module");
+    options.SwaggerEndpoint("/swagger/generation/swagger.json", "Generation Module");
     options.RoutePrefix = "swagger";
 });
 
