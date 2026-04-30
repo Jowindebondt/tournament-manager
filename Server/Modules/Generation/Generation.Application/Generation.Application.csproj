@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Design\Design.Domain\Design.Domain.csproj" />
-    <ProjectReference Include="..\..\Competition\Competition.Domain\Competition.Domain.csproj" />
+    <ProjectReference Include="..\..\Design\Design.Application\Design.Application.csproj" />
+    <ProjectReference Include="..\..\Competition\Competition.Application\Competition.Application.csproj" />
   </ItemGroup>
 
 </Project>

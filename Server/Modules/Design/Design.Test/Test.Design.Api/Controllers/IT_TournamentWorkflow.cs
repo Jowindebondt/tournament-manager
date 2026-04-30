@@ -1,6 +1,10 @@
 using AutoMapper;
+using Competition.Application.Interfaces;
+using Competition.Application.Services;
 using Competition.Domain.Interfaces;
 using Competition.Infrastructure.Repositories;
+using Design.Application.Interfaces;
+using Design.Application.Services;
 using Design.Application.Tournaments.Commands;
 using Design.Domain.Interfaces;
 using Design.Domain.ValueObjects;
@@ -10,7 +14,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Sports.TableTennis.Domain.ValueObjects;
+using Sports.TableTennis.Api.ViewModels;
 using Test.Design.Api.Fixtures;
 using TournamentManager.TestHelper;
 using Xunit;
@@ -51,6 +55,8 @@ public class IT_TournamentWorkflow : IDisposable
         services.AddSingleton<IRoundRepository>(new RoundRepository(_dbContext));
         services.AddSingleton<IPouleRepository>(new PouleRepository(_dbContext));
         services.AddSingleton<ICompetitionRepository>(new CompetitionRepository(_competitionDbContext));
+        services.AddScoped<IDesignModuleApi, DesignModuleService>();
+        services.AddScoped<ICompetitionModuleApi, CompetitionModuleService>();
         var sp = services.BuildServiceProvider();
         _mapper = sp.GetRequiredService<IMapper>();
         _mediator = sp.GetRequiredService<IMediator>();
@@ -66,6 +72,9 @@ public class IT_TournamentWorkflow : IDisposable
         => new(_mapper, _mediator);
 
     private global::Generation.Api.Controllers.GenerationController CreateGenerationController()
+        => new(_mediator);
+
+    private global::Sports.TableTennis.Api.Controllers.TableTennisRoundController CreateTableTennisRoundController()
         => new(_mediator);
 
     public void Dispose()
@@ -134,7 +143,8 @@ public class IT_TournamentWorkflow : IDisposable
         var round2 = (RoundViewModel)((CreatedAtActionResult)round2Result).Value!;
 
         // settings are required before configuring poule position mappings
-        var setSettingsResult = await CreateRoundController().SetTableTennisSettingsAsync(
+        // Note: SetTableTennisSettings lives in Sports.TableTennis.Api (correct module boundary)
+        var setSettingsResult = await CreateTableTennisRoundController().SetTableTennisSettingsAsync(
             round2.Id,
             new SetTableTennisSettingsRoundViewModel { BestOf = 5 });
 

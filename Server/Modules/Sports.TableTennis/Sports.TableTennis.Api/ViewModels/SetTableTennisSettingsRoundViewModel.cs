@@ -1,4 +1,4 @@
-﻿namespace Design.Api.ViewModels;
+namespace Sports.TableTennis.Api.ViewModels;
 
 public class SetTableTennisSettingsRoundViewModel
 {
