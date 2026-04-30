@@ -73,7 +73,12 @@ public class TestCompetitionDbContext : CompetitionDbContext
             entity.HasOne(m => m.Poule)
                 .WithMany(p => p.Matches)
                 .HasForeignKey(m => m.PouleId);
-            entity.OwnsOne(m => m.Result);
+            entity.Property(m => m.Result)
+                .HasConversion(
+                    result => result == null ? null : result.Player1Score.ToString() + ":" + result.Player2Score.ToString(),
+                    value => value == null ? null : new MatchResult(
+                        short.Parse(value.Substring(0, value.IndexOf(':'))),
+                        short.Parse(value.Substring(value.IndexOf(':') + 1))));
         });
     }
 }

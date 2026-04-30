@@ -75,10 +75,10 @@ public class TestCompetitionDbContext : CompetitionDbContext
                 .HasForeignKey(m => m.PouleId);
             entity.Property(m => m.Result)
                 .HasConversion(
-                    result => result == null ? null : $"{result.Player1Score}:{result.Player2Score}",
+                    result => result == null ? null : result.Player1Score.ToString() + ":" + result.Player2Score.ToString(),
                     value => value == null ? null : new MatchResult(
-                        short.Parse(value.Split(':')[0]),
-                        short.Parse(value.Split(':')[1])));
+                        short.Parse(value.Substring(0, value.IndexOf(':'))),
+                        short.Parse(value.Substring(value.IndexOf(':') + 1))));
         });
     }
 }
