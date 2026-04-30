@@ -86,7 +86,7 @@ public class GenerateTournamentCommandHandler(
                 break;
 
             case KnockOutPlan:
-                for (short i = 1; i + 1 <= n; i += 2)
+                for (short i = 1; i < n; i += 2)
                 {
                     poule.Matches.Add(new Match(
                         new Competition.Domain.ValueObjects.MatchId(Guid.NewGuid()),

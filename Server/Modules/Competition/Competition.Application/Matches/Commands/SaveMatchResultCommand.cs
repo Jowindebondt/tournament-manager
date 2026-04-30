@@ -12,7 +12,7 @@ public class SaveMatchResultCommandHandler(IMatchRepository matchRepository)
     public async Task Handle(SaveMatchResultCommand request, CancellationToken cancellationToken)
     {
         var match = await matchRepository.GetByIdAsync(new MatchId(request.MatchId))
-            ?? throw new ArgumentException("Match not found");
+            ?? throw new ArgumentException($"Match with ID {request.MatchId} not found");
 
         var result = new MatchResult(request.Player1Score, request.Player2Score);
         match.SaveResult(result);
