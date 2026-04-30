@@ -6,7 +6,7 @@ using Round = Competition.Domain.Entities.Round;
 using Poule = Competition.Domain.Entities.Poule;
 using Match = Competition.Domain.Entities.Match;
 
-namespace Test.Design.Api.Fixtures;
+namespace Test.Competition.Api.Fixtures;
 
 /// <summary>
 /// A test-only DbContext that extends CompetitionDbContext with the EF Core model configuration
