@@ -1,6 +1,4 @@
 using AutoMapper;
-using Competition.Domain.Interfaces;
-using Competition.Infrastructure.Repositories;
 using Design.Application.Tournaments.Commands;
 using Design.Domain.Entities;
 using Design.Domain.Enums;
@@ -21,7 +19,6 @@ namespace Test.Design.Api.Controllers;
 public class CT_TournamentController : IDisposable
 {
     private readonly TestDesignDbContext _dbContext;
-    private readonly TestCompetitionDbContext _competitionDbContext;
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
@@ -36,11 +33,6 @@ public class CT_TournamentController : IDisposable
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
         _dbContext = new TestDesignDbContext(designOptions);
-
-        var competitionOptions = new DbContextOptionsBuilder<TestCompetitionDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
-        _competitionDbContext = new TestCompetitionDbContext(competitionOptions);
 
         _existingId = Guid.NewGuid();
         _renameId = Guid.NewGuid();
@@ -61,7 +53,6 @@ public class CT_TournamentController : IDisposable
         services.AddSingleton<ITournamentRepository>(new TournamentRepository(_dbContext));
         services.AddSingleton<IRoundRepository>(new RoundRepository(_dbContext));
         services.AddSingleton<IPouleRepository>(new PouleRepository(_dbContext));
-        services.AddSingleton<ICompetitionRepository>(new CompetitionRepository(_competitionDbContext));
         var sp = services.BuildServiceProvider();
         _mapper = sp.GetRequiredService<IMapper>();
         _mediator = sp.GetRequiredService<IMediator>();
@@ -73,7 +64,6 @@ public class CT_TournamentController : IDisposable
     public void Dispose()
     {
         _dbContext.Dispose();
-        _competitionDbContext.Dispose();
     }
 
     [Fact]
@@ -183,36 +173,6 @@ public class CT_TournamentController : IDisposable
         Assert.Multiple(
             () => Assert.IsType<NoContentResult>(result),
             () => Assert.Equal("Renamed Tournament", _dbContext.Tournaments.Find(new TournamentId(_renameId))!.Name.Value)
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
-    public async Task GenerateAsync_ReturnsNoContent_CompetitionAddedToDb()
-    {
-        // act
-        var result = await CreateController().GenerateAsync(_existingId);
-
-        // assert
-        Assert.Multiple(
-            () => Assert.IsType<NoContentResult>(result),
-            () => Assert.Equal(1, _competitionDbContext.Competitions.Count())
-        );
-    }
-
-    [Fact]
-    [Trait(TraitCategories.TestLevel, TestLevels.ComponentTest)]
-    public async Task GenerateAsync_CalledTwice_ReturnsNoContent_TwoCompetitionsAddedToDb()
-    {
-        // act
-        var result1 = await CreateController().GenerateAsync(_existingId);
-        var result2 = await CreateController().GenerateAsync(_existingId);
-
-        // assert
-        Assert.Multiple(
-            () => Assert.IsType<NoContentResult>(result1),
-            () => Assert.IsType<NoContentResult>(result2),
-            () => Assert.Equal(2, _competitionDbContext.Competitions.Count())
         );
     }
 

@@ -18,6 +18,8 @@
     <ProjectReference Include="..\Modules\Design\Design.Infrastructure\Design.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Competition\Competition.Api\Competition.Api.csproj" />
     <ProjectReference Include="..\Modules\Competition\Competition.Infrastructure\Competition.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Generation\Generation.Api\Generation.Api.csproj" />
+    <ProjectReference Include="..\Modules\Generation\Generation.Infrastructure\Generation.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

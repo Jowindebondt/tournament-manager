@@ -1,5 +1,4 @@
 using AutoMapper;
-using Competition.Domain.Interfaces;
 using Design.Application.DTOs;
 using Design.Application.Tournaments.Commands;
 using Design.Application.Tournaments.Queries;
@@ -179,30 +178,5 @@ public class UT_TournamentHandlers
 
         // act & assert
         await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(new DeleteTournamentCommand(Guid.NewGuid()), CancellationToken.None));
-    }
-
-    [Fact]
-    public async Task GenerateTournamentCommandHandler_AnyId_CompletesSuccessfully()
-    {
-        // arrange
-        var tournamentId = Guid.NewGuid();
-        var tournament = new Tournament(new TournamentId(tournamentId), TournamentName.Create("Test"), Sport.TableTennis);
-        var tournamentRepositoryMock = new Mock<ITournamentRepository>();
-        var roundRepositoryMock = new Mock<IRoundRepository>();
-        var pouleRepositoryMock = new Mock<IPouleRepository>();
-        var competitionRepositoryMock = new Mock<ICompetitionRepository>();
-
-        tournamentRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<TournamentId>())).ReturnsAsync(tournament);
-        roundRepositoryMock.Setup(r => r.GetAllByTournamentAsync(It.IsAny<TournamentId>())).ReturnsAsync([]);
-        competitionRepositoryMock.Setup(r => r.AddAsync(It.IsAny<Competition.Domain.Entities.Competition>())).Returns(Task.CompletedTask);
-
-        var handler = new GenerateTournamentCommandHandler(
-            tournamentRepositoryMock.Object,
-            roundRepositoryMock.Object,
-            pouleRepositoryMock.Object,
-            competitionRepositoryMock.Object);
-
-        // act & assert (no exception)
-        await handler.Handle(new GenerateTournamentCommand(tournamentId), CancellationToken.None);
     }
 }

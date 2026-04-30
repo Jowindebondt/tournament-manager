@@ -178,23 +178,6 @@ public class UT_TournamentController
     }
 
     [Fact]
-    public async Task GenerateAsync_ReturnsNoContent_MediatorCalledOnce()
-    {
-        // arrange
-        var id = Guid.NewGuid();
-        _mediatorMock.Setup(m => m.Send(It.IsAny<GenerateTournamentCommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-        // act
-        var result = await _controller.GenerateAsync(id);
-
-        // assert
-        Assert.Multiple(
-            () => _mediatorMock.Verify(m => m.Send(It.IsAny<GenerateTournamentCommand>(), It.IsAny<CancellationToken>()), Times.Once),
-            () => Assert.IsType<NoContentResult>(result)
-        );
-    }
-
-    [Fact]
     public async Task DeleteAsync_ReturnsNoContent_MediatorCalledOnce()
     {
         // arrange

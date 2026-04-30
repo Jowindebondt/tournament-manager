@@ -57,13 +57,6 @@ public class TournamentController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost($"{{{nameof(id)}}}/generate")]
-    public async Task<IActionResult> GenerateAsync([FromRoute] Guid id)
-    {
-        await _mediator.Send(new GenerateTournamentCommand(id));
-        return NoContent();
-    }
-
     [HttpDelete($"{{{nameof(id)}}}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
