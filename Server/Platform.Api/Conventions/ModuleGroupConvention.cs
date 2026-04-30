@@ -1,32 +1,29 @@
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace Platform.Api.Conventions;
 
 /// <summary>
 /// Assigns each controller to a Swagger document group based on its namespace.
-/// Controllers in "Design.Api.*" are grouped under "design",
-/// controllers in "Competition.Api.*" are grouped under "competition", etc.
+/// The group name is derived automatically from the namespace segment that
+/// precedes ".Api" (e.g. "Design.Api.Controllers" → "design").
 /// </summary>
 public class ModuleGroupConvention : IControllerModelConvention
 {
-    private static readonly Dictionary<string, string> _namespacePrefixToGroup = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["Design.Api"] = "design",
-        ["Competition.Api"] = "competition",
-    };
-
     public void Apply(ControllerModel controller)
     {
-        var controllerNamespace = controller.ControllerType.Namespace ?? string.Empty;
+        var ns = controller.ControllerType.Namespace ?? string.Empty;
 
-        foreach (var (prefix, group) in _namespacePrefixToGroup)
-        {
-            if (controllerNamespace.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            {
-                controller.ApiExplorer.GroupName = group;
-                return;
-            }
-        }
+        // Find the segment directly before the first ".Api" occurrence.
+        // E.g. "Design.Api.Controllers" → "Design" → "design"
+        var apiMarker = ".Api";
+        var markerIndex = ns.IndexOf(apiMarker, StringComparison.OrdinalIgnoreCase);
+        if (markerIndex <= 0)
+            return;
+
+        var beforeMarker = ns[..markerIndex];
+        var lastDot = beforeMarker.LastIndexOf('.');
+        var moduleName = lastDot >= 0 ? beforeMarker[(lastDot + 1)..] : beforeMarker;
+
+        controller.ApiExplorer.GroupName = moduleName.ToLowerInvariant();
     }
 }

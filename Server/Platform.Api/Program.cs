@@ -1,4 +1,3 @@
-using AutoMapper;
 using Competition.Domain.Interfaces;
 using Competition.Infrastructure.Persistence;
 using Competition.Infrastructure.Repositories;
@@ -95,6 +94,11 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -103,7 +107,6 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = "swagger";
 });
 
-app.UseDeveloperExceptionPage();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
