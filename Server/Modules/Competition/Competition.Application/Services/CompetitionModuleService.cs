@@ -20,7 +20,9 @@ public class CompetitionModuleService(ICompetitionRepository competitionReposito
     {
         var competitionId = new CompetitionId(Guid.NewGuid());
         var name = CompetitionName.Create(dto.Name);
-        var sport = Enum.Parse<Sport>(dto.Sport);
+
+        if (!Enum.TryParse<Sport>(dto.Sport, out var sport))
+            throw new ArgumentException($"Unsupported sport value: '{dto.Sport}'.", nameof(dto));
 
         var competition = new CompetitionEntity(competitionId, name, sport);
 
