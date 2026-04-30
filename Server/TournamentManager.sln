@@ -145,6 +145,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch.Infrastructure", "Mod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Watch.Infrastructure", "Modules\Watch\Watch.Test\Test.Watch.Infrastructure\Test.Watch.Infrastructure.csproj", "{F2A3B4C5-D6E7-8901-5678-012345678901}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platform.Api", "Platform.Api\Platform.Api.csproj", "{26DADA2E-991C-4647-B822-7D7E56A26D2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -851,6 +853,18 @@ Global
 		{F2A3B4C5-D6E7-8901-5678-012345678901}.Release|x64.Build.0 = Release|Any CPU
 		{F2A3B4C5-D6E7-8901-5678-012345678901}.Release|x86.ActiveCfg = Release|Any CPU
 		{F2A3B4C5-D6E7-8901-5678-012345678901}.Release|x86.Build.0 = Release|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Debug|x64.Build.0 = Debug|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Debug|x86.Build.0 = Debug|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Release|x64.ActiveCfg = Release|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Release|x64.Build.0 = Release|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Release|x86.ActiveCfg = Release|Any CPU
+		{26DADA2E-991C-4647-B822-7D7E56A26D2C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
