@@ -1,121 +1,36 @@
-using Competition.Domain.Entities;
-using Competition.Domain.Interfaces;
-using Competition.Domain.ValueObjects;
-using Design.Domain.Interfaces;
-using Design.Domain.ValueObjects;
+using Competition.Application.Interfaces;
+using Design.Application.Interfaces;
 using MediatR;
-using CompetitionEntity = Competition.Domain.Entities.Competition;
-using CompetitionSport = Competition.Domain.Enums.Sport;
-using CompPouleId = Competition.Domain.ValueObjects.PouleId;
-using CompPouleName = Competition.Domain.ValueObjects.PouleName;
-using CompPoulePlayersCount = Competition.Domain.ValueObjects.PoulePlayersCount;
-using CompRoundId = Competition.Domain.ValueObjects.RoundId;
-using CompRoundName = Competition.Domain.ValueObjects.RoundName;
 
 namespace Generation.Application.Tournaments.Commands;
 
 public record GenerateCompetitionCommand(Guid TournamentId) : IRequest;
 
 public class GenerateCompetitionCommandHandler(
-    ITournamentRepository tournamentRepository,
-    IRoundRepository roundRepository,
-    IPouleRepository pouleRepository,
-    ICompetitionRepository competitionRepository)
+    IDesignModuleApi designModule,
+    ICompetitionModuleApi competitionModule)
     : IRequestHandler<GenerateCompetitionCommand>
 {
     public async Task Handle(GenerateCompetitionCommand request, CancellationToken cancellationToken)
     {
-        var tournament = await tournamentRepository.GetByIdAsync(new TournamentId(request.TournamentId))
+        var tournament = await designModule.GetTournamentAsync(request.TournamentId)
             ?? throw new ArgumentException("Tournament not found");
 
-        var competitionId = new CompetitionId(Guid.NewGuid());
-        var competitionName = CompetitionName.Create(tournament.Name.Value);
-        var competitionSport = tournament.Sport switch
-        {
-            Design.Domain.Enums.Sport.TableTennis => CompetitionSport.TableTennis,
-            _ => throw new ArgumentOutOfRangeException(nameof(tournament.Sport), "Unsupported sport.")
-        };
+        var rounds = await designModule.GetRoundsByTournamentAsync(request.TournamentId);
 
-        var competition = new CompetitionEntity(competitionId, competitionName, competitionSport);
-
-        var rounds = await roundRepository.GetAllByTournamentAsync(tournament.Id);
+        var roundCreations = new List<RoundCreationDto>();
         foreach (var designRound in rounds)
         {
-            var roundId = new CompRoundId(Guid.NewGuid());
-            var roundName = CompRoundName.Create(designRound.Name.Value);
-            var round = new Round(roundId, roundName, competitionId);
-
-            RoundPlan? plan = null;
-            if (designRound.Type != null)
-            {
-                plan = MapRoundPlan(designRound.Type);
-                round.SetPlan(plan);
-            }
-
-            var poules = await pouleRepository.GetAllByRoundAndTournamentAsync(tournament.Id, designRound.Id);
-            foreach (var designPoule in poules)
-            {
-                var pouleId = new CompPouleId(Guid.NewGuid());
-                var pouleName = CompPouleName.Create(designPoule.Name.Value);
-                var totalPlayers = CompPoulePlayersCount.Create(designPoule.TotalPlayers.Value);
-                var poule = new Poule(pouleId, pouleName, totalPlayers, roundId);
-
-                GenerateMatches(poule, plan);
-
-                round.Poules.Add(poule);
-            }
-
-            competition.Rounds.Add(round);
+            var poules = await designModule.GetPoulesByRoundAsync(request.TournamentId, designRound.Id);
+            var pouleCreations = poules
+                .Select(p => new PouleCreationDto(p.Name, p.TotalPlayers))
+                .ToList();
+            roundCreations.Add(new RoundCreationDto(designRound.Name, designRound.Type, pouleCreations));
         }
 
-        await competitionRepository.AddAsync(competition);
+        await competitionModule.CreateCompetitionAsync(new CompetitionCreationDto(
+            tournament.Name,
+            tournament.Sport.ToString(),
+            roundCreations));
     }
-
-    private static void GenerateMatches(Poule poule, RoundPlan? plan)
-    {
-        var n = poule.TotalPlayers.Value;
-
-        switch (plan)
-        {
-            case RoundRobinPlan:
-                for (short i = 1; i <= n; i++)
-                {
-                    for (short j = (short)(i + 1); j <= n; j++)
-                    {
-                        poule.Matches.Add(new Match(
-                            new MatchId(Guid.NewGuid()),
-                            i, j,
-                            poule.Id));
-                    }
-                }
-                break;
-
-            case KnockOutPlan:
-                for (short i = 1; i < n; i += 2)
-                {
-                    poule.Matches.Add(new Match(
-                        new MatchId(Guid.NewGuid()),
-                        i, (short)(i + 1),
-                        poule.Id));
-                }
-                break;
-        }
-    }
-
-    private static RoundPlan MapRoundPlan(Design.Domain.ValueObjects.RoundType roundType) => roundType switch
-    {
-        RoundRobinType => RoundRobinPlan.Instance,
-        KnockOutType knockOut => new KnockOutPlan(MapKnockOutPhase(knockOut.Phase)),
-        _ => throw new ArgumentOutOfRangeException(nameof(roundType), "Unsupported round type.")
-    };
-
-    private static Competition.Domain.Enums.KnockOutPhase MapKnockOutPhase(Design.Domain.Enums.KnockOutPhase phase) => phase switch
-    {
-        Design.Domain.Enums.KnockOutPhase.Final => Competition.Domain.Enums.KnockOutPhase.Final,
-        Design.Domain.Enums.KnockOutPhase.SemiFinal => Competition.Domain.Enums.KnockOutPhase.SemiFinal,
-        Design.Domain.Enums.KnockOutPhase.QuarterFinal => Competition.Domain.Enums.KnockOutPhase.QuarterFinal,
-        Design.Domain.Enums.KnockOutPhase.RoundOf16 => Competition.Domain.Enums.KnockOutPhase.RoundOf16,
-        Design.Domain.Enums.KnockOutPhase.RoundOf32 => Competition.Domain.Enums.KnockOutPhase.RoundOf32,
-        _ => throw new ArgumentOutOfRangeException(nameof(phase), "Unsupported knock-out phase.")
-    };
 }

@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Design.Application\Design.Application.csproj" />
-    <ProjectReference Include="..\..\Sports.TableTennis\Sports.TableTennis.Domain\Sports.TableTennis.Domain.csproj" />
   </ItemGroup>
 
 </Project>

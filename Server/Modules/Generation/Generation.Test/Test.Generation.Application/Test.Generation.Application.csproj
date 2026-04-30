@@ -26,6 +26,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Generation.Application\Generation.Application.csproj" />
     <ProjectReference Include="..\..\..\..\TournamentManager.TestHelper\TournamentManager.TestHelper.csproj" />
+    <ProjectReference Include="..\..\..\..\Design\Design.Application\Design.Application.csproj" />
+    <ProjectReference Include="..\..\..\..\Competition\Competition.Application\Competition.Application.csproj" />
   </ItemGroup>
 
 </Project>

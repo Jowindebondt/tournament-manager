@@ -182,24 +182,6 @@ public class UT_RoundController
     }
 
     [Fact]
-    public async Task SetTableTennisSettingsAsync_ValidBestOf_ReturnsNoContent_MediatorCalledOnce()
-    {
-        // arrange
-        var id = Guid.NewGuid();
-        var setSettingsViewModel = new SetTableTennisSettingsRoundViewModel { BestOf = 5 };
-        _mediatorMock.Setup(m => m.Send(It.IsAny<SetRoundSettingsCommand>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-
-        // act
-        var result = await _controller.SetTableTennisSettingsAsync(id, setSettingsViewModel);
-
-        // assert
-        Assert.Multiple(
-            () => _mediatorMock.Verify(m => m.Send(It.IsAny<SetRoundSettingsCommand>(), It.IsAny<CancellationToken>()), Times.Once),
-            () => Assert.IsType<NoContentResult>(result)
-        );
-    }
-
-    [Fact]
     public async Task SetRoundPoulePositions_ReturnsNoContent_MediatorCalledForEachPosition()
     {
         // arrange

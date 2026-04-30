@@ -1,57 +1,32 @@
-using Competition.Domain.Interfaces;
-using Competition.Infrastructure.Persistence;
-using Competition.Infrastructure.Repositories;
-using Design.Domain.Interfaces;
-using Design.Infrastructure.Persistence;
-using Design.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
+using Competition.Infrastructure.Extensions;
+using Design.Infrastructure.Extensions;
+using Generation.Infrastructure.Extensions;
 using Microsoft.OpenApi.Models;
 using Platform.Api.Conventions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── Database contexts ──────────────────────────────────────────────────────────
+// ── Module registrations ──────────────────────────────────────────────────────
+// Each module owns its own DI wiring (DbContext, repositories, MediatR handlers,
+// AutoMapper profiles, and its public facade). When a module is extracted into a
+// microservice its host project calls the same extension (or an equivalent HTTP
+// client variant) during startup.
 
-var designConnectionString = builder.Configuration.GetConnectionString("DesignConnection");
-builder.Services.AddDbContext<DesignDbContext>(options =>
-    options.UseSqlServer(designConnectionString));
-
-var competitionConnectionString = builder.Configuration.GetConnectionString("CompetitionConnection");
-builder.Services.AddDbContext<CompetitionDbContext>(options =>
-    options.UseSqlServer(competitionConnectionString));
+builder.Services.AddDesignModule(builder.Configuration);
+builder.Services.AddCompetitionModule(builder.Configuration);
+builder.Services.AddGenerationModule();
 
 // ── MVC + module group convention ────────────────────────────────────────────
 
 builder.Services.AddControllers(options =>
     options.Conventions.Add(new ModuleGroupConvention()));
 
-// ── MediatR (all module application assemblies) ───────────────────────────────
-
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(typeof(Design.Application.MappingProfile).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(Competition.Application.MappingProfile).Assembly);
-    cfg.RegisterServicesFromAssembly(typeof(Generation.Application.MappingProfile).Assembly);
-});
-
-// ── AutoMapper (all module mapping profiles) ──────────────────────────────────
+// ── AutoMapper – Api-layer profiles (ViewModel ↔ DTO) ────────────────────────
+// Application-layer profiles are registered inside each module extension above.
 
 builder.Services.AddAutoMapper(
     typeof(Design.Api.MappingProfile),
-    typeof(Design.Application.MappingProfile),
-    typeof(Competition.Api.MappingProfile),
-    typeof(Competition.Application.MappingProfile));
-
-// ── Repositories ──────────────────────────────────────────────────────────────
-
-// Design module
-builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
-builder.Services.AddScoped<IRoundRepository, RoundRepository>();
-builder.Services.AddScoped<IPouleRepository, PouleRepository>();
-
-// Competition module
-builder.Services.AddScoped<ICompetitionRepository, CompetitionRepository>();
-builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+    typeof(Competition.Api.MappingProfile));
 
 // ── Swagger – one document per module ─────────────────────────────────────────
 
@@ -77,6 +52,13 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Generation Module",
         Version = "v1",
         Description = "API for generating competitions from tournament designs."
+    });
+
+    options.SwaggerDoc("tabletennis", new OpenApiInfo
+    {
+        Title = "Sports.TableTennis Module",
+        Version = "v1",
+        Description = "API for Table Tennis sport-specific settings."
     });
 
     // Only include operations that belong to the current document's group
@@ -113,6 +95,7 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/design/swagger.json", "Design Module");
     options.SwaggerEndpoint("/swagger/competition/swagger.json", "Competition Module");
     options.SwaggerEndpoint("/swagger/generation/swagger.json", "Generation Module");
+    options.SwaggerEndpoint("/swagger/tabletennis/swagger.json", "Sports.TableTennis Module");
     options.RoutePrefix = "swagger";
 });
 

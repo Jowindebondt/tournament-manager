@@ -30,6 +30,7 @@
     <ProjectReference Include="..\..\Design.Infrastructure\Design.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\..\Modules\Competition\Competition.Infrastructure\Competition.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\..\Modules\Generation\Generation.Api\Generation.Api.csproj" />
+    <ProjectReference Include="..\..\..\..\Modules\Sports.TableTennis\Sports.TableTennis.Api\Sports.TableTennis.Api.csproj" />
     <ProjectReference Include="..\..\..\..\TournamentManager.TestHelper\TournamentManager.TestHelper.csproj" />
   </ItemGroup>
 

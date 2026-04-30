@@ -6,7 +6,6 @@ using Design.Domain.Enums;
 using Design.Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Sports.TableTennis.Domain.ValueObjects;
 
 namespace Design.Api.Controllers;
 
@@ -59,14 +58,6 @@ public class RoundController : ControllerBase
     public async Task<IActionResult> SetPreviousRoundAsync([FromRoute] Guid id, [FromBody] SetPreviousRoundViewModel setPreviousRound)
     {
         await _mediator.Send(new SetPreviousRoundCommand(id, setPreviousRound.PreviousId));
-        return NoContent();
-    }
-
-    [HttpPost($"{{{nameof(id)}}}/settabletennissettings")]
-    public async Task<IActionResult> SetTableTennisSettingsAsync([FromRoute] Guid id, [FromBody] SetTableTennisSettingsRoundViewModel setTableTennisSettings)
-    {
-        var settings = TableTennisRoundSettings.Create((short)setTableTennisSettings.BestOf);
-        await _mediator.Send(new SetRoundSettingsCommand(id, settings));
         return NoContent();
     }
 
